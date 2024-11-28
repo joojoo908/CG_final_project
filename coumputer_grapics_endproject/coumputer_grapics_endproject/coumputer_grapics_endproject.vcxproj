@@ -73,8 +73,7 @@
     <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\Users\LDJ\Pictures\assimp\lib\assimp-vc143-mt.lib" />
-    <Library Include="..\..\..\..\..\Users\LDJ\Pictures\assimp\lib\assimp-vc143-mtd.lib" />
+    <Library Include="assimp-vc143-mt.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

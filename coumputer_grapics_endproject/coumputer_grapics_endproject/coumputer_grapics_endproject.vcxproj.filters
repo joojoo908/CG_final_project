@@ -165,10 +165,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\Users\LDJ\Pictures\assimp\lib\assimp-vc143-mt.lib">
-      <Filter>소스 파일</Filter>
-    </Library>
-    <Library Include="..\..\..\..\..\Users\LDJ\Pictures\assimp\lib\assimp-vc143-mtd.lib">
+    <Library Include="assimp-vc143-mt.lib">
       <Filter>소스 파일</Filter>
     </Library>
   </ItemGroup>
