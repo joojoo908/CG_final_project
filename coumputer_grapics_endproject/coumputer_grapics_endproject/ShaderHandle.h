@@ -4,6 +4,7 @@
 
 // Vertex Shader
 static const char* vShaderPath = "Shader/vertex.glsl";
+static const char* vShaderPath_obj = "objshader.vert";
 // Fragment Shader
 static const char* fShaderPath = "Shader/fragment.glsl";
 
@@ -19,8 +20,10 @@ extern GLuint loc_finalBonesMatrices;
 
 // Shader handles
 void GetShaderHandles();
+void GetShaderHandles_obj();
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat);
 
 // Shader creation
 void CreateShader();
+void CreateShader_obj();

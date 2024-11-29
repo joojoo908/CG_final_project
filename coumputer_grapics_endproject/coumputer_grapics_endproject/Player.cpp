@@ -167,6 +167,8 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_normalSampler, 1);
 
 	model->RenderModel();
+	//텍스처 중복 문제 해결
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

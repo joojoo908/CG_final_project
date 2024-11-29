@@ -21,6 +21,18 @@ void GetShaderHandles()
     loc_normalSampler = shaderList[0]->GetNormalSamplerLoc();
 }
 
+void GetShaderHandles_obj()
+{
+    // Get shader handles
+    loc_modelMat = shaderList[1]->GetModelMatLoc();
+    loc_PVM = shaderList[1]->GetPVMLoc();
+    loc_normalMat = shaderList[1]->GetNormalMatLoc();
+    loc_eyePos = shaderList[1]->GetEyePosLoc();
+    //loc_finalBonesMatrices = shaderList[1]->GetFinalBonesMatricesLoc();
+    loc_diffuseSampler = shaderList[1]->GetColorSamplerLoc();
+    loc_normalSampler = shaderList[1]->GetNormalSamplerLoc();
+}
+
 glm::mat3 GetNormalMat(glm::mat4& modelMat)
 {
     return glm::mat3(glm::transpose(glm::inverse(modelMat)));
@@ -31,5 +43,12 @@ void CreateShader()
 {
     Shader* shader = new Shader;
     shader->CreateFromFiles(vShaderPath, fShaderPath);
+    shaderList.push_back(shader);
+}
+
+void CreateShader_obj()
+{
+    Shader* shader = new Shader;
+    shader->CreateFromFiles(vShaderPath_obj, fShaderPath);
     shaderList.push_back(shader);
 }

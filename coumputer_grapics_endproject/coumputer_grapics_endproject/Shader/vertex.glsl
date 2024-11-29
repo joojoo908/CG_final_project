@@ -39,6 +39,7 @@ void main()
 		
 		BoneTransform += finalBonesMatrices[boneIds[i]] * weights[i];
 	}
+
 	mat3 normalMatrix = transpose(inverse(mat3(BoneTransform))) * normalMat; // 애니메이션에 의한 회전까지 고려
 
 	gl_Position = PVM * totalPosition;

@@ -163,6 +163,9 @@
     <None Include="Skybox.vert">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="objshader.vert">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="assimp-vc143-mt.lib">

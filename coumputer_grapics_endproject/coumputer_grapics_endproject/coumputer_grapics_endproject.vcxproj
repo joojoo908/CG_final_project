@@ -66,6 +66,7 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="objshader.vert" />
     <None Include="Shader\fragment.glsl" />
     <None Include="Shader\vertex.glsl" />
     <None Include="Skybox.frag" />

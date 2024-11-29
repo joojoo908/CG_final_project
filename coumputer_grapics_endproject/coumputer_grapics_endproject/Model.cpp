@@ -264,8 +264,12 @@ void Model::LoadMaterials(const aiScene* scene)
 
 void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 {
+	if (diffuseMaps[i]) {
+		delete diffuseMaps[i];  // 이전에 로드된 텍스처 메모리 해제
+	}
+	diffuseMaps[i] = nullptr;
 	// Diffuse 텍스쳐가 존재하는 지 먼저 확인
-	//if (material->GetTextureCount(aiTextureType_DIFFUSE))
+	if (material->GetTextureCount(aiTextureType_DIFFUSE))
 	{
 		printf("road");
 		aiString texturePath;

@@ -54,6 +54,7 @@ Model* currModel;
 Player* player;
 
 Animator* animator;
+Animator* noani;
 
 Animation* idleAnim;
 Animation* danceAnim;
@@ -121,6 +122,7 @@ void SpecialKeyboard(int key, int x, int y) {
     }
 }
 
+//안씀
 void MoveCamera()
 {
     //currCamera->KeyControl(mainWindow->getsKeys(), deltaTime);
@@ -167,6 +169,7 @@ void update() {
 
 void mainInit() {
     CreateShader();
+    CreateShader_obj();
 
     //빛
     directionalLight = new DirectionalLight(0.5f, 1.f,
@@ -202,10 +205,10 @@ void mainInit() {
     // Model loading
     mainModel = new Model();
     std::string modelPath = "Knight/test.gltf";
-    //std::string modelPath = "obj/test.gltf";
+    //std::string modelPath = "obj/night.gltf";
     mainModel->LoadModel(modelPath);
     entityList.push_back(mainModel);
-    currModel = mainModel;
+    //currModel = mainModel;
 
     //모델 90도 회전
     GLfloat* currRot = mainModel->GetRotate();
@@ -215,11 +218,17 @@ void mainInit() {
     mainModel->SetRotate(newRot);
 
     cube = new Model();
-    modelPath = "obj/test.gltf";
+    modelPath = "obj/cube.gltf";
+    //modelPath = "bot/bot_run.gltf";
     cube->LoadModel(modelPath);
+    glm::vec3 newscale(1,1,1);
+    cube->SetScale(newscale);
     entityList.push_back(cube);
 
+    
+
     animator = new Animator(nullptr);
+    noani = new Animator(nullptr);
 
     //플레이어 연결
     player = new Player(mainModel, animator);
@@ -268,8 +277,46 @@ GLvoid render()
     terrain->DrawTerrain(viewMat, projMat);*/
 
     //전체가 플레이어 그리기
+    shaderList[1]->UseShader();
+    {
+        GetShaderHandles_obj();
+
+        glm::mat4 modelMat = cube->GetModelMat();
+        glm::mat4 PVM = projMat * viewMat * modelMat;
+        glm::mat3 normalMat = GetNormalMat(modelMat);
+
+        glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
+        glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
+        glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
+
+        shaderList[1]->UseEyePos(camPos);
+        shaderList[1]->UseDirectionalLight(directionalLight);
+        shaderList[1]->UsePointLights(pointLights, pointLightCount);
+
+        shaderList[1]->UseMaterial(cube->GetMaterial());
 
 
+        //const auto& transforms = noani->GetFinalBoneMatrices();
+        ////const auto& transforms = cube->GetBoneInfoMap();
+        ////std::vector<glm::mat4> transforms(0,glm::mat4(1.0f));
+        ////shaderList[0]->UseFinalBoneMatrices(boneIds);
+        ////std::vector<glm::mat4> boneMatrices; // 본 변환 행렬을 가져오는 함수
+        //// 셰이더에 본 변환 행렬을 전달
+        //shaderList[0]->UseFinalBoneMatrices(transforms);
+
+
+        glUniform1i(loc_diffuseSampler, 0);
+        glUniform1i(loc_normalSampler, 1);
+
+        cube->RenderModel();
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR)
+        {
+            std::cout << "error : " << error << std::endl;
+        }
+    }
     player->draw(currCamera, directionalLight, pointLights, pointLightCount);
     /*{
         GetShaderHandles();
@@ -304,38 +351,6 @@ GLvoid render()
             std::cout << "error : " << error << std::endl;
         }
     }*/
-    shaderList[0]->UseShader();
-    {
-        GetShaderHandles();
-
-        glm::mat4 modelMat = cube->GetModelMat();
-        glm::mat4 PVM = projMat * viewMat * modelMat;
-        glm::mat3 normalMat = GetNormalMat(modelMat);
-
-        glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-        glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
-        glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
-
-        shaderList[0]->UseEyePos(camPos);
-        shaderList[0]->UseDirectionalLight(directionalLight);
-        shaderList[0]->UsePointLights(pointLights, pointLightCount);
-
-        shaderList[0]->UseMaterial(cube->GetMaterial());
-
-        /*const auto& transforms = animator->GetFinalBoneMatrices();
-        shaderList[0]->UseFinalBoneMatrices(transforms);*/
-
-        glUniform1i(loc_diffuseSampler, 0);
-        glUniform1i(loc_normalSampler, 1);
-
-        cube->RenderModel();
-
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR)
-        {
-            std::cout << "error : " << error << std::endl;
-        }
-    }
 
 
     glutSwapBuffers();  // Swap buffers to render
