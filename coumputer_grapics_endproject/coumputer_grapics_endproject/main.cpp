@@ -218,13 +218,18 @@ void mainInit() {
     mainModel->SetRotate(newRot);
 
     cube = new Model();
-    modelPath = "obj/cube.gltf";
+    modelPath = "obj/tree.gltf";
     //modelPath = "bot/bot_run.gltf";
     cube->LoadModel(modelPath);
+
     glm::vec3 newscale(1,1,1);
     cube->SetScale(newscale);
     entityList.push_back(cube);
-
+    currRot = cube->GetRotate();
+    rotation = 180;
+    newRotx = currRot[0] + rotation;
+    glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
+    cube->SetRotate(newRot2);
     
 
     animator = new Animator(nullptr);
