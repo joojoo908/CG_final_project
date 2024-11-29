@@ -49,6 +49,7 @@ std::vector<Entity*> entityList;
 //Model* model_2B;
 Model* mainModel;
 Model* cube;
+Model* ground;
 Model* currModel;
 
 Player* player;
@@ -202,13 +203,14 @@ void mainInit() {
     skyboxFaces.push_back("Skybox/nz.png");
     skybox = new Skybox(skyboxFaces);
 
+
+    //모델 추가용 init() 함수 추가 예정
     // Model loading
     mainModel = new Model();
     std::string modelPath = "Knight/test.gltf";
     //std::string modelPath = "obj/night.gltf";
     mainModel->LoadModel(modelPath);
     entityList.push_back(mainModel);
-    //currModel = mainModel;
 
     //모델 90도 회전
     GLfloat* currRot = mainModel->GetRotate();
@@ -217,20 +219,32 @@ void mainInit() {
     glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
     mainModel->SetRotate(newRot);
 
+    //----------------------------------------
     cube = new Model();
     modelPath = "obj/tree.gltf";
     //modelPath = "bot/bot_run.gltf";
     cube->LoadModel(modelPath);
 
-    glm::vec3 newscale(1,1,1);
-    cube->SetScale(newscale);
     entityList.push_back(cube);
     currRot = cube->GetRotate();
     rotation = 180;
     newRotx = currRot[0] + rotation;
     glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
     cube->SetRotate(newRot2);
-    
+
+    //----------------------------------------
+    ground = new Model();
+    modelPath = "Ground/ground.gltf";
+    ground->LoadModel(modelPath);
+    entityList.push_back(ground);
+    glm::vec3 newRot3(0,-1,0);
+    ground->SetTranslate(newRot3);
+    glm::vec3 newscale(10, 10, 1);
+    ground->SetScale(newscale);
+
+
+
+
 
     animator = new Animator(nullptr);
     noani = new Animator(nullptr);
@@ -322,13 +336,11 @@ GLvoid render()
             std::cout << "error : " << error << std::endl;
         }
     }
-    player->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    /*{
-        GetShaderHandles();
+    shaderList[1]->UseShader();
+    {
+        GetShaderHandles_obj();
 
-        Model* currModel = mainModel;
-
-        glm::mat4 modelMat = mainModel->GetModelMat();
+        glm::mat4 modelMat = ground->GetModelMat();
         glm::mat4 PVM = projMat * viewMat * modelMat;
         glm::mat3 normalMat = GetNormalMat(modelMat);
 
@@ -336,26 +348,26 @@ GLvoid render()
         glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
         glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
-        shaderList[0]->UseEyePos(camPos);
-        shaderList[0]->UseDirectionalLight(directionalLight);
-        shaderList[0]->UsePointLights(pointLights, pointLightCount);
+        shaderList[1]->UseEyePos(camPos);
+        shaderList[1]->UseDirectionalLight(directionalLight);
+        shaderList[1]->UsePointLights(pointLights, pointLightCount);
 
-        shaderList[0]->UseMaterial(mainModel->GetMaterial());
-
-        const auto& transforms = animator->GetFinalBoneMatrices();
-        shaderList[0]->UseFinalBoneMatrices(transforms);
+        shaderList[1]->UseMaterial(ground->GetMaterial());
 
         glUniform1i(loc_diffuseSampler, 0);
         glUniform1i(loc_normalSampler, 1);
 
-        mainModel->RenderModel();
+        ground->RenderModel();
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         GLenum error = glGetError();
         if (error != GL_NO_ERROR)
         {
             std::cout << "error : " << error << std::endl;
         }
-    }*/
+    }
+
+    player->draw(currCamera, directionalLight, pointLights, pointLightCount);
 
 
     glutSwapBuffers();  // Swap buffers to render
