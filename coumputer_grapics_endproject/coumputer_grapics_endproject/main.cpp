@@ -234,12 +234,18 @@ void mainInit() {
 
     //----------------------------------------
     ground = new Model();
-    modelPath = "Ground/ground.gltf";
+    modelPath = "Ground3/gnd_v0.gltf";
     ground->LoadModel(modelPath);
     entityList.push_back(ground);
-    glm::vec3 newRot3(0,-1,0);
-    ground->SetTranslate(newRot3);
-    glm::vec3 newscale(10, 10, 1);
+    currRot = ground->GetRotate();
+    rotation = 90;
+    newRotx = currRot[0] + rotation;
+    glm::vec3 newRot3(newRotx, currRot[1], currRot[2]);
+    ground->SetRotate(newRot3);
+
+    glm::vec3 newTns3(0,0,0);
+    ground->SetTranslate(newTns3);
+    glm::vec3 newscale(100, 1, 100);
     ground->SetScale(newscale);
 
 
