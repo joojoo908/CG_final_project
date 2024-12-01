@@ -170,6 +170,10 @@ void update() {
 }
 
 void mainInit() {
+
+    //hello www
+
+
     CreateShader();
     CreateShader_obj();
 
