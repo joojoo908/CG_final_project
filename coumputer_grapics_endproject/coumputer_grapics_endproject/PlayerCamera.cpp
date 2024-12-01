@@ -58,7 +58,7 @@ void PlayerCamera::CalcPosition(float horizontalDistance, float verticalDistance
 	GLfloat* playerPos = player->GetModel()->GetTranslate();
 	position.y = playerPos[1] + verticalDistance + HEIGHT_OFFSET;
 
-	float theta = player->GetRotY() + angle;
+	float theta = player->GetRotY();
 	float offsetX = horizontalDistance * sinf(glm::radians(theta));
 	float offsetZ = horizontalDistance * cosf(glm::radians(theta));
 

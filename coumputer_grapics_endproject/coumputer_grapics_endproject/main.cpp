@@ -28,7 +28,10 @@
 #define WIDTH 1280
 #define HEIGHT 720
 
-int lastX, lastY;
+int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+int Center_width = screenWidth / 2;
+int Center_height = screenHeight / 2;
 bool key_f1 = 1;
 
 // Global variables
@@ -132,15 +135,13 @@ void MoveCamera()
 
 bool click = 0;
 void processMouse(int x, int y) {
-    if (!click) {
-        GLfloat XChange = x - lastX;
-        GLfloat YChange = lastY - y;
-        currCamera->MouseControl(XChange, YChange);
-        player->MouseContrl(XChange, YChange);
-    }
-    lastX = x;
-    lastY = y;
+    GLfloat XChange = x - Center_width;
+    GLfloat YChange = Center_height - y;
+    currCamera->MouseControl(XChange, YChange);
+    player->MouseContrl(XChange, YChange);
+
     currCamera->Update();
+    glutWarpPointer(Center_width, Center_height);
 }
 
 void Mouse(int button, int state, int x, int y)
@@ -153,8 +154,13 @@ void Mouse(int button, int state, int x, int y)
     }
 }
 void Motion(int x, int y) {
-    lastX = x;
-    lastY = y;
+    GLfloat XChange = x - Center_width;
+    GLfloat YChange = Center_height - y;
+    currCamera->MouseControl(XChange, YChange);
+    player->MouseContrl(XChange, YChange);
+
+    currCamera->Update();
+    glutWarpPointer(Center_width, Center_height);
 }
 
 void handleResize(int w, int h) {
@@ -290,7 +296,7 @@ GLvoid render()
     //무언가 바인드
 
     glm::mat4 viewMat = currCamera->GetViewMatrix();
-    glm::mat4 projMat = currCamera->GetProjectionMatrix(1280, 720);
+    glm::mat4 projMat = currCamera->GetProjectionMatrix(screenWidth, screenHeight);
     glm::vec3 camPos = currCamera->GetPosition();
 
     skybox->DrawSkybox(viewMat, projMat);
@@ -385,11 +391,19 @@ int main(int argc, char** argv)
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(WIDTH, HEIGHT);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(screenWidth, screenHeight);
     glutCreateWindow("OpenGL with Assimp and GLUT");
+
+
+    // 전체 화면으로 전환
+    glutFullScreen();
 
     // Initialize GLEW
     glewInit();
+    glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+
+
 
     mainInit();
 
