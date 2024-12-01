@@ -31,30 +31,33 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 {
 	if (updown) {
 		if (keys == 'w')
-			currMoveSpeed = MOVE_SPEED;
+			currMoveSpeed_z = MOVE_SPEED;
 		else if (keys == 's')
-			currMoveSpeed = -MOVE_SPEED;
-		else
-			currMoveSpeed = 0;
-
-		if (keys == 'a')
-			currTurnSpeed = TURN_SPEED;
+			currMoveSpeed_z = -MOVE_SPEED;
+		else if (keys == 'a')
+			currMoveSpeed_x = MOVE_SPEED;
 		else if (keys == 'd')
-			currTurnSpeed = -TURN_SPEED;
+			currMoveSpeed_x = -MOVE_SPEED;
+
 		else
-			currTurnSpeed = 0;
+			currMoveSpeed_z = 0;
+
+		if (keys == 'a') {
+
+		}
+		else if (keys == 'd') {
+
+		}
 	}
 	else {
 		if (keys == 'w')
-			currMoveSpeed = 0;
+			currMoveSpeed_z = 0;
 		else if (keys == 's')
-			currMoveSpeed = 0;
-
-
+			currMoveSpeed_z = 0;
 		if (keys == 'a')
-			currTurnSpeed = 0;
+			currMoveSpeed_x = 0;
 		else if (keys == 'd')
-			currTurnSpeed = 0;
+			currMoveSpeed_x = 0;
 	}
 	//점프 막음
 	/*if (keys=='j')
@@ -68,10 +71,6 @@ void Player::MouseContrl(float XChange, float YChange) {
 	float rotation = -TURN_SPEED * XChange;
 
 	float newRotY = currRot[1] + rotation; // new rotY
-	if (newRotY > 180)
-		newRotY -= 360.f;
-	if (newRotY < -180.f)
-		newRotY += 360.f;
 
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
 
@@ -80,33 +79,41 @@ void Player::MouseContrl(float XChange, float YChange) {
 
 bool Player::Move(float deltaTime)
 {
+	// 현재 회전값과 위치 가져오기
 	GLfloat* currRot = model->GetRotate();
-
-	// 이동
 	GLfloat* currPos = model->GetTranslate();
-	float distance = currMoveSpeed * deltaTime;
+	
+	float distance{};
+	// 이동 거리 및 회전 계산
+	if (currMoveSpeed_x != 0.f || currMoveSpeed_z != 0.f)
+	{
+		distance = MOVE_SPEED * deltaTime;
+	}
 
-	float dx = distance * sinf(glm::radians(currRot[1]));
-	float dz = distance * cosf(glm::radians(currRot[1]));
+	float dir_Rot = currRot[1] + glm::degrees(atan2f(currMoveSpeed_x, currMoveSpeed_z));
+	
+	// 라디안으로 변환한 회전을 사용하여 dx와 dz 계산
+	float dx = distance * sinf(glm::radians(dir_Rot));
+	float dz = distance * cosf(glm::radians(dir_Rot));
 
-	//중력제거
-	//upwardSpeed -= GRAVITY * deltaTime;
-
+	// 새로운 위치 계산
 	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
 
-	// 땅과의 충돌
-	//groundHeight = terrain->GetHeight(currPos[0], currPos[2]);
-	//if (newPos[1] <= groundHeight) // 땅에 닿았다면
-	//{
-	//	upwardSpeed = 0;
-	//	newPos[1] = groundHeight;
-	//	isJumping = false;
-	//}
+	// 충돌 처리 (중력 및 땅과의 충돌 포함)
+	// groundHeight = terrain->GetHeight(newPos.x, newPos.z);
+	// if (newPos[1] <= groundHeight) {
+	//     upwardSpeed = 0;
+	//     newPos[1] = groundHeight;
+	//     isJumping = false;
+	// }
 
+	// 새로운 위치 설정
 	model->SetTranslate(newPos);
 
-	return currMoveSpeed != 0;
+	// 이동 상태 반환
+	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
 }
+
 
 float Player::GetRotY()
 {

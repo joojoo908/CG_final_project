@@ -39,8 +39,8 @@ private:
 	const float GRAVITY;
 	const float JUMP_POWER;
 
-	float currMoveSpeed;
-	float currTurnSpeed;
+	float currMoveSpeed_x;
+	float currMoveSpeed_z;
 	float upwardSpeed;
 	float groundHeight;
 
