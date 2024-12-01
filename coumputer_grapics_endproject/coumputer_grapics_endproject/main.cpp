@@ -170,7 +170,7 @@ void update() {
 }
 
 void mainInit() {
-    CreateShader();
+    CreateShader(); // 21212
     CreateShader_obj();
 
     //ºû
