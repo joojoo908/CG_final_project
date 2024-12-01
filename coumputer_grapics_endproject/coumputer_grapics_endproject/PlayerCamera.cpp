@@ -22,7 +22,7 @@ void PlayerCamera::Update()
 	float horizontalDistance = CalcHorizontalDistance();
 	float verticalDistance = CalcVerticalDistance();
 	CalcPosition(horizontalDistance, verticalDistance);
-	yaw = 90.f - (player->GetRotY() + angle);
+	yaw = 90.f - player->GetRotY();
 
 	CameraBase::Update();
 }
@@ -35,7 +35,7 @@ void PlayerCamera::KeyControl(unsigned char keys, GLfloat deltaTime)
 void PlayerCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 {
 	pitch += yChange;
-	angle -= xChange * 0.3f;
+	
 }
 
 void PlayerCamera::ScrollControl(GLfloat scrollY)
