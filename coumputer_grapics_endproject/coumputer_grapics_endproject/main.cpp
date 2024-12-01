@@ -136,6 +136,7 @@ void processMouse(int x, int y) {
         GLfloat XChange = x - lastX;
         GLfloat YChange = lastY - y;
         currCamera->MouseControl(XChange, YChange);
+        player->MouseContrl(XChange, YChange);
     }
     lastX = x;
     lastY = y;

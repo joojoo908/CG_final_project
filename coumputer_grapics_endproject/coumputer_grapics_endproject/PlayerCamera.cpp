@@ -35,7 +35,7 @@ void PlayerCamera::KeyControl(unsigned char keys, GLfloat deltaTime)
 void PlayerCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 {
 	pitch += yChange;
-	angle -= xChange;
+	angle -= xChange * 0.3f;
 }
 
 void PlayerCamera::ScrollControl(GLfloat scrollY)

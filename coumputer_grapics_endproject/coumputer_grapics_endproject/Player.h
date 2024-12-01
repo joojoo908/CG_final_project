@@ -16,6 +16,7 @@ public:
 	Player(Model* model, Animator* animator);
 	void HandleInput(unsigned char keys, bool updown, float deltaTime);
 	bool Move(float deltaTime);
+	void MouseContrl(float XChange, float YChange);
 	void update(float deltaTime);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
