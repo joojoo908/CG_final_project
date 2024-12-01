@@ -13,7 +13,7 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model, Animator* animator) : MOVE_SPEED(10.f), TURN_SPEED(2.0f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model, Animator* animator) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	this->animator = animator;
@@ -80,28 +80,14 @@ void Player::MouseContrl(float XChange, float YChange) {
 
 bool Player::Move(float deltaTime)
 {
-
-	// 회전
 	GLfloat* currRot = model->GetRotate();
-
-	float rotation = currTurnSpeed * deltaTime;
-
-	float newRotY = currRot[1] + rotation; // new rotY
-	if (newRotY > 180)
-		newRotY -= 360.f;
-	if (newRotY < -180.f)
-		newRotY += 360.f;
-
-	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
-
-	model->SetRotate(newRot);
 
 	// 이동
 	GLfloat* currPos = model->GetTranslate();
 	float distance = currMoveSpeed * deltaTime;
 
-	float dx = distance * sinf(glm::radians(newRotY));
-	float dz = distance * cosf(glm::radians(newRotY));
+	float dx = distance * sinf(glm::radians(currRot[1]));
+	float dz = distance * cosf(glm::radians(currRot[1]));
 
 	//중력제거
 	//upwardSpeed -= GRAVITY * deltaTime;
