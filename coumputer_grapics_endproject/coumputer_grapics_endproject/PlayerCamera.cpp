@@ -14,6 +14,8 @@ PlayerCamera::PlayerCamera(Player* player) : CameraBase(glm::vec3(0.f, 0.f, 0.f)
 	angle = 0.f;
 	pitch = -15.f;
 
+	farClippingPlane = 100.0f;
+
 	Update();
 }
 
@@ -58,7 +60,7 @@ void PlayerCamera::CalcPosition(float horizontalDistance, float verticalDistance
 	GLfloat* playerPos = player->GetModel()->GetTranslate();
 	position.y = playerPos[1] + verticalDistance + HEIGHT_OFFSET;
 
-	float theta = player->GetRotY();
+	float theta = player->GetRotY() + angle;
 	float offsetX = horizontalDistance * sinf(glm::radians(theta));
 	float offsetZ = horizontalDistance * cosf(glm::radians(theta));
 

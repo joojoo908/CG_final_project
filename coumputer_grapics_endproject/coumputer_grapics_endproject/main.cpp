@@ -267,6 +267,7 @@ void mainInit() {
     cube->LoadModel(modelPath);
     for (int i = 0; i < 10; i++) {
         object = new Object(cube, 0, dis(gen), dis(gen));
+        //object = new Object(cube, 0, 100,0);
         objs.push_back(object);
     }
     
