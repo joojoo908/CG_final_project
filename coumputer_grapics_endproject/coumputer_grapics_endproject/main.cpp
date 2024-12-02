@@ -28,10 +28,14 @@
 #define WIDTH 1280
 #define HEIGHT 720
 
-int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+//int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+//int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+int screenWidth = WIDTH;
+int screenHeight = HEIGHT;
 int Center_width = screenWidth / 2;
 int Center_height = screenHeight / 2;
+int lastX, lastY;
+bool fixed_center{};
 bool key_f1 = 1;
 
 // Global variables
@@ -101,7 +105,10 @@ void processKeyboard(unsigned char key, int x, int y) {
         if (animator->GetCurrAnimation() != runAnim)
             animator->PlayAnimation(runAnim);
     }
-
+    if (key == '0')
+    {
+        fixed_center = !fixed_center;
+    }
 }
 //키보드 떼어짐 함수
 void processKeyboardUp(unsigned char key, int x, int y) {
@@ -135,13 +142,19 @@ void MoveCamera()
 
 bool click = 0;
 void processMouse(int x, int y) {
-    GLfloat XChange = x - Center_width;
-    GLfloat YChange = Center_height - y;
+    GLfloat XChange = x - lastX;
+    GLfloat YChange = lastY - y;
     currCamera->MouseControl(XChange, YChange);
     player->MouseContrl(XChange, YChange);
 
+    lastX = x;
+    lastY = y;
+
     currCamera->Update();
-    glutWarpPointer(Center_width, Center_height);
+    if (fixed_center)
+    {
+        glutWarpPointer(Center_width, Center_height);
+    }
 }
 
 void Mouse(int button, int state, int x, int y)
@@ -159,8 +172,14 @@ void Motion(int x, int y) {
     currCamera->MouseControl(XChange, YChange);
     player->MouseContrl(XChange, YChange);
 
+    lastX = x;
+    lastY = y;
+
     currCamera->Update();
-    glutWarpPointer(Center_width, Center_height);
+    if (fixed_center)
+    {
+        glutWarpPointer(Center_width, Center_height);
+    }
 }
 
 void handleResize(int w, int h) {
@@ -397,7 +416,7 @@ int main(int argc, char** argv)
 
 
     // 전체 화면으로 전환
-    glutFullScreen();
+    //glutFullScreen();
 
     // Initialize GLEW
     glewInit();
