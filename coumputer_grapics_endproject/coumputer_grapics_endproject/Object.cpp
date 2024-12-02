@@ -12,10 +12,10 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Object::Object(std::string modelPath, Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
+Object::Object(Model *model, Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
 {
-	this->model = new Model();
-	this->model->LoadModel(modelPath);
+	this->model = new Model(*model);
+	//this->model->LoadModel(modelPath);
 	if (!animator) {
 		std::cout << "null!!!" << std::endl;
 	}

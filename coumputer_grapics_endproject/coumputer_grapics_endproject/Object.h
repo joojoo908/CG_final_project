@@ -15,7 +15,7 @@ class PointLight;
 class Object
 {
 public:
-	Object(std::string modelPath, Animator* animator, float x, float z);
+	Object(Model* model, Animator* animator, float x, float z);
 	void update(float deltaTime);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();

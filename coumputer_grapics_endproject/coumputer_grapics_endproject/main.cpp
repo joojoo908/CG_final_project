@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include <vector>
 #include <GL/glew.h>
 #include <GL/freeglut.h>  // GLFW 대신 GLUT 헤더를 포함
@@ -61,6 +62,7 @@ Model* ground;
 Model* currModel;
 
 Player* player;
+std::vector<Object*> objs;
 Object* object;
 Object* object2;
 
@@ -256,10 +258,20 @@ void mainInit() {
     mainModel->SetRotate(newRot);
 
     //----------------------------------------
-    modelPath = "obj/tree.gltf";
+    std::random_device rd;  // 하드웨어 난수 생성기
+    std::mt19937 gen(rd());  // Mersenne Twister 엔진
+    std::uniform_int_distribution<> dis(-100, 100);
 
-    object = new Object(modelPath,0,0,0);
-    object2 = new Object(modelPath,0,1,1);
+    cube = new Model();
+    modelPath = "obj/tree.gltf";
+    cube->LoadModel(modelPath);
+    for (int i = 0; i < 10; i++) {
+        object = new Object(cube, 0, dis(gen), dis(gen));
+        objs.push_back(object);
+    }
+    
+    /*object = new Object(modelPath,0,0,0);
+    object2 = new Object(modelPath,0,1,1);*/
 
     //----------------------------------------
     ground = new Model();
@@ -363,8 +375,12 @@ GLvoid render()
             std::cout << "error : " << error << std::endl;
         }
     }*/
-    object->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    object2->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    for (auto object : objs) {
+        object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    }
+
+    //object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    //object2->draw(currCamera, directionalLight, pointLights, pointLightCount);
     //땅 그리기
     shaderList[1]->UseShader();
     {
