@@ -62,6 +62,7 @@ Model* currModel;
 
 Player* player;
 Object* object;
+Object* object2;
 
 Animator* animator;
 Animator* noani;
@@ -250,7 +251,9 @@ void mainInit() {
 
     //----------------------------------------
     modelPath = "obj/tree.gltf";
-    object = new Object(modelPath,0);
+
+    object = new Object(modelPath,0,0,0);
+    object2 = new Object(modelPath,0,1,1);
 
     //----------------------------------------
     ground = new Model();
@@ -355,6 +358,7 @@ GLvoid render()
         }
     }*/
     object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    object2->draw(currCamera, directionalLight, pointLights, pointLightCount);
     //¶¥ ±×¸®±â
     shaderList[1]->UseShader();
     {

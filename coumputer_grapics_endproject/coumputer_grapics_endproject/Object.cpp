@@ -12,7 +12,7 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Object::Object(std::string modelPath, Animator* animator = NULL) : GRAVITY(0.2f)
+Object::Object(std::string modelPath, Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
 {
 	this->model = new Model();
 	this->model->LoadModel(modelPath);
@@ -22,11 +22,16 @@ Object::Object(std::string modelPath, Animator* animator = NULL) : GRAVITY(0.2f)
 	else {
 		this->animator = animator;
 	}
+
+	glm::vec3 newTns3(x, 0, z);
+	this->model->SetTranslate(newTns3);
+
 	GLfloat* currRot = this->model->GetRotate();
 	float rotation = 180;
 	float newRotx = currRot[0] + rotation;
 	glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
 	this->model->SetRotate(newRot2);
+
 }
 
 
