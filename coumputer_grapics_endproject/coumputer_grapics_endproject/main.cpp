@@ -24,6 +24,7 @@
 #include "Skybox.h"
 
 #include "ShaderHandle.h"
+#include "Object.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -56,6 +57,7 @@ Model* ground;
 Model* currModel;
 
 Player* player;
+Object* object;
 
 Animator* animator;
 Animator* noani;
@@ -121,6 +123,7 @@ void SpecialKeyboard(int key, int x, int y) {
         currCamera = playerCamera;
         break;
     case GLUT_KEY_F3:
+        key_f1 = 1;
         currCamera = freeCamera;
         break;
     }
@@ -227,23 +230,14 @@ void mainInit() {
     mainModel->SetRotate(newRot);
 
     //----------------------------------------
-    cube = new Model();
     modelPath = "obj/tree.gltf";
-    //modelPath = "bot/bot_run.gltf";
-    cube->LoadModel(modelPath);
-
-    entityList.push_back(cube);
-    currRot = cube->GetRotate();
-    rotation = 180;
-    newRotx = currRot[0] + rotation;
-    glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
-    cube->SetRotate(newRot2);
+    object = new Object(modelPath,0);
 
     //----------------------------------------
     ground = new Model();
     modelPath = "Ground3/gnd_v0.gltf";
     ground->LoadModel(modelPath);
-    entityList.push_back(ground);
+    
     currRot = ground->GetRotate();
     rotation = 90;
     newRotx = currRot[0] + rotation;
@@ -309,7 +303,9 @@ GLvoid render()
     terrain->DrawTerrain(viewMat, projMat);*/
 
     //전체가 플레이어 그리기
-    shaderList[1]->UseShader();
+
+    //나무 그리기
+   /* shaderList[1]->UseShader();
     {
         GetShaderHandles_obj();
 
@@ -327,16 +323,6 @@ GLvoid render()
 
         shaderList[1]->UseMaterial(cube->GetMaterial());
 
-
-        //const auto& transforms = noani->GetFinalBoneMatrices();
-        ////const auto& transforms = cube->GetBoneInfoMap();
-        ////std::vector<glm::mat4> transforms(0,glm::mat4(1.0f));
-        ////shaderList[0]->UseFinalBoneMatrices(boneIds);
-        ////std::vector<glm::mat4> boneMatrices; // 본 변환 행렬을 가져오는 함수
-        //// 셰이더에 본 변환 행렬을 전달
-        //shaderList[0]->UseFinalBoneMatrices(transforms);
-
-
         glUniform1i(loc_diffuseSampler, 0);
         glUniform1i(loc_normalSampler, 1);
 
@@ -348,7 +334,9 @@ GLvoid render()
         {
             std::cout << "error : " << error << std::endl;
         }
-    }
+    }*/
+    object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    //땅 그리기
     shaderList[1]->UseShader();
     {
         GetShaderHandles_obj();

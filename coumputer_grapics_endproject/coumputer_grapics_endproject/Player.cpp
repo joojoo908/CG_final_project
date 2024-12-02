@@ -16,7 +16,9 @@
 Player::Player(Model* model, Animator* animator) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
+	
 	this->animator = animator;
+	
 	groundHeight = 10;
 	upwardSpeed = 0;
 
