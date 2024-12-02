@@ -110,6 +110,8 @@ void processKeyboard(unsigned char key, int x, int y) {
     }
     if (key == '0')
     {
+        lastX = Center_width;
+        lastY = Center_height;
         fixed_center = !fixed_center;
     }
 }
@@ -157,6 +159,8 @@ void processMouse(int x, int y) {
     currCamera->Update();
     if (fixed_center)
     {
+        lastX = Center_width;
+        lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
     }
 }
@@ -182,6 +186,8 @@ void Motion(int x, int y) {
     currCamera->Update();
     if (fixed_center)
     {
+        lastX = Center_width;
+        lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
     }
 }
