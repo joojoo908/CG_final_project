@@ -22,7 +22,7 @@ private:
 	float distance;
 	float angle;
 	bool canMove;
-
+	float TURN_SPEED;
 	const float HEIGHT_OFFSET;
 };
 

@@ -13,7 +13,7 @@ PlayerCamera::PlayerCamera(Player* player) : CameraBase(glm::vec3(0.f, 0.f, 0.f)
 	distance = 5.f;
 	angle = 0.f;
 	pitch = -15.f;
-
+	TURN_SPEED = 0.5f;
 	farClippingPlane = 100.0f;
 
 	Update();
@@ -36,7 +36,7 @@ void PlayerCamera::KeyControl(unsigned char keys, GLfloat deltaTime)
 
 void PlayerCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 {
-	pitch += yChange;
+	//pitch += yChange * TURN_SPEED;;
 	
 }
 
