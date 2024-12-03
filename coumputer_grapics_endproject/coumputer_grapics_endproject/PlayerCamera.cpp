@@ -36,7 +36,7 @@ void PlayerCamera::KeyControl(unsigned char keys, GLfloat deltaTime)
 
 void PlayerCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 {
-	pitch += yChange * TURN_SPEED;;
+	//pitch += yChange * TURN_SPEED;;
 	
 }
 
