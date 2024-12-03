@@ -23,14 +23,15 @@ Object::Object(Model *model, Animator* animator = NULL , float x=0, float z=0) :
 		this->animator = animator;
 	}
 
-	glm::vec3 newTns3(x, 0, z);
+	GLfloat* currPos = model->GetTranslate();
+	glm::vec3 newTns3(x, currPos[1], z);
 	this->model->SetTranslate(newTns3);
 
-	GLfloat* currRot = this->model->GetRotate();
+	/*GLfloat* currRot = this->model->GetRotate();
 	float rotation = 180;
 	float newRotx = currRot[0] + rotation;
 	glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
-	this->model->SetRotate(newRot2);
+	this->model->SetRotate(newRot2);*/
 
 }
 
@@ -98,7 +99,9 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_diffuseSampler, 0);
 	glUniform1i(loc_normalSampler, 1);
 
+	
 	model->RenderModel();
+	
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
 

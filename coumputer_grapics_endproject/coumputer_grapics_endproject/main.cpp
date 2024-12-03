@@ -263,20 +263,29 @@ void mainInit() {
     std::uniform_int_distribution<> dis(-100, 100);
 
     cube = new Model();
-    modelPath = "obj/tree.gltf";
+    modelPath = "Gress/ground.gltf";
+    //modelPath = "cube/cube.gltf";
     cube->LoadModel(modelPath);
-    for (int i = 0; i < 10; i++) {
+
+    glm::vec3 newRot2(90,0,0);
+    cube->SetRotate(newRot2);
+    glm::vec3 newTns2(0, 0.5, 0);
+    cube->SetTranslate(newTns2);
+    glm::vec3 newscale1(0.5, 1, 0.5);
+    cube->SetScale(newscale1);
+    for (int i = 0; i < 1000; i++) {
         object = new Object(cube, 0, dis(gen), dis(gen));
         //object = new Object(cube, 0, 100,0);
         objs.push_back(object);
     }
     
-    /*object = new Object(modelPath,0,0,0);
-    object2 = new Object(modelPath,0,1,1);*/
+    //object = new Object(modelPath,0,0,0);
+    object2 = new Object(cube,0,1,1);
 
     //----------------------------------------
     ground = new Model();
     modelPath = "Ground3/gnd_v0.gltf";
+    //modelPath = "Ground/ground.gltf";
     ground->LoadModel(modelPath);
     
     currRot = ground->GetRotate();

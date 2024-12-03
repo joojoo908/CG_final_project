@@ -15,18 +15,13 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Cube",
-			"translation":[
-				0,
-				-1,
-				0
-			]
+			"name":"Plane"
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material",
+			"name":"Material.001",
 			"normalTexture":{
 				"index":0
 			},
@@ -41,7 +36,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Cube",
+			"name":"Plane",
 			"primitives":[
 				{
 					"attributes":{
@@ -68,28 +63,28 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"forest_leaves_03_nor_gl_4k",
-			"uri":"forest_leaves_03_nor_gl_4k.png"
+			"name":"Untitled_nor",
+			"uri":"Untitled_nor.png"
 		},
 		{
-			"mimeType":"image/jpeg",
-			"name":"forest_leaves_03_diff_4k",
-			"uri":"forest_leaves_03_diff_4k.jpg"
+			"mimeType":"image/png",
+			"name":"Untitled",
+			"uri":"Untitled.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":24,
+			"count":4,
 			"max":[
 				1,
-				1,
+				0,
 				1
 			],
 			"min":[
 				-1,
-				-1,
+				0,
 				-1
 			],
 			"type":"VEC3"
@@ -97,45 +92,45 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":24,
+			"count":4,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":24,
+			"count":4,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":36,
+			"count":6,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":288,
+			"byteLength":48,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
-			"byteOffset":288,
+			"byteLength":48,
+			"byteOffset":48,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":192,
-			"byteOffset":576,
+			"byteLength":32,
+			"byteOffset":96,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":72,
-			"byteOffset":768,
+			"byteLength":12,
+			"byteOffset":128,
 			"target":34963
 		}
 	],
@@ -147,7 +142,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":840,
+			"byteLength":140,
 			"uri":"ground.bin"
 		}
 	]
