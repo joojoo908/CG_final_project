@@ -27,7 +27,8 @@ Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=
 	GLfloat* currPos = model->GetTranslate();
 	glm::vec3 newTns3(x, currPos[1], z);
 	this->model->SetTranslate(newTns3);
-
+	
+	
 	/*GLfloat* currRot = this->model->GetRotate();
 	float rotation = 180;
 	float newRotx = currRot[0] + rotation;
@@ -50,6 +51,8 @@ void Object::update(float deltaTime, glm::vec3 v) {
 	GLfloat angle = glm::atan( v.z-currPos[2] , currPos[0]-v.x);
 	//std::cout << "angle: " << angle << std::endl;
 	model->SetRotate({model->GetRotate()[0] ,  glm::degrees(angle)+90 , model->GetRotate()[2] });
+	GLfloat* currRot = model->GetRotate();
+	hitbox->SetRotate(glm::vec3(0.0f, currRot[1] - 90, 0.0f));
 }
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
@@ -106,6 +109,24 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
+	//히트박스 그리기
+	shaderList[1]->UseShader();
+
+	GetShaderHandles_obj();
+
+	glm::mat4 hitMat = hitbox->GetModelMat();
+	glm::mat4 hitPVM = projMat * viewMat * hitMat;
+	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
+
+	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
+	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
+	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
+
+	shaderList[1]->UseEyePos(camPos);
+	shaderList[1]->UseDirectionalLight(directionalLight);
+	shaderList[1]->UsePointLights(pointLights, pointLightCount);
+
+	shaderList[1]->UseMaterial(hitbox->GetMaterial());
 
 	hitbox->RenderModel();
 
