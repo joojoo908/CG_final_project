@@ -3,6 +3,7 @@
 
 #include "gl/glm/glm.hpp"
 #include <string>
+#include <map>
 
 class Model;
 class Animation;
@@ -31,12 +32,7 @@ private:
 	Animation* ani;
 	
 	const float GRAVITY;
-	
-
-	float currMoveSpeed_x;
-	float currMoveSpeed_z;
-	float upwardSpeed;
 	float groundHeight;
-
 	
 };
+

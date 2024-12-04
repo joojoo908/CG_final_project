@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <map>
 #include <GL/glew.h>
 #include <GL/freeglut.h>  // GLFW 대신 GLUT 헤더를 포함
 
@@ -63,6 +64,7 @@ Model* currModel;
 
 Player* player;
 std::vector<Object*> objs;
+std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
 Object* object2;
 
@@ -97,18 +99,6 @@ void processKeyboard(unsigned char key, int x, int y) {
     }
     else {
         player->HandleInput(key, 1, deltaTime);
-    }
-    if (key == '1') {
-        if (animator->GetCurrAnimation() != idleAnim)
-            animator->PlayAnimation(idleAnim);
-    }
-    if (key == '2') {
-        if (animator->GetCurrAnimation() != danceAnim)
-            animator->PlayAnimation(danceAnim);
-    }
-    if (key == '3') {
-        if (animator->GetCurrAnimation() != runAnim)
-            animator->PlayAnimation(runAnim);
     }
     if (key == '0')
     {
@@ -205,11 +195,12 @@ void update() {
     player->update(deltaTime);
     currCamera->Update();
 
-    //std::cout<<currCamera->GetPosition().x<<std::endl;
-    for (auto object : objs) {
-        object->update(deltaTime, currCamera->GetPosition());
+    for (const auto& obj : obj_map) {
+        // obj.first는 std::pair<int, int> 타입 (키)
+        // obj.second는 Object 타입 (값)
+        //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
+        obj.second->update(deltaTime, currCamera->GetPosition());
     }
-
 }
 
 void mainInit() {
@@ -280,9 +271,12 @@ void mainInit() {
     glm::vec3 newscale1(0.5, 1, 0.5);
     cube->SetScale(newscale1);
     for (int i = 0; i < 100; i++) {
-        object = new Object(cube, 0, dis(gen), dis(gen));
+        int rand_x = dis(gen);
+        int rand_z = dis(gen);
+        object = new Object(cube, 0, rand_x, rand_z);
         //object = new Object(cube, 0, 100,0);
-        objs.push_back(object);
+        //objs.push_back(object);
+        obj_map[std::make_pair(rand_x, rand_z)] = object;
     }
 
     modelPath = "Tree/tree.gltf";
@@ -295,9 +289,10 @@ void mainInit() {
     glm::vec3 newscale3(10, 1, 10);
     cube->SetScale(newscale3);
     for (int i = 0; i < 100; i++) {
-        object = new Object(cube, 0, dis(gen), dis(gen));
-        //object = new Object(cube, 0, 100,0);
-        objs.push_back(object);
+        int rand_x = dis(gen);
+        int rand_z = dis(gen);
+        object = new Object(cube, 0, rand_x, rand_z);
+        obj_map[std::make_pair(rand_x, rand_z)] = object;
     }
     
     //object = new Object(modelPath,0,0,0);
@@ -319,9 +314,6 @@ void mainInit() {
     ground->SetTranslate(newTns4);
     glm::vec3 newscale(100, 1, 100);
     ground->SetScale(newscale);
-
-
-
 
 
     animator = new Animator(nullptr);
@@ -407,7 +399,13 @@ GLvoid render()
         }
     }*/
     for (auto object : objs) {
-        object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        //object->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    }
+    for (const auto& obj : obj_map) {
+        // obj.first는 std::pair<int, int> 타입 (키)
+        // obj.second는 Object 타입 (값)
+        //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
+        obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
     }
 
     //object->draw(currCamera, directionalLight, pointLights, pointLightCount);

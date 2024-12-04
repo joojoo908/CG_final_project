@@ -35,12 +35,10 @@ Object::Object(Model *model, Animator* animator = NULL , float x=0, float z=0) :
 
 }
 
-
 float Object::GetRotY()
 {
 	return model->GetRotate()[1];
 }
-
 
 void Object::update(float deltaTime, glm::vec3 v) {
 	if (animator) {
@@ -52,8 +50,6 @@ void Object::update(float deltaTime, glm::vec3 v) {
 	//std::cout << "angle: " << angle << std::endl;
 	model->SetRotate({model->GetRotate()[0] ,  glm::degrees(angle)+90 , model->GetRotate()[2] });
 }
-
-
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
 	glm::mat4 viewMat = currCamera->GetViewMatrix();
@@ -102,11 +98,9 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 		shaderList[1]->UseMaterial(model->GetMaterial());
 	}
 
-
 	glUniform1i(loc_diffuseSampler, 0);
 	glUniform1i(loc_normalSampler, 1);
 
-	
 	model->RenderModel();
 	
 	//텍스처 중복 문제 해결
