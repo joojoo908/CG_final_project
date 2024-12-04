@@ -13,10 +13,10 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
-	
+	this->hitbox = new Model(*hitbox);
 	this->animator = new Animator(nullptr);
 	
 	groundHeight = 10;
@@ -77,6 +77,7 @@ void Player::MouseContrl(float XChange, float YChange) {
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
 
 	model->SetRotate(newRot);
+	hitbox->SetRotate(newRot);
 }
 
 bool Player::Move(float deltaTime)
@@ -111,11 +112,16 @@ bool Player::Move(float deltaTime)
 
 	// 새로운 위치 설정
 	model->SetTranslate(newPos);
-
+	newPos = { currPos[0] , currPos[1] + upwardSpeed + 1.f, currPos[2]};
+	hitbox->SetTranslate(newPos);
 	// 이동 상태 반환
 	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
 }
-
+void Player::UpdateHitbox() 
+{
+	
+	
+}
 
 float Player::GetRotY()
 {
@@ -180,6 +186,28 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	model->RenderModel();
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
+	//히트박스 그리기
+	shaderList[1]->UseShader();
+
+	GetShaderHandles_obj();
+
+	glm::mat4 hitMat = hitbox->GetModelMat();
+	glm::mat4 hitPVM = projMat * viewMat * hitMat;
+	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
+
+	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
+	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
+	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
+
+	shaderList[1]->UseEyePos(camPos);
+	shaderList[1]->UseDirectionalLight(directionalLight);
+	shaderList[1]->UsePointLights(pointLights, pointLightCount);
+
+	shaderList[1]->UseMaterial(hitbox->GetMaterial());
+
+
+	hitbox->RenderModel();
+
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

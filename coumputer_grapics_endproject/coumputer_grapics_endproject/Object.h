@@ -16,7 +16,7 @@ class PointLight;
 class Object
 {
 public:
-	Object(Model* model, Animator* animator, float x, float z);
+	Object(Model* model, Model* hitbox, Animator* animator, float x, float z);
 	void update(float deltaTime, glm::vec3 v);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
@@ -28,6 +28,7 @@ public:
 private:
 
 	Model* model;
+	Model* hitbox;
 	Animator* animator;
 
 	Animation* ani;

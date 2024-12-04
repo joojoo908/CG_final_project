@@ -13,7 +13,7 @@ class PointLight;
 class Boss
 {
 public:
-	Boss(Model* model);
+	Boss(Model* model, Model* hitbox);
 	bool Move(float deltaTime);
 	void update(float deltaTime);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
@@ -26,6 +26,7 @@ private:
 	void Jump();
 
 	Model* model;
+	Model* hitbox;
 	Animator* animator;
 
 	Animation* idleAnim;

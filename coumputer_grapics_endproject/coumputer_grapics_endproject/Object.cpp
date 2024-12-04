@@ -12,9 +12,10 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Object::Object(Model *model, Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
+Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
 {
 	this->model = new Model(*model);
+	this->hitbox = new Model(*hitbox);
 	//this->model->LoadModel(modelPath);
 	if (!animator) {
 		std::cout << "null!!!" << std::endl;
@@ -102,9 +103,11 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_normalSampler, 1);
 
 	model->RenderModel();
-	
+
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	hitbox->RenderModel();
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

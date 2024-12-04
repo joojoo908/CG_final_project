@@ -61,6 +61,7 @@ std::vector<Entity*> entityList;
 Model* mainModel;
 Model* boss_model;
 Model* cube;
+Model* collide_box, * collide_box2, * collide_box3;
 Model* ground;
 Model* currModel;
 
@@ -170,8 +171,8 @@ void Mouse(int button, int state, int x, int y)
     }
 }
 void Motion(int x, int y) {
-    GLfloat XChange = x - Center_width;
-    GLfloat YChange = Center_height - y;
+    GLfloat XChange = x - lastX;
+    GLfloat YChange = lastY - y;
     currCamera->MouseControl(XChange, YChange);
     player->MouseContrl(XChange, YChange);
 
@@ -261,23 +262,16 @@ void mainInit() {
     float newRotx = currRot[0] + rotation;
     glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
     mainModel->SetRotate(newRot);
-    //------------------------------------------
-    boss_model = new Model();
-    modelPath = "Boss/Boss.gltf";
-    boss_model->LoadModel(modelPath);
-    boss_model->SetRotate({0,0,0});
-    boss_model->SetScale({2,2,2});
-
-    boss = new Boss(boss_model);
 
     //----------------------------------------
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-100, 100);
 
+
+    // 오브젝트 생성
     cube = new Model();
     modelPath = "Gress/ground.gltf";
-    //modelPath = "cube/cube.gltf";
     cube->LoadModel(modelPath);
 
     glm::vec3 newRot2(90,0,0);
@@ -285,11 +279,16 @@ void mainInit() {
     glm::vec3 newTns2(0, 0.5, 0);
     cube->SetTranslate(newTns2);
     glm::vec3 newscale1(0.5, 1, 0.5);
+
+    collide_box = new Model();
+    modelPath = "collide_box/collide_box.gltf";
+    collide_box->SetScale({ 0.4, 1.0, 0.4 });
+    collide_box->SetRotate(newRot2);
     cube->SetScale(newscale1);
     for (int i = 0; i < 100; i++) {
         int rand_x = dis(gen);
         int rand_z = dis(gen);
-        object = new Object(cube, 0, rand_x, rand_z);
+        object = new Object(cube, collide_box, 0, rand_x, rand_z);
         //object = new Object(cube, 0, 100,0);
         //objs.push_back(object);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
@@ -297,7 +296,6 @@ void mainInit() {
 
     modelPath = "Tree/tree.gltf";
     cube->LoadModel(modelPath);
-
     glm::vec3 newRot3(90, 0, 0);
     cube->SetRotate(newRot3);
     glm::vec3 newTns3(0, 9, 0);
@@ -307,7 +305,7 @@ void mainInit() {
     for (int i = 0; i < 100; i++) {
         int rand_x = dis(gen);
         int rand_z = dis(gen);
-        object = new Object(cube, 0, rand_x, rand_z);
+        object = new Object(cube, collide_box, 0, rand_x, rand_z);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
     }
     
@@ -338,8 +336,21 @@ void mainInit() {
     noani = new Animator(nullptr);
 
     //플레이어 연결
-    player = new Player(mainModel);
+    modelPath = "collide_box/collide_box.gltf";
+    collide_box->LoadModel(modelPath);
+    collide_box->SetScale(glm::vec3(0.4, 1.3, 0.4));
+    player = new Player(mainModel, collide_box);
 
+    //------------------------------------------
+    boss_model = new Model();
+    modelPath = "Boss/Boss.gltf";
+    boss_model->LoadModel(modelPath);
+    boss_model->SetRotate({ 0,0,0 });
+    boss_model->SetScale({ 2,2,2 });
+
+
+    collide_box->SetScale(glm::vec3(0.8, 2.2, 0.7));
+    boss = new Boss(boss_model, collide_box);
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
