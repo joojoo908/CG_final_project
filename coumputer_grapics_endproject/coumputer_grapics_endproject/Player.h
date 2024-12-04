@@ -28,6 +28,7 @@ private:
 	void Jump();
 
 	Model* model;
+	Model* hitbox;
 	Animator* animator;
 
 	Animation* idleAnim;
