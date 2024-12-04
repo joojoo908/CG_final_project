@@ -21,6 +21,7 @@ public:
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
 
+
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
 

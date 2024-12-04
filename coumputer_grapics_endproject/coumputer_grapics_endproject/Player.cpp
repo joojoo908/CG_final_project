@@ -13,11 +13,11 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model, Animator* animator) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	
-	this->animator = animator;
+	this->animator = new Animator(nullptr);
 	
 	groundHeight = 10;
 	upwardSpeed = 0;

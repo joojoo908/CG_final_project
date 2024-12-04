@@ -13,7 +13,7 @@ class PointLight;
 class Player
 {
 public:
-	Player(Model* model, Animator* animator);
+	Player(Model* model);
 	void HandleInput(unsigned char keys, bool updown, float deltaTime);
 	bool Move(float deltaTime);
 	void MouseContrl(float XChange, float YChange);

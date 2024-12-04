@@ -27,6 +27,7 @@
 
 #include "ShaderHandle.h"
 #include "Object.h"
+#include "Boss.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -58,11 +59,13 @@ std::vector<Entity*> entityList;
 
 //Model* model_2B;
 Model* mainModel;
+Model* boss_model;
 Model* cube;
 Model* ground;
 Model* currModel;
 
 Player* player;
+Boss* boss;
 std::vector<Object*> objs;
 std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
@@ -193,6 +196,8 @@ void handleResize(int w, int h) {
 void update() {
 
     player->update(deltaTime);
+    boss->update(deltaTime);
+    
     currCamera->Update();
 
     for (const auto& obj : obj_map) {
@@ -201,6 +206,9 @@ void update() {
         //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
         obj.second->update(deltaTime, currCamera->GetPosition());
     }
+
+
+    //std::cout << obj_map[std::make_pair(1, 2)] << std::endl;
 }
 
 void mainInit() {
@@ -253,6 +261,14 @@ void mainInit() {
     float newRotx = currRot[0] + rotation;
     glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
     mainModel->SetRotate(newRot);
+    //------------------------------------------
+    boss_model = new Model();
+    modelPath = "Boss/Boss.gltf";
+    boss_model->LoadModel(modelPath);
+    boss_model->SetRotate({0,0,0});
+    boss_model->SetScale({2,2,2});
+
+    boss = new Boss(boss_model);
 
     //----------------------------------------
     std::random_device rd;  // 하드웨어 난수 생성기
@@ -315,12 +331,15 @@ void mainInit() {
     glm::vec3 newscale(100, 1, 100);
     ground->SetScale(newscale);
 
+    
+
 
     animator = new Animator(nullptr);
     noani = new Animator(nullptr);
 
     //플레이어 연결
-    player = new Player(mainModel, animator);
+    player = new Player(mainModel);
+
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
@@ -443,7 +462,7 @@ GLvoid render()
     }
 
     player->draw(currCamera, directionalLight, pointLights, pointLightCount);
-
+    boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
 
     glutSwapBuffers();  // Swap buffers to render
 }
