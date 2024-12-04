@@ -42,11 +42,18 @@ float Object::GetRotY()
 }
 
 
-void Object::update(float deltaTime) {
+void Object::update(float deltaTime, glm::vec3 v) {
+	if (animator) {
+		animator->UpdateAnimation(deltaTime);
+	}
 
-	animator->UpdateAnimation(deltaTime);
-
+	GLfloat* currPos = model->GetTranslate();
+	GLfloat angle = glm::atan( v.z-currPos[2] , currPos[0]-v.x);
+	//std::cout << "angle: " << angle << std::endl;
+	model->SetRotate({model->GetRotate()[0] ,  glm::degrees(angle)+90 , model->GetRotate()[2] });
 }
+
+
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
 	glm::mat4 viewMat = currCamera->GetViewMatrix();

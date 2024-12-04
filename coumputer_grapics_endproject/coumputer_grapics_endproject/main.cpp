@@ -204,6 +204,12 @@ void update() {
 
     player->update(deltaTime);
     currCamera->Update();
+
+    //std::cout<<currCamera->GetPosition().x<<std::endl;
+    for (auto object : objs) {
+        object->update(deltaTime, currCamera->GetPosition());
+    }
+
 }
 
 void mainInit() {
@@ -273,14 +279,29 @@ void mainInit() {
     cube->SetTranslate(newTns2);
     glm::vec3 newscale1(0.5, 1, 0.5);
     cube->SetScale(newscale1);
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
+        object = new Object(cube, 0, dis(gen), dis(gen));
+        //object = new Object(cube, 0, 100,0);
+        objs.push_back(object);
+    }
+
+    modelPath = "Tree/tree.gltf";
+    cube->LoadModel(modelPath);
+
+    glm::vec3 newRot3(90, 0, 0);
+    cube->SetRotate(newRot3);
+    glm::vec3 newTns3(0, 9, 0);
+    cube->SetTranslate(newTns3);
+    glm::vec3 newscale3(10, 1, 10);
+    cube->SetScale(newscale3);
+    for (int i = 0; i < 100; i++) {
         object = new Object(cube, 0, dis(gen), dis(gen));
         //object = new Object(cube, 0, 100,0);
         objs.push_back(object);
     }
     
     //object = new Object(modelPath,0,0,0);
-    object2 = new Object(cube,0,1,1);
+    //object2 = new Object(cube,0,1,1);
 
     //----------------------------------------
     ground = new Model();
@@ -291,11 +312,11 @@ void mainInit() {
     currRot = ground->GetRotate();
     rotation = 90;
     newRotx = currRot[0] + rotation;
-    glm::vec3 newRot3(newRotx, currRot[1], currRot[2]);
-    ground->SetRotate(newRot3);
+    glm::vec3 newRot4(newRotx, currRot[1], currRot[2]);
+    ground->SetRotate(newRot4);
 
-    glm::vec3 newTns3(0,0,0);
-    ground->SetTranslate(newTns3);
+    glm::vec3 newTns4(0,0,0);
+    ground->SetTranslate(newTns4);
     glm::vec3 newscale(100, 1, 100);
     ground->SetScale(newscale);
 

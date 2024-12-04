@@ -16,7 +16,7 @@ class Object
 {
 public:
 	Object(Model* model, Animator* animator, float x, float z);
-	void update(float deltaTime);
+	void update(float deltaTime, glm::vec3 v);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
 
