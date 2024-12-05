@@ -30,8 +30,8 @@ private:
 	Animator* animator;
 
 	Animation* idleAnim;
-	Animation* danceAnim;
 	Animation* runAnim;
+	Animation* atkAnim;
 
 	const float MOVE_SPEED;
 	const float TURN_SPEED;

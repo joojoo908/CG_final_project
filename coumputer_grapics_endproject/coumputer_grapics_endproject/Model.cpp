@@ -15,7 +15,6 @@
 
 #include "AssimpGLMHelpers.h"
 
-
 Model::Model()
 {
 	translate = glm::vec3(0.f, 0.f, 0.f);
@@ -67,7 +66,6 @@ void Model::ShowProperties()
 	std::cout << "Enter new Shininess (0 to 512): ";
 	std::cin >> currMaterial->shininess;
 }
-
 
 void Model::LoadModel(const std::string& fileName)
 {
@@ -144,7 +142,6 @@ void Model::RenderModel()
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 }
-
 
 void Model::ClearModel()
 {

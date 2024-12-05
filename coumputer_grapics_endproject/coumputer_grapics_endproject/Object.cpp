@@ -22,7 +22,7 @@ Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=
 	
 	//this->model->LoadModel(modelPath);
 	if (!animator) {
-		std::cout << "null!!!" << std::endl;
+		//std::cout << "null!!!" << std::endl;
 	}
 	else {
 		this->animator = animator;

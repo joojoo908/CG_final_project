@@ -23,8 +23,8 @@ Boss::Boss(Model* model, Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GR
 	upwardSpeed = 0;
 
 	idleAnim = new Animation("Boss/Boss.gltf", model);
-	danceAnim = new Animation("Knight/dance.gltf", model);
-	runAnim = new Animation("Knight/run.gltf", model);
+	runAnim = new Animation("Boss/boss_run.gltf", model);
+	atkAnim = new Animation("Boss/boss_atk.gltf", model);
 
 	isJumping = true;
 }
@@ -93,8 +93,8 @@ void Boss::update(float deltaTime) {
 	}
 	else
 	{
-		if (animator->GetCurrAnimation() != idleAnim)
-			animator->PlayAnimation(idleAnim);
+		if (animator->GetCurrAnimation() != atkAnim)
+			animator->PlayAnimation(atkAnim);
 	}
 	//애니메이션 업데이트
 	animator->UpdateAnimation(deltaTime);
