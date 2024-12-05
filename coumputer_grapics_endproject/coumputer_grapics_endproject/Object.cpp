@@ -15,7 +15,11 @@
 Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
 {
 	this->model = new Model(*model);
-	this->hitbox = new Model(*hitbox);
+	if (hitbox)
+	{
+		this->hitbox = new Model(*hitbox);
+	}
+	
 	//this->model->LoadModel(modelPath);
 	if (!animator) {
 		std::cout << "null!!!" << std::endl;

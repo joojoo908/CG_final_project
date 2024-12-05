@@ -284,16 +284,14 @@ void mainInit() {
     collide_box = new Model();
     modelPath = "collide_box/collide_box.gltf";
     collide_box->LoadModel(modelPath);
-    collide_box->SetScale({ 0.4, 0.5, 0.4 });
+    //collide_box->SetScale({ 0.4, 0.5, 0.4 });
     collide_box->SetRotate({0,0,0});
 
     for (int i = 0; i < 100; i++) {
         int rand_x = dis(gen);
         int rand_z = dis(gen);
-        collide_box->SetTranslate({ rand_x ,0.5,rand_z });
-        object = new Object(cube, collide_box, 0, rand_x, rand_z);
-        //object = new Object(cube, 0, 100,0);
-        //objs.push_back(object);
+        //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
+        object = new Object(cube, 0, 0, rand_x, rand_z);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
     }
 
