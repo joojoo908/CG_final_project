@@ -6,6 +6,7 @@
 #include <map>
 
 class Model;
+class Collision;
 class Animation;
 class Animator;
 class Terrain;
@@ -24,11 +25,12 @@ public:
 
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
-
+	Collision* GetCollision() { return collisionbox; }
+	Model* hitbox;
 private:
 
 	Model* model;
-	Model* hitbox;
+	Collision* collisionbox;
 	Animator* animator;
 
 	Animation* ani;

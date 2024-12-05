@@ -191,23 +191,22 @@ void Motion(int x, int y) {
 void handleResize(int w, int h) {
     glViewport(0, 0, w, h);
 }
-
 //--------------------------------
 
 void update() {
-
-    player->update(deltaTime);
-    boss->update(deltaTime);
-    
-    currCamera->Update();
-
     for (const auto& obj : obj_map) {
         // obj.first는 std::pair<int, int> 타입 (키)
         // obj.second는 Object 타입 (값)
         //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
+
+
         obj.second->update(deltaTime, currCamera->GetPosition());
     }
 
+    player->update(deltaTime,obj_map);
+    boss->update(deltaTime, obj_map);
+    
+    currCamera->Update();
 
     //std::cout << obj_map[std::make_pair(1, 2)] << std::endl;
 }
@@ -343,18 +342,19 @@ void mainInit() {
     //플레이어 연결
     modelPath = "collide_box/collide_box.gltf";
     collide_box->LoadModel(modelPath);
-    collide_box->SetScale(glm::vec3(0.4, 1.3, 0.4));
+    collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
     player = new Player(mainModel, collide_box);
 
     //------------------------------------------
     boss_model = new Model();
     modelPath = "Boss/Boss.gltf";
     boss_model->LoadModel(modelPath);
-    boss_model->SetRotate({ 0,0,0 });
+    boss_model->SetRotate({ 0,180,0 });
     boss_model->SetScale({ 2,2,2 });
+    boss_model->SetTranslate({ 0,0,5 });
 
 
-    collide_box->SetScale(glm::vec3(0.8, 2.2, 0.7));
+    collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
     boss = new Boss(boss_model, collide_box);
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);

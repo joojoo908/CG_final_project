@@ -6,21 +6,22 @@
 #include "Animator.h"
 #include "Model.h"
 #include "ShaderHandle.h"
+#include "CollisionManger.h"
 
 #include "CameraBase.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
+Object::Object(Model *model,Model *hitbox=NULL , Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
 {
 	this->model = new Model(*model);
 	if (hitbox)
 	{
 		this->hitbox = new Model(*hitbox);
+		this->collisionbox = new Collision (this->hitbox);
 	}
 	
-	//this->model->LoadModel(modelPath);
 	if (!animator) {
 		//std::cout << "null!!!" << std::endl;
 	}

@@ -6,7 +6,10 @@
 #include "Animation.h"
 #include "Animator.h"
 #include "Model.h"
+#include "CollisionManger.h"
 #include "ShaderHandle.h"
+#include "Object.h"
+#include <map>
 
 #include "CameraBase.h"
 #include "DirectionalLight.h"
@@ -17,6 +20,7 @@ Boss::Boss(Model* model, Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GR
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
+	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
 
 	groundHeight = 10;
@@ -29,7 +33,7 @@ Boss::Boss(Model* model, Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GR
 	isJumping = true;
 }
 
-bool Boss::Move(float deltaTime)
+bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 {
 	// 현재 회전값과 위치 가져오기
 	GLfloat* currRot = model->GetRotate();
@@ -49,6 +53,7 @@ bool Boss::Move(float deltaTime)
 	float dz = distance * cosf(glm::radians(dir_Rot));
 
 	// 새로운 위치 계산
+	glm::vec3 delta(dx, upwardSpeed, dz);
 	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
 
 	// 충돌 처리 (중력 및 땅과의 충돌 포함)
@@ -59,15 +64,66 @@ bool Boss::Move(float deltaTime)
 	//     isJumping = false;
 	// }
 
-	// 새로운 위치 설정
-	model->SetTranslate(newPos);
-	newPos.y += 1.f;
-	newPos.z += 0.4f;
-	hitbox->SetTranslate(newPos);
-	
-	hitbox->SetRotate(glm::vec3(currRot[0], currRot[1], currRot[2]));
+	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
+	bool canmove = true;
+	for (const auto& obj : map)
+	{
+		if (InRange(obj.first, model, 10) && obj.second->GetCollision())
+		{
+			UpdateHitbox();
+			if (Collide(obj.second->GetCollision(), delta))
+			{
+				canmove = false;
+			}
+		}
+	}
+	if (canmove)
+	{
+		model->SetTranslate(newPos);
+		newPos.y += hitbox->GetScale()[1];
+		hitbox->SetTranslate(newPos);
+	}
 	// 이동 상태 반환
 	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
+}
+
+bool Boss::InRange(const std::pair<int, int>& a, Model* model, int distance) {
+	int x = a.first;
+	int z = a.second;
+
+	const auto& translate = model->GetTranslate();
+	float dx = translate[0] - x;
+	float dz = translate[2] - z;
+
+	// 거리 비교 (제곱근 계산 생략)
+	return (dx * dx + dz * dz) <= distance;
+}
+
+void Boss::UpdateHitbox()
+{
+	GLfloat* modelRot = model->GetRotate();
+	GLfloat* modelTrans = model->GetTranslate();
+	hitbox->SetTranslate({ modelTrans[0],modelTrans[1] + hitbox->GetScale()[1],modelTrans[2] });
+	hitbox->SetRotate({ modelRot[0],modelRot[1] ,modelRot[2] });
+
+	collisionbox->Update();
+}
+
+bool Boss::Collide(Collision* box, glm::vec3 delta) {
+
+	Collision* nextbox = GetCollsion();
+	nextbox->NextPosition(delta);
+	//X축 검사
+	bool xOverlap = box->maxX >= nextbox->minX &&
+		box->minX <= nextbox->maxX;
+	//Y축 검사
+	bool yOverlap = box->maxY >= nextbox->minY &&
+		box->minY <= nextbox->maxY;
+	//Z축 검사
+	bool zOverlap = box->maxZ >= nextbox->minZ &&
+		box->minZ <= nextbox->maxZ;
+
+	return xOverlap && yOverlap && zOverlap;
 }
 
 float Boss::GetRotY()
@@ -84,9 +140,9 @@ void Boss::Jump()
 	isJumping = true;
 }
 
-void Boss::update(float deltaTime) {
+void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
 
-	if (Move(deltaTime))
+	if (Move(deltaTime,map))
 	{
 		if (animator->GetCurrAnimation() != runAnim)
 			animator->PlayAnimation(runAnim);
