@@ -355,7 +355,7 @@ void mainInit() {
 
 
     collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
-    boss = new Boss(boss_model, collide_box);
+    boss = new Boss(boss_model, collide_box,player);
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);

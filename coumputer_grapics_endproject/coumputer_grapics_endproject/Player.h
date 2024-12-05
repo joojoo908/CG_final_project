@@ -54,7 +54,7 @@ private:
 
 	bool isJumping;
 
-	bool InRange(const std::pair<int, int>& a, Model* model, int distance);
+	bool InRange(const std::pair<int, int>& a, int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
 	void UpdateHitbox();
 };

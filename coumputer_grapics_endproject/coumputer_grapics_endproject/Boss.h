@@ -12,11 +12,12 @@ class CameraBase;
 class DirectionalLight;
 class PointLight;
 class Object;
+class Player;
 
 class Boss
 {
 public:
-	Boss(Model* model, Model* hitbox);
+	Boss(Model* model, Model* hitbox,Player *player);
 	bool Move(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
@@ -33,6 +34,7 @@ private:
 	Model* hitbox;
 	Collision* collisionbox;
 	Animator* animator;
+	Player* player;
 
 
 	Animation* idleAnim;
@@ -51,7 +53,9 @@ private:
 
 	bool isJumping;
 
-	bool InRange(const std::pair<int, int>& a, Model* model, int distance);
+	bool InRange(const std::pair<int, int>& a, int distance);
+	bool InRange(int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
 	void UpdateHitbox();
+	void Turn_to_Player();
 };

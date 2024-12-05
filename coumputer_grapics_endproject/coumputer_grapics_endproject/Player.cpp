@@ -110,7 +110,7 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	bool canmove = true;
 	for (const auto& obj : map)
 	{
-		if (InRange(obj.first,model,10) && obj.second->GetCollision())
+		if (InRange(obj.first,10) && obj.second->GetCollision())
 		{
 			UpdateHitbox();
 			if (Collide(obj.second->GetCollision(), delta))
@@ -140,7 +140,7 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	// 이동 상태 반환
 	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
 }
-bool Player::InRange(const std::pair<int, int>& a, Model* model, int distance) {
+bool Player::InRange(const std::pair<int, int>& a, int distance) {
 	int x = a.first;
 	int z = a.second;
 

@@ -9,6 +9,7 @@
 #include "CollisionManger.h"
 #include "ShaderHandle.h"
 #include "Object.h"
+#include "Player.h"
 #include <map>
 
 #include "CameraBase.h"
@@ -16,12 +17,13 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Boss::Boss(Model* model, Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Boss::Boss(Model* model, Model* hitbox, Player* player) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
+	this->player = player;
 
 	groundHeight = 10;
 	upwardSpeed = 0;
@@ -41,20 +43,21 @@ bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 
 	float distance{};
 	// 이동 거리 및 회전 계산
-	if (currMoveSpeed_x != 0.f || currMoveSpeed_z != 0.f)
+	if (InRange(144))
 	{
+		Turn_to_Player();
 		distance = MOVE_SPEED * deltaTime;
 	}
 
-	float dir_Rot = currRot[1] + glm::degrees(atan2f(currMoveSpeed_x, currMoveSpeed_z));
+	//float dir_Rot = currRot[1] + glm::degrees(atan2f(currMoveSpeed_x, currMoveSpeed_z));
 
 	// 라디안으로 변환한 회전을 사용하여 dx와 dz 계산
-	float dx = distance * sinf(glm::radians(dir_Rot));
-	float dz = distance * cosf(glm::radians(dir_Rot));
+	float dx = distance * sinf(glm::radians(currRot[1]));
+	float dz = distance * cosf(glm::radians(currRot[1]));
 
 	// 새로운 위치 계산
-	glm::vec3 delta(dx, upwardSpeed, dz);
-	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
+	glm::vec3 delta(dx, 0, dz);
+
 
 	// 충돌 처리 (중력 및 땅과의 충돌 포함)
 	// groundHeight = terrain->GetHeight(newPos.x, newPos.z);
@@ -65,29 +68,33 @@ bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	// }
 
 	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
-	bool canmove = true;
+	bool iscrash = false;
 	for (const auto& obj : map)
 	{
-		if (InRange(obj.first, model, 10) && obj.second->GetCollision())
+		if (InRange(obj.first, 10) && obj.second->GetCollision())
 		{
 			UpdateHitbox();
 			if (Collide(obj.second->GetCollision(), delta))
 			{
-				canmove = false;
+				iscrash = true;
 			}
 		}
 	}
-	if (canmove)
+	if (iscrash)
 	{
-		model->SetTranslate(newPos);
-		newPos.y += hitbox->GetScale()[1];
-		hitbox->SetTranslate(newPos);
+		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		delta = glm::vec3(rotationMatrix * glm::vec4(delta, 1.0f));
 	}
+	glm::vec3 newPos(currPos[0] + delta.x, currPos[1] + upwardSpeed, currPos[2] + delta.z);
+	
+	model->SetTranslate(newPos);
+	newPos.y += hitbox->GetScale()[1];
+	hitbox->SetTranslate(newPos);
 	// 이동 상태 반환
 	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
 }
 
-bool Boss::InRange(const std::pair<int, int>& a, Model* model, int distance) {
+bool Boss::InRange(const std::pair<int, int>& a,int distance) {
 	int x = a.first;
 	int z = a.second;
 
@@ -98,7 +105,15 @@ bool Boss::InRange(const std::pair<int, int>& a, Model* model, int distance) {
 	// 거리 비교 (제곱근 계산 생략)
 	return (dx * dx + dz * dz) <= distance;
 }
+bool Boss::InRange(int distance) {
+	float* Pposition = this->player->GetModel()->GetTranslate();
+	float* Bposition = model->GetTranslate();
 
+	float dx = Pposition[0] - Bposition[0];
+	float dz = Pposition[2] - Bposition[2];
+
+	return (dx * dx + dz * dz) <= distance;
+}
 void Boss::UpdateHitbox()
 {
 	GLfloat* modelRot = model->GetRotate();
@@ -125,6 +140,18 @@ bool Boss::Collide(Collision* box, glm::vec3 delta) {
 
 	return xOverlap && yOverlap && zOverlap;
 }
+
+void Boss::Turn_to_Player() {
+	float* Pposition = this->player->GetModel()->GetTranslate();
+	float* Bposition = model->GetTranslate();
+
+	float dx = Pposition[0] - Bposition[0];
+	float dz = Pposition[2] - Bposition[2];
+
+	model->SetRotate({ 0,glm::degrees(atan2(dx,dz)) ,0});
+
+}
+
 
 float Boss::GetRotY()
 {
