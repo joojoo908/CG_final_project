@@ -34,7 +34,7 @@ Object::Object(Model *model,Model *hitbox , Animator* animator = NULL , float x=
 	float newRotx = currRot[0] + rotation;
 	glm::vec3 newRot2(newRotx, currRot[1], currRot[2]);
 	this->model->SetRotate(newRot2);*/
-
+	
 }
 
 float Object::GetRotY()
@@ -52,7 +52,7 @@ void Object::update(float deltaTime, glm::vec3 v) {
 	//std::cout << "angle: " << angle << std::endl;
 	model->SetRotate({model->GetRotate()[0] ,  glm::degrees(angle)+90 , model->GetRotate()[2] });
 	GLfloat* currRot = model->GetRotate();
-	hitbox->SetRotate(glm::vec3(0.0f, currRot[1] - 90, 0.0f));
+	//hitbox->SetRotate(glm::vec3(0.0f, currRot[1] - 90, 0.0f));
 }
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
@@ -106,29 +106,32 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_normalSampler, 1);
 
 	model->RenderModel();
+	if (hitbox)
+	{
+		//텍스처 중복 문제 해결
+		glBindTexture(GL_TEXTURE_2D, 0);
+		//히트박스 그리기
+		shaderList[1]->UseShader();
 
-	//텍스처 중복 문제 해결
-	glBindTexture(GL_TEXTURE_2D, 0);
-	//히트박스 그리기
-	shaderList[1]->UseShader();
+		GetShaderHandles_obj();
 
-	GetShaderHandles_obj();
+		glm::mat4 hitMat = hitbox->GetModelMat();
+		glm::mat4 hitPVM = projMat * viewMat * hitMat;
+		glm::mat3 hitnormalMat = GetNormalMat(hitMat);
 
-	glm::mat4 hitMat = hitbox->GetModelMat();
-	glm::mat4 hitPVM = projMat * viewMat * hitMat;
-	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
+		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
+		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
+		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
 
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
-	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
-	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
+		shaderList[1]->UseEyePos(camPos);
+		shaderList[1]->UseDirectionalLight(directionalLight);
+		shaderList[1]->UsePointLights(pointLights, pointLightCount);
 
-	shaderList[1]->UseEyePos(camPos);
-	shaderList[1]->UseDirectionalLight(directionalLight);
-	shaderList[1]->UsePointLights(pointLights, pointLightCount);
+		shaderList[1]->UseMaterial(hitbox->GetMaterial());
 
-	shaderList[1]->UseMaterial(hitbox->GetMaterial());
+		hitbox->RenderModel();
+	}
 
-	hitbox->RenderModel();
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
