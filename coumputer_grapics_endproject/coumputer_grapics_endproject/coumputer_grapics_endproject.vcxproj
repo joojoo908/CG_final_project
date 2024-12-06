@@ -63,6 +63,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCamera.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="ScenePanel.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderHandle.h" />

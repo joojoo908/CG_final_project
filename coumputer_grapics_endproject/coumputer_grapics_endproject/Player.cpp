@@ -26,9 +26,9 @@ Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(10.f), TURN_SPEED(0.5f),
 	groundHeight = 10;
 	upwardSpeed = 0;
 
-	idleAnim = new Animation("Knight/idle.gltf", model);
+	idleAnim = new Animation("Player/player.gltf", model);
 	danceAnim = new Animation("Knight/dance.gltf", model);
-	runAnim = new Animation("Knight/run.gltf", model);
+	runAnim = new Animation("Player/player.gltf", model);
 
 	isJumping = true;
 }

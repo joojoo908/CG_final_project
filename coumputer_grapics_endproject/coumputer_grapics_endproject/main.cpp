@@ -110,6 +110,14 @@ void processKeyboard(unsigned char key, int x, int y) {
         lastY = Center_height;
         fixed_center = !fixed_center;
     }
+    if (key == '1') {
+        std::cout << pointLights[0]->GetModelMat()[3][0] << std::endl;
+        std::cout << pointLights[0]->GetModelMat()[3][1] << std::endl;
+        std::cout << pointLights[0]->GetModelMat()[3][2] << std::endl;
+    }
+    if (key == '2') {
+        pointLights[0]->position = glm::vec3(pointLights[0]->position[0]+1, 1.0f, pointLights[0]->position[2]);
+    }
 }
 //키보드 떼어짐 함수
 void processKeyboardUp(unsigned char key, int x, int y) {
@@ -216,24 +224,25 @@ void mainInit() {
     CreateShader_obj();
 
     //빛
-    directionalLight = new DirectionalLight(0.5f, 1.f,
+    directionalLight = new DirectionalLight(0.3f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.f, 1.f, 1.f));
+        glm::vec3(0.0f, -1.0f, 0.f));
     entityList.push_back(directionalLight);
 
     pointLights[0] = new PointLight
-    (0.f, 0.5f,
+    (0.f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.f, 1.5f, 0.2f),
-        1.0f, 0.22f, 0.20f);
+        glm::vec3(1.f, 1.f, 0.0f),
+        0.1f, 0.01f, 0.001f);
     pointLightCount++;
-    pointLights[1] = new PointLight
+
+    /*pointLights[1] = new PointLight
     (0.0f, 0.5f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(-2.0f, 2.0f, -1.f),
         1.0, 0.045f, 0.0075f);
-    pointLightCount++;
-    for (int i = 0; i < pointLightCount; i++)
+    pointLightCount++;*/
+   for (int i = 0; i < pointLightCount; i++)
         entityList.push_back(pointLights[i]);
 
     // Skybox
@@ -250,10 +259,9 @@ void mainInit() {
     //모델 추가용 init() 함수 추가 예정
     // Model loading
     mainModel = new Model();
-    std::string modelPath = "Knight/test.gltf";
+    std::string modelPath = "Player/player.gltf";
     //std::string modelPath = "obj/night.gltf";
     mainModel->LoadModel(modelPath);
-    entityList.push_back(mainModel);
 
     //모델 90도 회전
     GLfloat* currRot = mainModel->GetRotate();
@@ -261,7 +269,7 @@ void mainInit() {
     float newRotx = currRot[0] + rotation;
     glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
     mainModel->SetRotate(newRot);
-
+    entityList.push_back(mainModel);
     //----------------------------------------
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
@@ -311,6 +319,9 @@ void mainInit() {
         collide_box->SetTranslate({ rand_x ,9,rand_z });
         object = new Object(cube, collide_box, 0, rand_x, rand_z);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
+        glm::vec3 newTns3(rand_x, 9, rand_z);
+        cube->SetTranslate(newTns3);
+        entityList.push_back(cube);
     }
     
     //object = new Object(modelPath,0,0,0);
@@ -356,6 +367,7 @@ void mainInit() {
 
     collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
     boss = new Boss(boss_model, collide_box,player);
+    entityList.push_back(boss_model);
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
