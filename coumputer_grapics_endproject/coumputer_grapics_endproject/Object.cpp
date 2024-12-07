@@ -13,8 +13,11 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Object::Object(Model *model,Model *hitbox=NULL , Animator* animator = NULL , float x=0, float z=0) : GRAVITY(0.2f)
+Object::Object(std::string type,Model *model,Model *hitbox=NULL , Animator* animator = NULL , float x=0, float z=0 ,bool bilboard=0) : GRAVITY(0.2f)
 {
+	this->type = type;
+	this->bilboard = bilboard;
+
 	this->model = new Model(*model);
 	if (hitbox)
 	{
@@ -52,12 +55,12 @@ void Object::update(float deltaTime, glm::vec3 v) {
 		animator->UpdateAnimation(deltaTime);
 	}
 
-	GLfloat* currPos = model->GetTranslate();
-	GLfloat angle = glm::atan( v.z-currPos[2] , currPos[0]-v.x);
-	//std::cout << "angle: " << angle << std::endl;
-	model->SetRotate({model->GetRotate()[0] ,  glm::degrees(angle)+90 , model->GetRotate()[2] });
-	GLfloat* currRot = model->GetRotate();
-	//hitbox->SetRotate(glm::vec3(0.0f, currRot[1] - 90, 0.0f));
+	if (bilboard) {
+		GLfloat* currPos = model->GetTranslate();
+		GLfloat angle = glm::atan(v.z - currPos[2], currPos[0] - v.x);
+		model->SetRotate({ model->GetRotate()[0] ,  glm::degrees(angle) + 90 , model->GetRotate()[2] });
+		GLfloat* currRot = model->GetRotate();
+	}
 }
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
@@ -111,10 +114,10 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_normalSampler, 1);
 
 	model->RenderModel();
+	glBindTexture(GL_TEXTURE_2D, 0);
 	if (hitbox)
 	{
 		//텍스처 중복 문제 해결
-		glBindTexture(GL_TEXTURE_2D, 0);
 		//히트박스 그리기
 		shaderList[1]->UseShader();
 
@@ -135,8 +138,8 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 		shaderList[1]->UseMaterial(hitbox->GetMaterial());
 
 		hitbox->RenderModel();
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)

@@ -17,7 +17,7 @@ class PointLight;
 class Object
 {
 public:
-	Object(Model* model, Model* hitbox, Animator* animator, float x, float z);
+	Object(std::string type,Model* model, Model* hitbox, Animator* animator, float x, float z, bool bilboard);
 	void update(float deltaTime, glm::vec3 v);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
@@ -28,6 +28,8 @@ public:
 	Collision* GetCollision() { return collisionbox; }
 	Model* hitbox;
 private:
+	std::string type;
+	bool bilboard;
 
 	Model* model;
 	Collision* collisionbox;

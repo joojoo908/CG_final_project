@@ -61,6 +61,7 @@ std::vector<Entity*> entityList;
 Model* mainModel;
 Model* boss_model;
 Model* cube;
+Model* machine;
 Model* collide_box, * collide_box2, * collide_box3;
 Model* ground;
 Model* currModel;
@@ -229,12 +230,12 @@ void mainInit() {
         glm::vec3(0.0f, -1.0f, 0.f));
     entityList.push_back(directionalLight);
 
-    pointLights[0] = new PointLight
+   /* pointLights[0] = new PointLight
     (0.f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(1.f, 1.f, 0.0f),
         0.1f, 0.01f, 0.001f);
-    pointLightCount++;
+    pointLightCount++;*/
 
     /*pointLights[1] = new PointLight
     (0.0f, 0.5f,
@@ -298,7 +299,7 @@ void mainInit() {
         int rand_x = dis(gen);
         int rand_z = dis(gen);
         //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
-        object = new Object(cube, 0, 0, rand_x, rand_z);
+        object = new Object("gress",cube, 0, 0, rand_x, rand_z, 1);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
     }
 
@@ -317,15 +318,27 @@ void mainInit() {
         int rand_x = dis(gen);
         int rand_z = dis(gen);
         collide_box->SetTranslate({ rand_x ,9,rand_z });
-        object = new Object(cube, collide_box, 0, rand_x, rand_z);
+        object = new Object("tree", cube, collide_box, 0, rand_x, rand_z,1);
         obj_map[std::make_pair(rand_x, rand_z)] = object;
         glm::vec3 newTns3(rand_x, 9, rand_z);
         cube->SetTranslate(newTns3);
         entityList.push_back(cube);
     }
     
-    //object = new Object(modelPath,0,0,0);
-    //object2 = new Object(cube,0,1,1);
+    machine = new Model();
+    modelPath = "machine/machine2.gltf";
+    machine->LoadModel(modelPath);
+    glm::vec3 newscale_machine(1, 1, 1);
+    machine->SetScale(newscale_machine);
+    machine->SetRotate({0,0,0});
+    machine->SetTranslate({0,1,0});
+
+    int rand_x = 2;//dis(gen);
+    int rand_z = 0; // dis(gen);
+    //collide_box->SetTranslate({ rand_x ,0,rand_z });
+    object = new Object("machine", machine, 0, 0, rand_x, rand_z, 0 );
+    obj_map[std::make_pair(rand_x, rand_z)] = object;
+    
 
     //----------------------------------------
     ground = new Model();
