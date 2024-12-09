@@ -40,28 +40,23 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 			currMoveSpeed_z = MOVE_SPEED;
 		else if (keys == 's')
 			currMoveSpeed_z = -MOVE_SPEED;
-		else if (keys == 'a')
+		
+		if (keys == 'a') {
 			currMoveSpeed_x = MOVE_SPEED;
+		}
 		else if (keys == 'd')
 			currMoveSpeed_x = -MOVE_SPEED;
+		
 
-		else
-			currMoveSpeed_z = 0;
-
-		if (keys == 'a') {
-
-		}
-		else if (keys == 'd') {
-
-		}
 	}
 	else {
 		if (keys == 'w')
 			currMoveSpeed_z = 0;
 		else if (keys == 's')
 			currMoveSpeed_z = 0;
-		if (keys == 'a')
+		if (keys == 'a') {
 			currMoveSpeed_x = 0;
+		}
 		else if (keys == 'd')
 			currMoveSpeed_x = 0;
 	}
@@ -73,15 +68,14 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 void Player::MouseContrl(float XChange, float YChange) {
 	// 회전
 	GLfloat* currRot = model->GetRotate();
-
 	float rotation = -TURN_SPEED * XChange;
-
 	float newRotY = currRot[1] + rotation; // new rotY
-
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
-
 	model->SetRotate(newRot);
 	//hitbox->SetRotate(newRot);
+
+
+
 }
 
 bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
@@ -94,6 +88,7 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	// 이동 거리 및 회전 계산
 	if (currMoveSpeed_x != 0.f || currMoveSpeed_z != 0.f)
 	{
+
 		distance = MOVE_SPEED * deltaTime;
 	}
 
@@ -220,6 +215,13 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 
 	GetShaderHandles();
 
+	if (currMoveSpeed_z != 0 && currMoveSpeed_x != 0) {
+		GLfloat* currRot = model->GetRotate();
+		float newRotY = currRot[1] + (currMoveSpeed_x / MOVE_SPEED)*(currMoveSpeed_z / MOVE_SPEED) * 45; // new rotY
+		glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
+		model->SetRotate(newRot);
+	}
+
 	glm::mat4 modelMat = model->GetModelMat();
 	glm::mat4 PVM = projMat * viewMat * modelMat;
 	glm::mat3 normalMat = GetNormalMat(modelMat);
@@ -240,9 +242,21 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_diffuseSampler, 0);
 	glUniform1i(loc_normalSampler, 1);
 
+
+	
 	model->RenderModel();
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	if (currMoveSpeed_z != 0 && currMoveSpeed_x != 0) {
+		GLfloat* currRot = model->GetRotate();
+		float newRotY = currRot[1] - (currMoveSpeed_x / MOVE_SPEED)*(currMoveSpeed_z / MOVE_SPEED) * 45; // new rotY
+		glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
+		model->SetRotate(newRot);
+	}
+
+	
+	
 	//히트박스 그리기
 	shaderList[1]->UseShader();
 
@@ -264,7 +278,7 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 
 
 	hitbox->RenderModel();
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
