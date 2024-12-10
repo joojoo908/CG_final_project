@@ -54,6 +54,7 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 			currMoveSpeed_z = 0;
 		else if (keys == 's')
 			currMoveSpeed_z = 0;
+
 		if (keys == 'a') {
 			currMoveSpeed_x = 0;
 		}
@@ -101,6 +102,7 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	// 새로운 위치 계산
 	glm::vec3 delta(dx, upwardSpeed, dz);
 	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
+
 	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
 	bool canmove = true;
 	for (const auto& obj : map)
