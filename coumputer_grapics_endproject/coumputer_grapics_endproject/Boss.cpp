@@ -176,7 +176,7 @@ void Boss::Jump()
 	isJumping = true;
 }
 
-void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
+void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  {
 	behavior->Update(deltaTime);
 	int key = behavior->GetKey();
 	switch (key)

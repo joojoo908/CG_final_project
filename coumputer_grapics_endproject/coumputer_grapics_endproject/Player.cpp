@@ -106,16 +106,16 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
 	bool canmove = true;
 	//auto it1 = map.find({ int(currPos[0]), int(currPos[2]) });
-	auto it = map.find({ int(newPos[0]), int(newPos[2]) });
-	if (it != map.end()&& it->second->GetCollision())
-	{
-		UpdateHitbox();
-		if (Collide(it->second->GetCollision(), delta))
-		{
-			canmove = false;      
-		}
-	}
-	/*for (const auto& obj : map)
+	//auto it = map.find({ int(newPos[0]), int(newPos[2]) });
+	//if (it != map.end()&& it->second->GetCollision())
+	//{
+	//	UpdateHitbox();
+	//	if (Collide(it->second->GetCollision(), delta))
+	//	{
+	//		canmove = false;      
+	//	}
+	//}
+	for (const auto& obj : map)
 	{
 		if (InRange(obj.first,10) && obj.second->GetCollision())
 		{
@@ -126,7 +126,7 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 				canmove = false;
 			}
 		}
-	}*/
+	}
 	if (canmove)
 	{
 		model->SetTranslate(newPos);

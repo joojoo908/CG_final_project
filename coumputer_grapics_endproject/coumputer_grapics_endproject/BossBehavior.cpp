@@ -53,14 +53,15 @@ void BossBehavior::Chase(float deltaTime) {
 	model_b->SetTranslate(newPos);
 }
 void BossBehavior::closeAttack() {
-	std::cout << "순환 테스트 근접공격\n";
+//영역에 대한 화면 표시 및 충돌검사 필요
+
 }
 
 void BossBehavior::Dash() {
-	std::cout << "순환 테스트 Dash\n";
+	//영역에 대한 화면 표시 및 충돌검사 필요
 }
 void BossBehavior::Slam() {
-	std::cout << "순환 테스트 Slam\n";
+	//영역에 대한 화면 표시 및 충돌검사 필요
 }
 
 void BossBehavior::Do(float deltaTime) {
