@@ -53,7 +53,7 @@ private:
 	float groundHeight;
 
 	bool isJumping;
-
+	bool InRange(int x1,int z1, int x2, int z2);
 	bool InRange(const std::pair<int, int>& a, int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
 	void UpdateHitbox();
