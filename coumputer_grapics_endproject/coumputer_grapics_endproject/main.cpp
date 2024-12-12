@@ -43,6 +43,7 @@ int lastX, lastY;
 bool fixed_center{};
 
 std::string mode = "Play_mode";
+std::string back_mode = "";
 bool key_f1 = 1;
 
 // Global variables
@@ -102,16 +103,35 @@ void TimerFunction(int value);
 
 //키보드 눌림 함수
 void processKeyboard(unsigned char key, int x, int y) {
-    if (mode == "Play_mode") {
+    if (mode == "Master_mode") {
+        currCamera->KeyControl(key, deltaTime);
+    }
+    else if (mode == "Play_mode") {
         player->HandleInput(key, 1, deltaTime);
     }
 
-
-    if (key_f1) {
-        currCamera->KeyControl(key, deltaTime);
+    if (key == 'p') {
+        if (mode == "Pause_mode") {
+            mode = "Play_mode";
+        }
+        else {
+            if(mode == "Play_mode") mode = "Pause_mode";
+        }
     }
-   
-
+    else if (key == 'm') {
+        if (mode == "Master_mode") {
+            mode = back_mode;
+            back_mode = "";
+            currCamera = playerCamera;
+        }
+        else {
+            back_mode = mode;
+            mode = "Master_mode";
+            currCamera = freeCamera;
+        }
+        
+    }
+    //차후 플레이 모드로 이전
     if (key == '0')
     {
         lastX = Center_width;
@@ -127,14 +147,6 @@ void processKeyboard(unsigned char key, int x, int y) {
     if (key == '2') {
         pointLights[0]->position = glm::vec3(pointLights[0]->position[0]+1, 1.0f, pointLights[0]->position[2]);
     }*/
-    if (key == 'p') {
-        if (mode == "Pause_mode") {
-            mode = "Play_mode";
-        }
-        else {
-            mode = "Pause_mode";
-        }
-    }
 }
 //키보드 떼어짐 함수
 void processKeyboardUp(unsigned char key, int x, int y) {
@@ -146,15 +158,13 @@ void processKeyboardUp(unsigned char key, int x, int y) {
 void SpecialKeyboard(int key, int x, int y) {
     switch (key) {
     case GLUT_KEY_F1:
-        key_f1 = !key_f1;
+       
         break;
     case GLUT_KEY_F2:
-        key_f1 = 0;
-        currCamera = playerCamera;
+       
         break;
     case GLUT_KEY_F3:
-        key_f1 = 1;
-        currCamera = freeCamera;
+        
         break;
     }
 }
@@ -164,8 +174,12 @@ bool click = 0;
 void processMouse(int x, int y) {
     GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
+    if (mode == "Pause_mode") {
+        XChange, YChange = 0, 0;
+    }
 
     currCamera->MouseControl(XChange, YChange);
+
     if (mode == "Play_mode") {
         player->MouseContrl(XChange, YChange);
     }
@@ -190,7 +204,6 @@ void Mouse(int button, int state, int x, int y)
         click = 0;
     }
 }
-
 void Motion(int x, int y) {
     /*GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
@@ -215,15 +228,14 @@ void handleResize(int w, int h) {
 //--------------------------------
 
 void update() {
-
-    if (mode == "Play_mode") {
+    if (mode == "Play_mode" || back_mode == "Play_mode") {
         for (const auto& obj : obj_map) {
             obj.second->update(deltaTime, currCamera->GetPosition());
         }
         player->update(deltaTime, obj_map);
         boss->update(deltaTime, obj_map);
-        currCamera->Update();
     }
+    currCamera->Update();
 }
 
 void mainInit() {
@@ -390,7 +402,7 @@ void mainInit() {
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
-    currCamera = freeCamera;
+    currCamera = playerCamera;
 
 
     /*idleAnim = new Animation("Knight/idle.gltf", currModel);
