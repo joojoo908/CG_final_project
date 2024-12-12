@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <map>
+#include<string>
 #include <GL/glew.h>
 #include <GL/freeglut.h>  // GLFW 대신 GLUT 헤더를 포함
 
@@ -40,6 +41,8 @@ int Center_width = screenWidth / 2;
 int Center_height = screenHeight / 2;
 int lastX, lastY;
 bool fixed_center{};
+
+std::string mode = "Play_mode";
 bool key_f1 = 1;
 
 // Global variables
@@ -99,35 +102,47 @@ void TimerFunction(int value);
 
 //키보드 눌림 함수
 void processKeyboard(unsigned char key, int x, int y) {
+    if (mode == "Play_mode") {
+        player->HandleInput(key, 1, deltaTime);
+    }
+
+
     if (key_f1) {
         currCamera->KeyControl(key, deltaTime);
     }
-    else {
-        player->HandleInput(key, 1, deltaTime);
-    }
+   
+
     if (key == '0')
     {
         lastX = Center_width;
         lastY = Center_height;
         fixed_center = !fixed_center;
     }
-    if (key == '1') {
+
+    /*if (key == '1') {
         std::cout << pointLights[0]->GetModelMat()[3][0] << std::endl;
         std::cout << pointLights[0]->GetModelMat()[3][1] << std::endl;
         std::cout << pointLights[0]->GetModelMat()[3][2] << std::endl;
     }
     if (key == '2') {
         pointLights[0]->position = glm::vec3(pointLights[0]->position[0]+1, 1.0f, pointLights[0]->position[2]);
+    }*/
+    if (key == 'p') {
+        if (mode == "Pause_mode") {
+            mode = "Play_mode";
+        }
+        else {
+            mode = "Pause_mode";
+        }
     }
 }
 //키보드 떼어짐 함수
 void processKeyboardUp(unsigned char key, int x, int y) {
-    player->HandleInput(key, 0, deltaTime);
-    if (key == 'w') {
-
+    if (mode == "Play_mode") {
+        player->HandleInput(key, 0, deltaTime);
     }
 }
-
+//스페셜 키 함수
 void SpecialKeyboard(int key, int x, int y) {
     switch (key) {
     case GLUT_KEY_F1:
@@ -144,20 +159,16 @@ void SpecialKeyboard(int key, int x, int y) {
     }
 }
 
-//안씀
-void MoveCamera()
-{
-    //currCamera->KeyControl(mainWindow->getsKeys(), deltaTime);
-    //currCamera->ScrollControl(mainWindow->GetScrollYChange());
-}
 
 bool click = 0;
 void processMouse(int x, int y) {
     GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
-    currCamera->MouseControl(XChange, YChange);
-    player->MouseContrl(XChange, YChange);
 
+    currCamera->MouseControl(XChange, YChange);
+    if (mode == "Play_mode") {
+        player->MouseContrl(XChange, YChange);
+    }
     lastX = x;
     lastY = y;
 
@@ -179,8 +190,9 @@ void Mouse(int button, int state, int x, int y)
         click = 0;
     }
 }
+
 void Motion(int x, int y) {
-    GLfloat XChange = x - lastX;
+    /*GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
     currCamera->MouseControl(XChange, YChange);
     player->MouseContrl(XChange, YChange);
@@ -194,7 +206,7 @@ void Motion(int x, int y) {
         lastX = Center_width;
         lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
-    }
+    }*/
 }
 
 void handleResize(int w, int h) {
@@ -203,21 +215,15 @@ void handleResize(int w, int h) {
 //--------------------------------
 
 void update() {
-    for (const auto& obj : obj_map) {
-        // obj.first는 std::pair<int, int> 타입 (키)
-        // obj.second는 Object 타입 (값)
-        //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
 
-
-        obj.second->update(deltaTime, currCamera->GetPosition());
+    if (mode == "Play_mode") {
+        for (const auto& obj : obj_map) {
+            obj.second->update(deltaTime, currCamera->GetPosition());
+        }
+        player->update(deltaTime, obj_map);
+        boss->update(deltaTime, obj_map);
+        currCamera->Update();
     }
-
-    player->update(deltaTime,obj_map);
-    boss->update(deltaTime, obj_map);
-    
-    currCamera->Update();
-
-    //std::cout << obj_map[std::make_pair(1, 2)] << std::endl;
 }
 
 void mainInit() {
