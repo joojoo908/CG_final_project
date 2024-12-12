@@ -397,7 +397,7 @@ void mainInit() {
 
 
     collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
-    boss = new Boss(boss_model, collide_box,player);
+    boss = new Boss(boss_model, collide_box,player,obj_map);
     entityList.push_back(boss_model);
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
@@ -446,36 +446,6 @@ GLvoid render()
     //전체가 플레이어 그리기
 
     //나무 그리기
-   /* shaderList[1]->UseShader();
-    {
-        GetShaderHandles_obj();
-
-        glm::mat4 modelMat = cube->GetModelMat();
-        glm::mat4 PVM = projMat * viewMat * modelMat;
-        glm::mat3 normalMat = GetNormalMat(modelMat);
-
-        glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-        glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
-        glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
-
-        shaderList[1]->UseEyePos(camPos);
-        shaderList[1]->UseDirectionalLight(directionalLight);
-        shaderList[1]->UsePointLights(pointLights, pointLightCount);
-
-        shaderList[1]->UseMaterial(cube->GetMaterial());
-
-        glUniform1i(loc_diffuseSampler, 0);
-        glUniform1i(loc_normalSampler, 1);
-
-        cube->RenderModel();
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR)
-        {
-            std::cout << "error : " << error << std::endl;
-        }
-    }*/
     for (auto object : objs) {
         //object->draw(currCamera, directionalLight, pointLights, pointLightCount);
     }

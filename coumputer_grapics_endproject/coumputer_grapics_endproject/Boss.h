@@ -2,6 +2,7 @@
 
 #include "gl/glm/glm.hpp"
 #include <map>
+#include <iostream>
 
 class Model;
 class Collision;
@@ -13,11 +14,12 @@ class DirectionalLight;
 class PointLight;
 class Object;
 class Player;
+class BossBehavior;
 
 class Boss
 {
 public:
-	Boss(Model* model, Model* hitbox,Player *player);
+	Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, int>, Object*> map);
 	bool Move(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
@@ -35,7 +37,7 @@ private:
 	Collision* collisionbox;
 	Animator* animator;
 	Player* player;
-
+	BossBehavior* behavior;
 
 	Animation* idleAnim;
 	Animation* runAnim;
@@ -50,8 +52,12 @@ private:
 	float currMoveSpeed_z;
 	float upwardSpeed;
 	float groundHeight;
+	float time_paturn{};
 
 	bool isJumping;
+	bool inRange;
+
+	std::map<std::pair<int, int>, Object*> map;
 
 	bool InRange(const std::pair<int, int>& a, int distance);
 	bool InRange(int distance);

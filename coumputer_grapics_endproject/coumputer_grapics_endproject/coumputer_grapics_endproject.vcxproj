@@ -23,6 +23,7 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossBehavior.cpp" />
     <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="CollisionManger.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="AssimpGLMHelpers.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossBehavior.h" />
     <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CollisionManger.h" />
     <ClInclude Include="CommonValues.h" />

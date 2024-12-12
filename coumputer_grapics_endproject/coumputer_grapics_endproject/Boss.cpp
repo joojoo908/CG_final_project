@@ -1,4 +1,3 @@
-#include "Boss.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -6,10 +5,14 @@
 #include "Animation.h"
 #include "Animator.h"
 #include "Model.h"
-#include "CollisionManger.h"
-#include "ShaderHandle.h"
 #include "Object.h"
 #include "Player.h"
+#include "Boss.h"
+#include "BossBehavior.h"
+#include "CollisionManger.h"
+
+#include "ShaderHandle.h"
+
 #include <map>
 
 #include "CameraBase.h"
@@ -17,14 +20,15 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Boss::Boss(Model* model, Model* hitbox, Player* player) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
+	this->behavior = new BossBehavior(this->model,player->GetModel(),map);
 	this->animator = new Animator(nullptr);
 	this->player = player;
-
+	this->map = map;
 	groundHeight = 10;
 	upwardSpeed = 0;
 
@@ -33,6 +37,7 @@ Boss::Boss(Model* model, Model* hitbox, Player* player) : MOVE_SPEED(5.f), TURN_
 	atkAnim = new Animation("Boss/boss_atk.gltf", model);
 
 	isJumping = true;
+	inRange = false;
 }
 
 bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
@@ -43,10 +48,15 @@ bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 
 	float distance{};
 	// 이동 거리 및 회전 계산
-	if (InRange(144))
+	if (InRange(400))
 	{
+		inRange = true;
 		Turn_to_Player();
 		distance = MOVE_SPEED * deltaTime;
+	}
+	else
+	{
+		time_paturn = 0;
 	}
 
 	//float dir_Rot = currRot[1] + glm::degrees(atan2f(currMoveSpeed_x, currMoveSpeed_z));
@@ -149,7 +159,6 @@ void Boss::Turn_to_Player() {
 	float dz = Pposition[2] - Bposition[2];
 
 	model->SetRotate({ 0,glm::degrees(atan2(dx,dz)) ,0});
-
 }
 
 
@@ -168,17 +177,36 @@ void Boss::Jump()
 }
 
 void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
-
-	if (Move(deltaTime,map))
+	behavior->Update(deltaTime);
+	int key = behavior->GetKey();
+	switch (key)
 	{
-		if (animator->GetCurrAnimation() != runAnim)
+	case 0:
+		if (animator->GetCurrAnimation() != runAnim) {
 			animator->PlayAnimation(runAnim);
-	}
-	else
-	{
+		}
+		break;
+	case 1:
+		if (animator->GetCurrAnimation() != runAnim) {
+			animator->PlayAnimation(runAnim);
+		}
+		break;
+	case 2:
 		if (animator->GetCurrAnimation() != atkAnim)
 			animator->PlayAnimation(atkAnim);
+		break;
+	case 3:
+		if (animator->GetCurrAnimation() != atkAnim)
+			animator->PlayAnimation(atkAnim);
+		break;
+	case 4:
+		if (animator->GetCurrAnimation() != atkAnim)
+			animator->PlayAnimation(atkAnim);
+		break;
+	default:
+		break;
 	}
+
 	//애니메이션 업데이트
 	animator->UpdateAnimation(deltaTime);
 
