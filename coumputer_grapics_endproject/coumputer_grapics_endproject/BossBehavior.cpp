@@ -108,12 +108,16 @@ void BossBehavior::Chase(float deltaTime) {
 }
 void BossBehavior::closeAttack() {
 //영역에 대한 화면 표시 및 충돌검사 필요
+	if (turning_time >= 1.4 && turning_time <= 1.6)
+	{
+		std::cout << "공격타이밍\n";
+	}
 
 }
 void BossBehavior::Dash(float deltaTime) {
-	std::cout << "Dash\m";
+	std::cout << "Dash\n";
 	//---근접공격으로 변경
-	if (InRange(25))
+	if (InRange(9))
 	{
 		key = 2;
 		turning_time = 0;
@@ -188,7 +192,7 @@ void BossBehavior::Check_Paturn() {
 		if (turning_time >= 2.0f)
 		{
 			float* curRot = GetBossModel()->GetRotate();
-			GetBossModel()->SetRotate({ curRot[0],curRot[1] + 108,curRot[2] });
+			GetBossModel()->SetRotate({ curRot[0],curRot[1] + 90,curRot[2] });
 			turning_time = 0;
 		}
 		break;
@@ -198,10 +202,12 @@ void BossBehavior::Check_Paturn() {
 			if (skill_order == 0)
 			{
 				key = 3;
+				skill_order++;
 			}
 			else if (skill_order == 1)
 			{
 				key = 4;
+				skill_order = 0;
 			}
 			turning_time = 0;
 		}
@@ -231,9 +237,6 @@ void BossBehavior::Check_Paturn() {
 		break;
 	}
 }
-
-
-
 bool BossBehavior::InRange(int distance) {
 	float* Pposition = model_p->GetTranslate();
 	float* Bposition = model_b->GetTranslate();

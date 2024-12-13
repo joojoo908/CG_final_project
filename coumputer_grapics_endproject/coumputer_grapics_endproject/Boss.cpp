@@ -187,8 +187,8 @@ void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  
 	switch (key)
 	{
 	case 0:
-		if (animator->GetCurrAnimation() != runAnim) {
-			animator->PlayAnimation(runAnim);
+		if (animator->GetCurrAnimation() != walkAnim) {
+			animator->PlayAnimation(walkAnim);
 		}
 		break;
 	case 1:
@@ -201,8 +201,8 @@ void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  
 			animator->PlayAnimation(atkAnim);
 		break;
 	case 3:
-		if (animator->GetCurrAnimation() != runAnim) {
-			animator->PlayAnimation(runAnim);
+		if (animator->GetCurrAnimation() != fastrunAnim) {
+			animator->PlayAnimation(fastrunAnim);
 		}
 		break;
 	case 4:
