@@ -325,11 +325,11 @@ void mainInit() {
         collide_box->SetScale({ 0.2f, 2.f, 1.0f });
         for (int j = 0; j < 2; j++)
         {
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 199; i++)
             {
-                collide_box->SetTranslate({ -99 + 199 * j,2,-99 + i });
-                object = new Object("wall", wall, collide_box, 0, -99 + j * 199, -99 + i, 0);
-                obj_map[std::make_pair(-99 + j * 199, -99 + i)] = object;
+                collide_box->SetTranslate({ -100 + 200 * j,2,-99 + i });
+                object = new Object("wall", wall, collide_box, 0, -100 + j * 200, -99 + i, 0);
+                obj_map[std::make_pair(-100 + j * 200, -99 + i)] = object;
             }
         }
 
@@ -337,11 +337,11 @@ void mainInit() {
         collide_box->SetScale({ 1.f, 2.f, 0.2 });
         for (int j = 0; j < 2; j++)
         {
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 199; i++)
             {
-                collide_box->SetTranslate({ -99 + i,2, -99 + 199 * j });
-                object = new Object("wall", wall, collide_box, 0, -99 + i, -99 + 199 * j, 0);
-                obj_map[std::make_pair(-99 + i, -99 + j * 199)] = object;
+                collide_box->SetTranslate({ -100 + i,2, -100 + 200 * j });
+                object = new Object("wall", wall, collide_box, 0, -99 + i, -100 + 200 * j, 0);
+                obj_map[std::make_pair(-99 + i, -100 + j * 200)] = object;
             }
         }
     }
