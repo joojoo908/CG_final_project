@@ -7,6 +7,7 @@ class Collision
 {
 public:
 	Collision(Model* model);
+	Model* GetModel() { return model; }
 	void NextPosition(glm::vec3 delta);
 	void Update();
 
