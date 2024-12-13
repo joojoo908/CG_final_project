@@ -33,8 +33,11 @@ Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, 
 	upwardSpeed = 0;
 
 	idleAnim = new Animation("Boss/Boss.gltf", model);
+	walkAnim = new Animation("Boss/boss_walk.gltf", model);
 	runAnim = new Animation("Boss/boss_run.gltf", model);
+	fastrunAnim = new Animation("Boss/boss_fastrun.gltf", model);
 	atkAnim = new Animation("Boss/boss_atk.gltf", model);
+	deadAnim = new Animation("Boss/boss_dead.gltf", model);
 
 	isJumping = true;
 	inRange = false;

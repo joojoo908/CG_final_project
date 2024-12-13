@@ -40,8 +40,11 @@ private:
 	BossBehavior* behavior;
 
 	Animation* idleAnim;
+	Animation* walkAnim;
 	Animation* runAnim;
+	Animation* fastrunAnim;
 	Animation* atkAnim;
+	Animation* deadAnim;
 
 	const float MOVE_SPEED;
 	const float TURN_SPEED;
