@@ -73,6 +73,7 @@ Model* currModel;
 Player* player;
 Boss* boss;
 std::vector<Object*> objs;
+std::vector<Boss*> bosses;
 std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
 Object* title;
@@ -355,23 +356,25 @@ void mainInit() {
             entityList.push_back(cube);
         }
     }
-    machine = new Model();
-    modelPath = "machine/machine2.gltf";
-    machine->LoadModel(modelPath);
-    glm::vec3 newscale_machine(1, 1, 1);
-    machine->SetScale(newscale_machine);
-    machine->SetRotate({0,0,0});
-    machine->SetTranslate({0,1,0});
-
-    int rand_x = 2;//dis(gen);
-    int rand_z = 0; // dis(gen);
-    //collide_box->SetTranslate({ rand_x ,0,rand_z });
-    object = new Object("machine", machine, 0, 0, rand_x, rand_z, 0 );
-    obj_map[std::make_pair(rand_x, rand_z)] = object;
-
-    object = new Object("machine", machine, 0, 0, -80, -80, 0);
-    obj_map[std::make_pair(rand_x, rand_z)] = object;
-    
+    //¸Ó½Å
+    {
+        machine = new Model();
+        modelPath = "machine/machine2.gltf";
+        machine->LoadModel(modelPath);
+        glm::vec3 newscale_machine(1, 1, 1);
+        machine->SetScale(newscale_machine);
+        machine->SetRotate({ 0,0,0 });
+        machine->SetTranslate({ 0,1,0 });
+        
+        object = new Object("machine", machine, 0, 0, 60, 60, 0);
+        obj_map[std::make_pair(60, 60)] = object;
+        object = new Object("machine", machine, 0, 0, 60,- 60, 0);
+        obj_map[std::make_pair(60, -60)] = object;
+        object = new Object("machine", machine, 0, 0, -60, 60, 0);
+        obj_map[std::make_pair(-60, 60)] = object;
+        object = new Object("machine", machine, 0, 0, -60, -60, 0);
+        obj_map[std::make_pair(-60, -60)] = object;
+    }
     //¶¥
     {
         ground = new Model();
@@ -410,6 +413,7 @@ void mainInit() {
     //pause_obj->SetScale({ 1,1,1 });
     pause = new Object("pause", pause_obj, 0, 0, 0, 3, 0);
 
+    
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);

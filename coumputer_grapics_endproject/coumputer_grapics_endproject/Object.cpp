@@ -71,19 +71,15 @@ void Object::update_pannel(CameraBase* currCamera) {
 	set.z *= 3;
 	model->SetTranslate(currCamera->GetPosition()+set);
 
-	/*GLfloat* currPos = model->GetTranslate();
+	GLfloat* currPos = model->GetTranslate();
+	glm::vec3 modelPos = glm::vec3(currPos[0], currPos[1], currPos[2]);
 	glm::vec3 v = currCamera->GetPosition();
 	GLfloat angle = glm::atan(v.z - currPos[2], currPos[0] - v.x);
-	model->SetRotate({ model->GetRotate()[0] ,  glm::degrees(angle) - 90 , model->GetRotate()[2] });
-	GLfloat* currRot = model->GetRotate();*/
 
-	GLfloat* currPos = model->GetTranslate();
-	glm::vec3 modelPos = glm::vec3(currPos[0], currPos[1], currPos[2]); // 모델의 위치
-	glm::vec3 cameraPos = currCamera->GetPosition(); // 카메라의 위치
-	glm::vec3 direction = glm::normalize(cameraPos - modelPos);
-	GLfloat angle = glm::atan(direction.z, direction.x);
-	// 모델의 y축 회전값을 업데이트
-	model->SetRotate({ model->GetRotate()[0] , glm::degrees(angle) , model->GetRotate()[2] });
+	glm::vec3 direction = glm::normalize(v - modelPos);
+	GLfloat pitchAngle = glm::asin( direction.y );
+	model->SetRotate({ 90 - glm::degrees(pitchAngle)  ,  glm::degrees(angle) - 90 , model->GetRotate()[2] });
+
 }
 
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
