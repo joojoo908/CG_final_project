@@ -53,20 +53,17 @@ CameraBase* currCamera;
 FreeCamera* freeCamera;
 PlayerCamera* playerCamera;
 
-
 GLfloat deltaTime = 0.f;
 GLfloat lastTime = 0.f;
 
 std::vector<Mesh*> meshList;
 std::vector<Entity*> entityList;
 
-
-//Model* model_2B;
 Model* mainModel;
 Model* boss_model;
 Model* cube;
 Model* machine;
-Model* collide_box, * collide_box2, * collide_box3;
+Model* collide_box;
 Model* ground;
 Model* currModel;
 
@@ -112,6 +109,8 @@ void processKeyboard(unsigned char key, int x, int y) {
 
     if (key == 'p') {
         if (mode == "Pause_mode") {
+            lastX = Center_width;
+            lastY = Center_height;
             mode = "Play_mode";
         }
         else {
@@ -131,14 +130,7 @@ void processKeyboard(unsigned char key, int x, int y) {
         }
         
     }
-    //차후 플레이 모드로 이전
-    if (key == '0')
-    {
-        lastX = Center_width;
-        lastY = Center_height;
-        fixed_center = !fixed_center;
-    }
-
+    
     /*if (key == '1') {
         std::cout << pointLights[0]->GetModelMat()[3][0] << std::endl;
         std::cout << pointLights[0]->GetModelMat()[3][1] << std::endl;
@@ -170,38 +162,35 @@ void SpecialKeyboard(int key, int x, int y) {
 }
 
 
-bool click = 0;
+
 void processMouse(int x, int y) {
     GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
     if (mode == "Pause_mode") {
         XChange, YChange = 0, 0;
     }
+    lastX = x;
+    lastY = y;
 
     currCamera->MouseControl(XChange, YChange);
 
     if (mode == "Play_mode") {
         player->MouseContrl(XChange, YChange);
-    }
-    lastX = x;
-    lastY = y;
-
-    currCamera->Update();
-    if (fixed_center)
-    {
         lastX = Center_width;
         lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
     }
+
+    
 }
 
 void Mouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        click = 1;
+        
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        click = 0;
+        
     }
 }
 void Motion(int x, int y) {
@@ -413,13 +402,11 @@ void mainInit() {
 
 GLvoid render()
 {
-
     update();
 
     GLfloat now = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
     deltaTime = now - lastTime;
     lastTime = now;
-    //std::cout << "deltaTime"<< deltaTime << std::endl;
 
     //--------------
 
@@ -429,69 +416,54 @@ GLvoid render()
     glEnable(GL_DEPTH_TEST);
 
     //무언가 바인드
+    if (mode == "Play_mode" || mode =="Pause_mode" || mode =="Master_mode") {
+        glm::mat4 viewMat = currCamera->GetViewMatrix();
+        glm::mat4 projMat = currCamera->GetProjectionMatrix(screenWidth, screenHeight);
+        glm::vec3 camPos = currCamera->GetPosition();
 
-    glm::mat4 viewMat = currCamera->GetViewMatrix();
-    glm::mat4 projMat = currCamera->GetProjectionMatrix(screenWidth, screenHeight);
-    glm::vec3 camPos = currCamera->GetPosition();
-
-    skybox->DrawSkybox(viewMat, projMat);
-
-    /*
-    terrain->UseShader();
-    terrain->GetShader()->UseDirectionalLight(directionalLight);
-    terrain->GetShader()->UsePointLights(pointLights, pointLightCount);
-    terrain->GetShader()->UseEyePos(camPos);
-    terrain->DrawTerrain(viewMat, projMat);*/
-
-    //전체가 플레이어 그리기
-
-    //나무 그리기
-    for (auto object : objs) {
-        //object->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    }
-    for (const auto& obj : obj_map) {
-        // obj.first는 std::pair<int, int> 타입 (키)
-        // obj.second는 Object 타입 (값)
-        //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
-        obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    }
-
-    //object->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    //object2->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    //땅 그리기
-    shaderList[1]->UseShader();
-    {
-        GetShaderHandles_obj();
-
-        glm::mat4 modelMat = ground->GetModelMat();
-        glm::mat4 PVM = projMat * viewMat * modelMat;
-        glm::mat3 normalMat = GetNormalMat(modelMat);
-
-        glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-        glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
-        glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
-
-        shaderList[1]->UseEyePos(camPos);
-        shaderList[1]->UseDirectionalLight(directionalLight);
-        shaderList[1]->UsePointLights(pointLights, pointLightCount);
-
-        shaderList[1]->UseMaterial(ground->GetMaterial());
-
-        glUniform1i(loc_diffuseSampler, 0);
-        glUniform1i(loc_normalSampler, 1);
-
-        ground->RenderModel();
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR)
+        skybox->DrawSkybox(viewMat, projMat);
+        //땅 그리기
+        shaderList[1]->UseShader();
         {
-            std::cout << "error : " << error << std::endl;
-        }
-    }
+            GetShaderHandles_obj();
 
-    player->draw(currCamera, directionalLight, pointLights, pointLightCount);
-    boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
+            glm::mat4 modelMat = ground->GetModelMat();
+            glm::mat4 PVM = projMat * viewMat * modelMat;
+            glm::mat3 normalMat = GetNormalMat(modelMat);
+
+            glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
+            glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
+            glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
+
+            shaderList[1]->UseEyePos(camPos);
+            shaderList[1]->UseDirectionalLight(directionalLight);
+            shaderList[1]->UsePointLights(pointLights, pointLightCount);
+
+            shaderList[1]->UseMaterial(ground->GetMaterial());
+
+            glUniform1i(loc_diffuseSampler, 0);
+            glUniform1i(loc_normalSampler, 1);
+
+            ground->RenderModel();
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            GLenum error = glGetError();
+            if (error != GL_NO_ERROR)
+            {
+                std::cout << "error : " << error << std::endl;
+            }
+        }
+
+        //나무 그리기
+        for (const auto& obj : obj_map) {
+            // obj.first는 std::pair<int, int> 타입 (키)
+            // obj.second는 Object 타입 (값)
+            obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        }
+
+        player->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
+    }
 
     glutSwapBuffers();  // Swap buffers to render
 }
@@ -505,15 +477,12 @@ int main(int argc, char** argv)
     glutInitWindowSize(screenWidth, screenHeight);
     glutCreateWindow("OpenGL with Assimp and GLUT");
 
-
     // 전체 화면으로 전환
     //glutFullScreen();
 
     // Initialize GLEW
     glewInit();
     glutSetCursor(GLUT_CURSOR_CROSSHAIR);
-
-
 
     mainInit();
 
@@ -535,6 +504,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
+//안씀
 void TimerFunction(int value) {
     //glutPostRedisplay(); // 화면 재 출력
     glutTimerFunc(1, TimerFunction, 1);
