@@ -94,7 +94,8 @@ void BossBehavior::Check_Paturn() {
 		{
 			float* curRot = GetBossModel()->GetRotate();
 			GetBossModel()->SetRotate({ curRot[0],curRot[1] + 108,curRot[2] });
-			reset_time();
+			turning_time[key] = 0;
+			//reset_time();
 		}
 		break;
 	case 1:		//-- Chase();

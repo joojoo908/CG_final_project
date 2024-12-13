@@ -303,7 +303,7 @@ void mainInit() {
         glm::vec3 newscale1(0.5, 1, 0.5);
         cube->SetScale(newscale1);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 500; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
             //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
@@ -327,10 +327,10 @@ void mainInit() {
         for (int i = 0; i < 100; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
-            collide_box->SetTranslate({ rand_x ,9,rand_z });
-            object = new Object("tree", cube, collide_box, 0, rand_x, rand_z, 1);
+            collide_box->SetTranslate({ rand_x+0.5 ,9,rand_z+0.5 });
+            object = new Object("tree", cube, collide_box, 0, rand_x+0.5, rand_z+0.5, 1);
             obj_map[std::make_pair(rand_x, rand_z)] = object;
-            glm::vec3 newTns3(rand_x, 9, rand_z);
+            glm::vec3 newTns3(rand_x , 9, rand_z );
             cube->SetTranslate(newTns3);
             entityList.push_back(cube);
         }
