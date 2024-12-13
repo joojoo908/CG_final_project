@@ -71,7 +71,6 @@ Model* ground;
 Model* currModel;
 
 Player* player;
-Boss* boss;
 std::vector<Object*> objs;
 std::vector<Boss*> bosses;
 std::map<std::pair<int, int>, Object*> obj_map;
@@ -235,8 +234,12 @@ void update() {
         for (const auto& obj : obj_map) {
             obj.second->update(deltaTime, currCamera->GetPosition());
         }
+        for (auto boss : bosses) {
+            boss->update(deltaTime, obj_map);
+        }
+
         player->update(deltaTime, obj_map);
-        boss->update(deltaTime, obj_map);
+        
     }
     currCamera->Update();
 }
@@ -391,11 +394,23 @@ void mainInit() {
         boss_model->LoadModel(modelPath);
         boss_model->SetRotate({ 0,180,0 });
         boss_model->SetScale({ 2,2,2 });
-        boss_model->SetTranslate({ -80,0,-80 });
 
         collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
-        boss = new Boss(boss_model, collide_box, player, obj_map);
-        entityList.push_back(boss_model);
+
+        boss_model->SetTranslate({ 60,0,60 });
+        Boss * boss = new Boss(boss_model, collide_box, player, obj_map);
+        bosses.push_back(boss);
+
+        boss_model->SetTranslate({ 60,0,-60 });
+        Boss* boss2 = new Boss(boss_model, collide_box, player, obj_map);
+        bosses.push_back(boss2);
+        boss_model->SetTranslate({ -60,0,60 });
+        Boss* boss3 = new Boss(boss_model, collide_box, player, obj_map);
+        bosses.push_back(boss3);
+        boss_model->SetTranslate({ -60,0,-60 });
+        Boss* boss4 = new Boss(boss_model, collide_box, player, obj_map);
+        bosses.push_back(boss4);
+
     }
 
 
@@ -452,12 +467,12 @@ GLvoid render()
 
         skybox->DrawSkybox(viewMat, projMat);
 
-        for (const auto& obj : obj_map) {
-            // obj.first는 std::pair<int, int> 타입 (키)
-            // obj.second는 Object 타입 (값)
-            //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
-            obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
-        }
+        //for (const auto& obj : obj_map) {
+        //    // obj.first는 std::pair<int, int> 타입 (키)
+        //    // obj.second는 Object 타입 (값)
+        //    //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
+        //    obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        //}
     
         //땅 그리기
         shaderList[1]->UseShader();
@@ -497,9 +512,13 @@ GLvoid render()
             // obj.second는 Object 타입 (값)
             obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
         }
+        //보스들 그리기
+        for (auto boss : bosses) {
+            boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        }
 
         player->draw(currCamera, directionalLight, pointLights, pointLightCount);
-        boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
+       
 
         if (mode == "Pause_mode") {
             glDisable(GL_DEPTH_TEST);

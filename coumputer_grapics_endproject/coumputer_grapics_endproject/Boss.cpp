@@ -22,7 +22,7 @@
 
 Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
-	this->model = model;
+	this->model = new Model(*model);
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
