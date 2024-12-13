@@ -206,8 +206,8 @@ void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  
 		}
 		break;
 	case 4:
-		if (animator->GetCurrAnimation() != atkAnim)
-			animator->PlayAnimation(atkAnim);
+		if (animator->GetCurrAnimation() != jumpAtkAnim)
+			animator->PlayAnimation(jumpAtkAnim);
 		break;
 	default:
 		break;
