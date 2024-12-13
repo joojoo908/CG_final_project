@@ -63,6 +63,21 @@ void Object::update(float deltaTime, glm::vec3 v) {
 	}
 }
 
+void Object::update_pannel(CameraBase* currCamera) {
+
+	glm::vec3 set = currCamera->GetFront();
+	set.x *= 3;
+	set.y *= 3;
+	set.z *= 3;
+	model->SetTranslate(currCamera->GetPosition()+set);
+
+	GLfloat* currPos = model->GetTranslate();
+	glm::vec3 v = currCamera->GetPosition();
+	GLfloat angle = glm::atan(v.z - currPos[2], currPos[0] - v.x);
+	model->SetRotate({ model->GetRotate()[0] ,  glm::degrees(angle) - 90 , model->GetRotate()[2] });
+	GLfloat* currRot = model->GetRotate();
+}
+
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
 	glm::mat4 viewMat = currCamera->GetViewMatrix();
 	glm::mat4 projMat = currCamera->GetProjectionMatrix(1280, 720);
@@ -113,8 +128,10 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	glUniform1i(loc_diffuseSampler, 0);
 	glUniform1i(loc_normalSampler, 1);
 
+	
 	model->RenderModel();
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
 	if (hitbox)
 	{
 		//텍스처 중복 문제 해결

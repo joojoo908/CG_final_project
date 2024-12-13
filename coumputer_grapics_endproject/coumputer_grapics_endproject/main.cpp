@@ -74,6 +74,7 @@ std::vector<Object*> objs;
 std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
 Object* title;
+Object* pause;
 
 Animator* animator;
 Animator* noani;
@@ -83,6 +84,7 @@ Animation* danceAnim;
 Animation* runAnim;
 
 DirectionalLight* directionalLight;
+DirectionalLight* directionalLight2;
 PointLight* pointLights[MAX_POINT_LIGHTS];
 unsigned int pointLightCount = 0;
 
@@ -115,7 +117,10 @@ void processKeyboard(unsigned char key, int x, int y) {
             mode = "Play_mode";
         }
         else {
-            if(mode == "Play_mode") mode = "Pause_mode";
+            if (mode == "Play_mode") { 
+                pause->update_pannel(currCamera);
+                mode = "Pause_mode"; 
+            }
         }
     }
     else if (key == 'm') {
@@ -235,9 +240,15 @@ void mainInit() {
     CreateShader_obj();
 
     //빛
-    directionalLight = new DirectionalLight(0.3f, 1.f,
+    directionalLight = new DirectionalLight(0.5f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.0f, -1.0f, 0.f));
+        glm::vec3(0.0f, 0.0f, 0.0f));
+
+    directionalLight2 = new DirectionalLight(1.f, 1.f,
+        glm::vec4(1.f, 1.f, 1.f, 1.f),
+        glm::vec3(0.0f, 0.0f, 0.0f));
+
+
     entityList.push_back(directionalLight);
    /*pointLights[0] = new PointLight
     (0.f, 1.f,
@@ -388,6 +399,13 @@ void mainInit() {
     title_obj->SetScale({2.5,1,1.5});
     title = new Object("title", title_obj, 0, 0, 0, 3, 0);
 
+    Model* pause_obj = new Model();
+    modelPath = "Pause/pause_image.gltf";
+    pause_obj->LoadModel(modelPath);
+    pause_obj->SetRotate({ 90,180,0 });
+    //pause_obj->SetScale({ 1,1,1 });
+    pause = new Object("pause", pause_obj, 0, 0, 0, 3, 0);
+
 
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
@@ -418,6 +436,7 @@ GLvoid render()
 
     //무언가 바인드
     if (mode == "Play_mode" || mode =="Pause_mode" || mode =="Master_mode") {
+
         glm::mat4 viewMat = currCamera->GetViewMatrix();
         glm::mat4 projMat = currCamera->GetProjectionMatrix(screenWidth, screenHeight);
         glm::vec3 camPos = currCamera->GetPosition();
@@ -465,10 +484,16 @@ GLvoid render()
         player->draw(currCamera, directionalLight, pointLights, pointLightCount);
         boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
 
+        if (mode == "Pause_mode") {
+            glDisable(GL_DEPTH_TEST);
+            pause->draw(currCamera, directionalLight2, pointLights, pointLightCount);
+            glEnable(GL_DEPTH_TEST);
+        }
+
     }
     else if (mode == "Title_mode") {
         
-        title->draw(currCamera, directionalLight, pointLights, pointLightCount);
+        title->draw(currCamera, directionalLight2, pointLights, pointLightCount);
     }
 
     glutSwapBuffers();  // Swap buffers to render

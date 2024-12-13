@@ -21,6 +21,7 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix(GLfloat width, GLfloat height);
 	glm::vec3 GetPosition();
+	glm::vec3 GetFront();
 
 
 protected:

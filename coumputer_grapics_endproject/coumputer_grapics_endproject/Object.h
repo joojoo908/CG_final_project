@@ -21,7 +21,7 @@ public:
 	void update(float deltaTime, glm::vec3 v);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
-
+	void update_pannel(CameraBase* currCamera);
 
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
