@@ -319,11 +319,31 @@ void mainInit() {
         Model* wall = new Model();
         modelPath = "Wall/wall.gltf";
         wall->LoadModel(modelPath);
-        wall->SetTranslate({0,4,0});
-        wall->SetScale({4,1,4});
+        wall->SetTranslate({0,2,0});
+        wall->SetScale({ 1,1,2 });
+        wall->SetRotate({ 90,90,0 });
+        collide_box->SetScale({ 0.2f, 2.f, 1.0f });
+        for (int j = 0; j < 2; j++)
+        {
+            for (int i = 0; i < 200; i++)
+            {
+                collide_box->SetTranslate({ -99 + 199 * j,2,-99 + i });
+                object = new Object("wall", wall, collide_box, 0, -99 + j * 199, -99 + i, 0);
+                obj_map[std::make_pair(-99 + j * 199, -99 + i)] = object;
+            }
+        }
 
-        object = new Object("wall", wall, 0, 0, 0, 100, 0);
-        obj_map[std::make_pair(0, 0)] = object;
+        wall->SetRotate({ 90,0,0 });
+        collide_box->SetScale({ 1.f, 2.f, 0.2 });
+        for (int j = 0; j < 2; j++)
+        {
+            for (int i = 0; i < 200; i++)
+            {
+                collide_box->SetTranslate({ -99 + i,2, -99 + 199 * j });
+                object = new Object("wall", wall, collide_box, 0, -99 + i, -99 + 199 * j, 0);
+                obj_map[std::make_pair(-99 + i, -99 + j * 199)] = object;
+            }
+        }
     }
     //Ǯ
     {

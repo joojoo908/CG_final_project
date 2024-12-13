@@ -136,31 +136,31 @@ void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	model->RenderModel();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
-	if (hitbox)
-	{
-		//텍스처 중복 문제 해결
-		//히트박스 그리기
-		shaderList[1]->UseShader();
+	//if (hitbox)
+	//{
+	//	//텍스처 중복 문제 해결
+	//	//히트박스 그리기
+	//	shaderList[1]->UseShader();
 
-		GetShaderHandles_obj();
+	//	GetShaderHandles_obj();
 
-		glm::mat4 hitMat = hitbox->GetModelMat();
-		glm::mat4 hitPVM = projMat * viewMat * hitMat;
-		glm::mat3 hitnormalMat = GetNormalMat(hitMat);
+	//	glm::mat4 hitMat = hitbox->GetModelMat();
+	//	glm::mat4 hitPVM = projMat * viewMat * hitMat;
+	//	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
 
-		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
-		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
-		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
+	//	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
+	//	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
+	//	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
 
-		shaderList[1]->UseEyePos(camPos);
-		shaderList[1]->UseDirectionalLight(directionalLight);
-		shaderList[1]->UsePointLights(pointLights, pointLightCount);
+	//	shaderList[1]->UseEyePos(camPos);
+	//	shaderList[1]->UseDirectionalLight(directionalLight);
+	//	shaderList[1]->UsePointLights(pointLights, pointLightCount);
 
-		shaderList[1]->UseMaterial(hitbox->GetMaterial());
+	//	shaderList[1]->UseMaterial(hitbox->GetMaterial());
 
-		hitbox->RenderModel();
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+	//	hitbox->RenderModel();
+	//	glBindTexture(GL_TEXTURE_2D, 0);
+	//}
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
