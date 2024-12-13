@@ -13,21 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Animate">
+      <UniqueIdentifier>{7abb084f-c65f-41a3-b5de-c189d016d5f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{3ef1cb12-3ee3-4eed-82e7-14b45a090cb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Boss">
+      <UniqueIdentifier>{3cf8f89a-d05e-4148-a3bc-2c5af92f0427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\etc">
+      <UniqueIdentifier>{43e5fac6-53c9-44f4-bff7-8a593a2a0f74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Player">
+      <UniqueIdentifier>{e10bf021-7532-4906-9654-349d79775161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Usealbe">
+      <UniqueIdentifier>{6a34b9d5-649d-42d8-aace-52339118664d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Animator.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Bone.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
@@ -57,16 +66,10 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerCamera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
@@ -78,14 +81,29 @@
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Boss.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionManger.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>소스 파일\Animate</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>소스 파일\Animate</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraBase.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCamera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>소스 파일\Boss</Filter>
+    </ClCompile>
     <ClCompile Include="BossBehavior.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="assimp-vc143-mt.lib">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Animate</Filter>
     </Library>
   </ItemGroup>
 </Project>
