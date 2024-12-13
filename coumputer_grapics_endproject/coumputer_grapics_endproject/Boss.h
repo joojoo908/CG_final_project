@@ -44,6 +44,7 @@ private:
 	Animation* runAnim;
 	Animation* fastrunAnim;
 	Animation* atkAnim;
+	Animation* jumpAtkAnim;
 	Animation* deadAnim;
 
 	const float MOVE_SPEED;

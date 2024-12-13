@@ -173,8 +173,6 @@ void SpecialKeyboard(int key, int x, int y) {
     }
 }
 
-
-
 void processMouse(int x, int y) {
     GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
@@ -370,6 +368,9 @@ void mainInit() {
     //collide_box->SetTranslate({ rand_x ,0,rand_z });
     object = new Object("machine", machine, 0, 0, rand_x, rand_z, 0 );
     obj_map[std::make_pair(rand_x, rand_z)] = object;
+
+    object = new Object("machine", machine, 0, 0, -80, -80, 0);
+    obj_map[std::make_pair(rand_x, rand_z)] = object;
     
     //¶¥
     {
@@ -387,7 +388,7 @@ void mainInit() {
         boss_model->LoadModel(modelPath);
         boss_model->SetRotate({ 0,180,0 });
         boss_model->SetScale({ 2,2,2 });
-        boss_model->SetTranslate({ 0,0,5 });
+        boss_model->SetTranslate({ -80,0,-80 });
 
         collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
         boss = new Boss(boss_model, collide_box, player, obj_map);
