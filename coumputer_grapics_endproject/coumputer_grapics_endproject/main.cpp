@@ -42,7 +42,7 @@ int Center_height = screenHeight / 2;
 int lastX, lastY;
 bool fixed_center{};
 
-std::string mode = "Play_mode";
+std::string mode = "Title_mode";
 std::string back_mode = "";
 bool key_f1 = 1;
 
@@ -51,6 +51,7 @@ Window* mainWindow;
 //Camera* camera;
 CameraBase* currCamera;
 FreeCamera* freeCamera;
+FreeCamera* eventCamera;
 PlayerCamera* playerCamera;
 
 GLfloat deltaTime = 0.f;
@@ -72,7 +73,7 @@ Boss* boss;
 std::vector<Object*> objs;
 std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
-Object* object2;
+Object* title;
 
 Animator* animator;
 Animator* noani;
@@ -128,7 +129,6 @@ void processKeyboard(unsigned char key, int x, int y) {
             mode = "Master_mode";
             currCamera = freeCamera;
         }
-        
     }
     
     /*if (key == '1') {
@@ -166,8 +166,9 @@ void SpecialKeyboard(int key, int x, int y) {
 void processMouse(int x, int y) {
     GLfloat XChange = x - lastX;
     GLfloat YChange = lastY - y;
-    if (mode == "Pause_mode") {
-        XChange, YChange = 0, 0;
+    if ( mode != "Play_mode" && mode!="Master_mode" ) {
+        XChange = 0;
+        YChange = 0;
     }
     lastX = x;
     lastY = y;
@@ -181,13 +182,15 @@ void processMouse(int x, int y) {
         glutWarpPointer(Center_width, Center_height);
     }
 
-    
 }
 
 void Mouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        
+        if (mode == "Title_mode") {
+            mode = "Play_mode";
+            currCamera= playerCamera;
+        }
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
         
@@ -236,14 +239,12 @@ void mainInit() {
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(0.0f, -1.0f, 0.f));
     entityList.push_back(directionalLight);
-
    /*pointLights[0] = new PointLight
     (0.f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(1.f, 1.f, 0.0f),
         0.5f, 0.01f, 0.001f);
     pointLightCount++;*/
-
    /*pointLights[1] = new PointLight
     (0.0f, 0.5f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
@@ -254,23 +255,21 @@ void mainInit() {
         entityList.push_back(pointLights[i]);
 
     // Skybox
-    std::vector<std::string> skyboxFaces;
-    skyboxFaces.push_back("Skybox/px.png");
-    skyboxFaces.push_back("Skybox/nx.png");
-    skyboxFaces.push_back("Skybox/py.png");
-    skyboxFaces.push_back("Skybox/ny.png");
-    skyboxFaces.push_back("Skybox/pz.png");
-    skyboxFaces.push_back("Skybox/nz.png");
-    skybox = new Skybox(skyboxFaces);
+   {
+       std::vector<std::string> skyboxFaces;
+       skyboxFaces.push_back("Skybox/px.png");
+       skyboxFaces.push_back("Skybox/nx.png");
+       skyboxFaces.push_back("Skybox/py.png");
+       skyboxFaces.push_back("Skybox/ny.png");
+       skyboxFaces.push_back("Skybox/pz.png");
+       skyboxFaces.push_back("Skybox/nz.png");
+       skybox = new Skybox(skyboxFaces);
+   }
 
-
-    //모델 추가용 init() 함수 추가 예정
     // Model loading
     mainModel = new Model();
     std::string modelPath = "Player/player.gltf";
-    //std::string modelPath = "obj/night.gltf";
     mainModel->LoadModel(modelPath);
-
     //모델 90도 회전
     GLfloat* currRot = mainModel->GetRotate();
     float rotation = 90;
@@ -278,60 +277,64 @@ void mainInit() {
     glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
     mainModel->SetRotate(newRot);
     entityList.push_back(mainModel);
+    //플레이어 연결
+    collide_box = new Model();
+    std::string modelPath_collide = "collide_box/collide_box.gltf";
+    collide_box->LoadModel(modelPath_collide);
+    collide_box->SetRotate({ 0,0,0 });
+    collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
+    player = new Player(mainModel, collide_box);
+
     //----------------------------------------
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-100, 100);
+    //풀 생성
+    {
+        // 오브젝트 생성
+        cube = new Model();
+        modelPath = "Gress/ground.gltf";
+        cube->LoadModel(modelPath);
 
+        glm::vec3 newRot2(90, 0, 0);
+        cube->SetRotate(newRot2);
+        glm::vec3 newTns2(0, 0.5, 0);
+        cube->SetTranslate(newTns2);
+        glm::vec3 newscale1(0.5, 1, 0.5);
+        cube->SetScale(newscale1);
 
-    // 오브젝트 생성
-    cube = new Model();
-    modelPath = "Gress/ground.gltf";
-    cube->LoadModel(modelPath);
-
-    glm::vec3 newRot2(90,0,0);
-    cube->SetRotate(newRot2);
-    glm::vec3 newTns2(0, 0.5, 0);
-    cube->SetTranslate(newTns2);
-    glm::vec3 newscale1(0.5, 1, 0.5);
-    cube->SetScale(newscale1);
-
-    collide_box = new Model();
-    modelPath = "collide_box/collide_box.gltf";
-    collide_box->LoadModel(modelPath);
-    //collide_box->SetScale({ 0.4, 0.5, 0.4 });
-    collide_box->SetRotate({0,0,0});
-
-    for (int i = 0; i < 100; i++) {
-        int rand_x = dis(gen);
-        int rand_z = dis(gen);
-        //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
-        object = new Object("gress",cube, 0, 0, rand_x, rand_z, 1);
-        obj_map[std::make_pair(rand_x, rand_z)] = object;
+        for (int i = 0; i < 100; i++) {
+            int rand_x = dis(gen);
+            int rand_z = dis(gen);
+            //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
+            object = new Object("gress", cube, 0, 0, rand_x, rand_z, 1);
+            obj_map[std::make_pair(rand_x, rand_z)] = object;
+        }
     }
-
-    modelPath = "Tree/tree.gltf";
-    cube->LoadModel(modelPath);
-    glm::vec3 newRot3(90, 0, 0);
-    cube->SetRotate(newRot3);
-    glm::vec3 newTns3(0, 9, 0);
-    cube->SetTranslate(newTns3);
-    glm::vec3 newscale3(10, 1, 10);
-    cube->SetScale(newscale3);
-
-    collide_box->SetScale({ 0.5, 9, 0.5});
-    
-    for (int i = 0; i < 100; i++) {
-        int rand_x = dis(gen);
-        int rand_z = dis(gen);
-        collide_box->SetTranslate({ rand_x ,9,rand_z });
-        object = new Object("tree", cube, collide_box, 0, rand_x, rand_z,1);
-        obj_map[std::make_pair(rand_x, rand_z)] = object;
-        glm::vec3 newTns3(rand_x, 9, rand_z);
+    //나무 생성
+    {
+        modelPath = "Tree/tree.gltf";
+        cube->LoadModel(modelPath);
+        glm::vec3 newRot3(90, 0, 0);
+        cube->SetRotate(newRot3);
+        glm::vec3 newTns3(0, 9, 0);
         cube->SetTranslate(newTns3);
-        entityList.push_back(cube);
+        glm::vec3 newscale3(10, 1, 10);
+        cube->SetScale(newscale3);
+
+        collide_box->SetScale({ 0.5, 9, 0.5 });
+
+        for (int i = 0; i < 100; i++) {
+            int rand_x = dis(gen);
+            int rand_z = dis(gen);
+            collide_box->SetTranslate({ rand_x ,9,rand_z });
+            object = new Object("tree", cube, collide_box, 0, rand_x, rand_z, 1);
+            obj_map[std::make_pair(rand_x, rand_z)] = object;
+            glm::vec3 newTns3(rand_x, 9, rand_z);
+            cube->SetTranslate(newTns3);
+            entityList.push_back(cube);
+        }
     }
-    
     machine = new Model();
     modelPath = "machine/machine2.gltf";
     machine->LoadModel(modelPath);
@@ -346,52 +349,50 @@ void mainInit() {
     object = new Object("machine", machine, 0, 0, rand_x, rand_z, 0 );
     obj_map[std::make_pair(rand_x, rand_z)] = object;
     
+    //땅 생성
+    {
+        ground = new Model();
+        modelPath = "Ground3/gnd_v0.gltf";
+        //modelPath = "Ground/ground.gltf";
+        ground->LoadModel(modelPath);
 
-    //----------------------------------------
-    ground = new Model();
-    modelPath = "Ground3/gnd_v0.gltf";
-    //modelPath = "Ground/ground.gltf";
-    ground->LoadModel(modelPath);
-    
-    currRot = ground->GetRotate();
-    rotation = 90;
-    newRotx = currRot[0] + rotation;
-    glm::vec3 newRot4(newRotx, currRot[1], currRot[2]);
-    ground->SetRotate(newRot4);
+        currRot = ground->GetRotate();
+        rotation = 90;
+        newRotx = currRot[0] + rotation;
+        glm::vec3 newRot4(newRotx, currRot[1], currRot[2]);
+        ground->SetRotate(newRot4);
 
-    glm::vec3 newTns4(0,0,0);
-    ground->SetTranslate(newTns4);
-    glm::vec3 newscale(100, 1, 100);
-    ground->SetScale(newscale);
+        glm::vec3 newTns4(0, 0, 0);
+        ground->SetTranslate(newTns4);
+        glm::vec3 newscale(100, 1, 100);
+        ground->SetScale(newscale);
+    }
+    //보스 생성
+    {
+        boss_model = new Model();
+        modelPath = "Boss/Boss.gltf";
+        boss_model->LoadModel(modelPath);
+        boss_model->SetRotate({ 0,180,0 });
+        boss_model->SetScale({ 2,2,2 });
+        boss_model->SetTranslate({ 0,0,5 });
 
-    
+        collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
+        boss = new Boss(boss_model, collide_box, player, obj_map);
+        entityList.push_back(boss_model);
+    }
 
-
-    animator = new Animator(nullptr);
-    noani = new Animator(nullptr);
-
-    //플레이어 연결
-    modelPath = "collide_box/collide_box.gltf";
-    collide_box->LoadModel(modelPath);
-    collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
-    player = new Player(mainModel, collide_box);
-
-    //------------------------------------------
-    boss_model = new Model();
-    modelPath = "Boss/Boss.gltf";
-    boss_model->LoadModel(modelPath);
-    boss_model->SetRotate({ 0,180,0 });
-    boss_model->SetScale({ 2,2,2 });
-    boss_model->SetTranslate({ 0,0,5 });
+    Model * title_obj = new Model();
+    modelPath = "Title/title_image.gltf";
+    title_obj->LoadModel(modelPath);
+    title_obj->SetRotate({ 90,0,0 });
+    title_obj->SetScale({2.5,1,1.5});
+    title = new Object("title", title_obj, 0, 0, 0, 3, 0);
 
 
-    collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
-    boss = new Boss(boss_model, collide_box,player,obj_map);
-    entityList.push_back(boss_model);
-
-    freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 2.f), 100.f, 0.3f);
+    freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
+    eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
-    currCamera = playerCamera;
+    currCamera = eventCamera;
 
 
     /*idleAnim = new Animation("Knight/idle.gltf", currModel);
@@ -411,7 +412,7 @@ GLvoid render()
     //--------------
 
     // Clear the window
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
@@ -463,6 +464,11 @@ GLvoid render()
 
         player->draw(currCamera, directionalLight, pointLights, pointLightCount);
         boss->draw(currCamera, directionalLight, pointLights, pointLightCount);
+
+    }
+    else if (mode == "Title_mode") {
+        
+        title->draw(currCamera, directionalLight, pointLights, pointLightCount);
     }
 
     glutSwapBuffers();  // Swap buffers to render
