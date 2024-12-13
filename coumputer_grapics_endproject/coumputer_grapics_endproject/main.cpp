@@ -314,6 +314,17 @@ void mainInit() {
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-100, 100);
+    //벽
+    {
+        Model* wall = new Model();
+        modelPath = "Wall/wall.gltf";
+        wall->LoadModel(modelPath);
+        wall->SetTranslate({0,4,0});
+        wall->SetScale({4,1,4});
+
+        object = new Object("wall", wall, 0, 0, 0, 100, 0);
+        obj_map[std::make_pair(0, 0)] = object;
+    }
     //풀
     {
         cube = new Model();
