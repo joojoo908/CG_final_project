@@ -311,6 +311,7 @@ void mainInit() {
             obj_map[std::make_pair(rand_x, rand_z)] = object;
         }
     }
+<<<<<<< HEAD
     //³ª¹« »ý¼º
     {
         modelPath = "Tree/tree.gltf";
@@ -318,6 +319,27 @@ void mainInit() {
         glm::vec3 newRot3(90, 0, 0);
         cube->SetRotate(newRot3);
         glm::vec3 newTns3(0, 9, 0);
+=======
+
+    modelPath = "Tree/tree.gltf";
+    cube->LoadModel(modelPath);
+    glm::vec3 newRot3(90, 0, 0);
+    cube->SetRotate(newRot3);
+    glm::vec3 newTns3(0, 9, 0);
+    cube->SetTranslate(newTns3);
+    glm::vec3 newscale3(10, 1, 10);
+    cube->SetScale(newscale3);
+
+    collide_box->SetScale({ 0.5, 9, 0.5});
+    
+    for (int i = 0; i < 100; i++) {
+        int rand_x = dis(gen);
+        int rand_z = dis(gen);
+        collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
+        object = new Object("tree", cube, collide_box, 0, rand_x + 0.5, rand_z + 0.5, 1);
+        obj_map[std::make_pair(rand_x, rand_z)] = object;
+        glm::vec3 newTns3(rand_x, 9, rand_z);
+>>>>>>> 8cb7fee (ë³´ìŠ¤ ì›€ì§ìž„ (ì¶”ì  ë°°íšŒ ëŒ€ì‰¬ êµ¬í˜„))
         cube->SetTranslate(newTns3);
         glm::vec3 newscale3(10, 1, 10);
         cube->SetScale(newscale3);

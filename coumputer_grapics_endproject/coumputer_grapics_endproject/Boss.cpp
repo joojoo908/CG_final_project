@@ -25,10 +25,11 @@ Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, 
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
-	this->behavior = new BossBehavior(this->model,player->GetModel(),map);
 	this->animator = new Animator(nullptr);
 	this->player = player;
-	this->map = map;
+	this->behavior = new BossBehavior(this->model, player->GetModel(),
+		this->collisionbox,player->GetCollsion(), map);
+	this->map = map; 
 	groundHeight = 10;
 	upwardSpeed = 0;
 
@@ -114,7 +115,7 @@ bool Boss::InRange(const std::pair<int, int>& a,int distance) {
 	const auto& translate = model->GetTranslate();
 	float dx = translate[0] - x;
 	float dz = translate[2] - z;
-
+        
 	// 거리 비교 (제곱근 계산 생략)
 	return (dx * dx + dz * dz) <= distance;
 }
@@ -140,7 +141,7 @@ void Boss::UpdateHitbox()
 bool Boss::Collide(Collision* box, glm::vec3 delta) {
 
 	Collision* nextbox = GetCollsion();
-	nextbox->NextPosition(delta);
+	nextbox->NextPosition(delta);    
 	//X축 검사
 	bool xOverlap = box->maxX >= nextbox->minX &&
 		box->minX <= nextbox->maxX;

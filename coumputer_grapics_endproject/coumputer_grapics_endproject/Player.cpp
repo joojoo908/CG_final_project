@@ -105,25 +105,20 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 
 	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
 	bool canmove = true;
-	//auto it1 = map.find({ int(currPos[0]), int(currPos[2]) });
-	//auto it = map.find({ int(newPos[0]), int(newPos[2]) });
-	//if (it != map.end()&& it->second->GetCollision())
-	//{
-	//	UpdateHitbox();
-	//	if (Collide(it->second->GetCollision(), delta))
-	//	{
-	//		canmove = false;      
-	//	}
-	//}
-	for (const auto& obj : map)
+	auto it1 = map.find({ int(currPos[0]), int(currPos[2]) });
+	auto it = map.find({ int(newPos[0]), int(newPos[2]) });
+	for (int i = -1; i < 2; i++)
 	{
-		if (InRange(obj.first,10) && obj.second->GetCollision())
+		for (int j = -1; j < 2; j++)
 		{
-			std::cout << "x: " << obj.first.first <<", z: " << obj.first.second << "\n";
-			UpdateHitbox();
-			if (Collide(obj.second->GetCollision(), delta))
-			{	
-				canmove = false;
+			auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
+			if (it != map.end() && it->second->GetCollision())
+			{
+				UpdateHitbox();
+				if (Collide(it->second->GetCollision(), delta))
+				{
+					canmove = false;
+				}
 			}
 		}
 	}
@@ -159,10 +154,11 @@ bool Player::InRange(const std::pair<int, int>& a, int distance) {
 	// 거리 비교 (제곱근 계산 생략)
 	return (dx * dx + dz * dz) <= distance;
 }
-//bool Player::InRange(int x1, int z1, int x2, int z2) {
-//	
+//bool Player::InRange(int x, int z) {
+//
 //
 //	
+//
 //}
 
 
