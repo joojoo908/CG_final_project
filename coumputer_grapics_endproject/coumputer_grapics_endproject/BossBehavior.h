@@ -17,7 +17,7 @@ public:
 	void Wander(float deltaTime);
 	void Chase(float deltaTime);
 	void closeAttack();
-	void Dash();
+	void Dash(float deltaTime);
 	void Slam();
 	void Do(float deltaTime);
 
@@ -45,6 +45,7 @@ private:
 	std::map<std::pair<int, int>, Object*> map;
 	int key{};		//--- 행동 키
 	float turning_time{}; //--- 키 변경 타임
+	int skill_order{};
 	bool InRange(int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
 };

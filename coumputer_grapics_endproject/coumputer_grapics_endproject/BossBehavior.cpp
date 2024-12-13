@@ -122,7 +122,7 @@ void BossBehavior::Dash(float deltaTime) {
 	Turn_to_Player();
 	GLfloat currRotY = model_b->GetRotate()[1];
 	GLfloat* currPos = model_b->GetTranslate();
-	float distance = 1.2f * MOVE_SPEED * deltaTime;
+	float distance = 2.5 * MOVE_SPEED * deltaTime;
 	float dx = distance * sinf(glm::radians(currRotY));
 	float dz = distance * cosf(glm::radians(currRotY));
 	glm::vec3 delta(dx, 0, dz);
@@ -189,12 +189,7 @@ void BossBehavior::Check_Paturn() {
 		{
 			float* curRot = GetBossModel()->GetRotate();
 			GetBossModel()->SetRotate({ curRot[0],curRot[1] + 108,curRot[2] });
-<<<<<<< HEAD
-			turning_time[key] = 0;
-			//reset_time();
-=======
 			turning_time = 0;
->>>>>>> 8cb7fee (보스 움직임 (추적 배회 대쉬 구현))
 		}
 		break;
 	case 1:		//-- Chase();
@@ -219,7 +214,7 @@ void BossBehavior::Check_Paturn() {
 		}
 		break;
 	case 3:		//-- Dash();
-		if (turning_time >= 1.5f)
+		if (turning_time >= 2.5f)
 		{
 			key = 1;
 			turning_time = 0;
