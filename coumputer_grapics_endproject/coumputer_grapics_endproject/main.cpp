@@ -155,6 +155,7 @@ void SpecialKeyboard(int key, int x, int y) {
         mode = "End_mode";
         currCamera = eventCamera;
         break;
+
     }
 }
 

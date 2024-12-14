@@ -78,7 +78,6 @@
     <None Include="Shader\vertex.glsl" />
     <None Include="Skybox.frag" />
     <None Include="Skybox.vert" />
-    <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="assimp-vc143-mt.lib" />

@@ -16,7 +16,8 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), 
+GRAVITY(0.8f), JUMP_POWER(0.4f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
@@ -31,6 +32,7 @@ Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), 
 	backRunAnim = new Animation("Player/backRun.gltf", model);
 	leftRunAnim = new Animation("Player/leftRun.gltf", model);
 	rightRunAnim = new Animation("Player/rightRun.gltf", model);
+	jumpAnim = new Animation("Player/jump.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
 
 	isJumping = true;
@@ -50,6 +52,11 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		}
 		else if (keys == 'd')
 			currMoveSpeed_x = -MOVE_SPEED;
+
+		if (keys == 32) {
+			Jump();
+		}
+
 	}
 	else {
 		if (keys == 'w')
@@ -63,9 +70,7 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		else if (keys == 'd')
 			currMoveSpeed_x = 0;
 	}
-	//점프 막음
-	/*if (keys=='j')
-		Jump();*/
+	
 }
 void Player::MouseContrl(float XChange, float YChange) {
 	// 회전
@@ -97,9 +102,18 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	float dx = distance * sinf(glm::radians(dir_Rot));
 	float dz = distance * cosf(glm::radians(dir_Rot));
 
+
+	upwardSpeed -= GRAVITY * deltaTime;
 	// 새로운 위치 계산
 	glm::vec3 delta(dx, upwardSpeed, dz);
 	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
+
+	if (newPos[1] <= 0) // 땅에 닿았다면
+	{
+		upwardSpeed = 0;
+		newPos[1] = 0;
+		isJumping = false;
+	}
 
 	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
 	bool canmove = true;
@@ -120,11 +134,15 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 			}
 		}
 	}
-	if (canmove)
-	{
+	if (canmove){
 		model->SetTranslate(newPos);
 		newPos.y += hitbox->GetScale()[1];
 		hitbox->SetTranslate(newPos);
+	}
+	else {
+		model->SetTranslate({ currPos[0] , newPos[1],currPos[2] });
+		newPos.y += hitbox->GetScale()[1];
+		hitbox->SetTranslate({ currPos[0] , newPos[1],currPos[2] });
 	}
 
 	// 이동 상태 반환
@@ -238,8 +256,14 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	//죽은 상태의 애니메이션
 	else
 	{
-		if (animator->GetCurrAnimation() != idleAnim)
-			animator->PlayAnimation(idleAnim);
+		if (isJumping) {
+			if (animator->GetCurrAnimation() != jumpAnim)
+				animator->PlayAnimation(jumpAnim);
+		}
+		else {
+			if (animator->GetCurrAnimation() != idleAnim)
+				animator->PlayAnimation(idleAnim);
+		}
 	}
 
 
