@@ -60,7 +60,7 @@ private:
 	float groundHeight;
 	float HP;
 	float working_time;
-
+	float ending_time;
 	bool isJumping;
 	bool is_Working;
 	bool is_Live;

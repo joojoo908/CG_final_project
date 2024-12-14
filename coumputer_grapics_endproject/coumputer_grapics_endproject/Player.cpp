@@ -34,6 +34,7 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	jumpAnim = new Animation("Player/jump.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
 	working_time = {};
+	ending_time = {};
 	isJumping = true;
 	is_Live = true;
 	can_escape = false;
@@ -279,7 +280,15 @@ void  Player::GetDamage(float Damage) {
 	HP -= Damage;
 	if (HP <= 0.f)
 	{
-		is_Live = false;
+		if (ending_time <= 2.0f)
+		{
+			ending_time += 0.1f;
+		}
+		else
+		{
+			is_Live = false;
+		}
+
 	}
 }
 void Player::Jump()
@@ -358,8 +367,6 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	{
 		Ending();
 	}
-
-
 	//애니메이션 업데이트
 	animator->UpdateAnimation(deltaTime);
 
