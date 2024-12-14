@@ -290,33 +290,24 @@ void mainInit() {
 
     //모델 추가용 init() 함수 추가 예정
     
-    mainModel = new Model();
-    collide_box = new Model();
-    std::string modelPath = "Player/player2.gltf";
-    std::string modelPath2 = "collide_box/collide_box.gltf";
-    //플레이어
-    {
-        mainModel->LoadModel(modelPath);
-        //모델 90도 회전
-        GLfloat* currRot = mainModel->GetRotate();
-        float rotation = 90;
-        float newRotx = currRot[0] + rotation;
-        glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
-        mainModel->SetRotate(newRot);
-        entityList.push_back(mainModel);
-
-        collide_box->LoadModel(modelPath2);
-        collide_box->SetRotate({ 0,0,0 });
-        collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
-        player = new Player(mainModel, collide_box);
-    }
+    
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-99, 99);
+
+
+
+    std::string modelPath = "Wall/wall.gltf";
+    std::string modelPath2 = "collide_box/collide_box.gltf";
+
+    collide_box = new Model();
+    collide_box->LoadModel(modelPath2);
+    collide_box->SetRotate({ 0,0,0 });
+    collide_box->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
     //벽
     {
         Model* wall = new Model();
-        modelPath = "Wall/wall.gltf";
         wall->LoadModel(modelPath);
         wall->SetTranslate({0,2,0});
         wall->SetScale({ 1,1,2 });
@@ -407,14 +398,21 @@ void mainInit() {
         machine->SetScale(newscale_machine);
         machine->SetRotate({ 0,0,0 });
         machine->SetTranslate({ 0,1,0 });
-        
-        object = new Object("machine", machine, 0, 0, 60, 60, 0);
+
+        collide_box->SetRotate({ 0,0,0 });
+        collide_box->SetScale(glm::vec3(0.8, 0.6, 0.4));
+
+        collide_box->SetTranslate({ 60,0.6,60 });
+        object = new Object("machine", machine, collide_box, 0, 60, 60, 0);
         obj_map[std::make_pair(60, 60)] = object;
-        object = new Object("machine", machine, 0, 0, 60,- 60, 0);
+        collide_box->SetTranslate({ 60,0.6,-60 });
+        object = new Object("machine", machine, collide_box, 0, 60,- 60, 0);
         obj_map[std::make_pair(60, -60)] = object;
-        object = new Object("machine", machine, 0, 0, -60, 60, 0);
+        collide_box->SetTranslate({ -60,0.6,60 });
+        object = new Object("machine", machine, collide_box, 0, -60, 60, 0);
         obj_map[std::make_pair(-60, 60)] = object;
-        object = new Object("machine", machine, 0, 0, -60, -60, 0);
+        collide_box->SetTranslate({ -60,0.6,-60 });
+        object = new Object("machine", machine, collide_box, 0, -60, -60, 0);
         obj_map[std::make_pair(-60, -60)] = object;
     }
     //땅
@@ -434,6 +432,27 @@ void mainInit() {
         atk_circle->SetRotate({ 0,0,0 });
         atk_circle->SetScale({ 1,1,1 });
         atk_circle->SetTranslate({ 0,0.1f,0 });
+    }
+
+
+
+    //플레이어
+    {
+        mainModel = new Model();
+        modelPath = "Player/player2.gltf";
+        mainModel->LoadModel(modelPath);
+        //모델 90도 회전
+        GLfloat* currRot = mainModel->GetRotate();
+        float rotation = 90;
+        float newRotx = currRot[0] + rotation;
+        glm::vec3 newRot(newRotx, currRot[1], currRot[2]);
+        mainModel->SetRotate(newRot);
+        entityList.push_back(mainModel);
+
+        collide_box->SetTranslate({ 0,0,0 });
+        collide_box->SetRotate({ 0,0,0 });
+        collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
+        player = new Player(mainModel, collide_box, obj_map);
     }
     //보스
     {

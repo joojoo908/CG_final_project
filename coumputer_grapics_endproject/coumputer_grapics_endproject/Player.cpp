@@ -16,13 +16,13 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
-	
+	this->map = map;
 	groundHeight = 10;
 	upwardSpeed = 0;
 	HP = 100.0f;
@@ -50,6 +50,25 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		}
 		else if (keys == 'd')
 			currMoveSpeed_x = -MOVE_SPEED;
+
+		if (keys == 'f')
+		{
+			GLfloat* currPos = model->GetTranslate();
+			GLfloat YRot = model->GetRotate()[1];
+			int forwardX = int(currPos[0] + cos(glm::radians(YRot + 180.f))); // 전방 X 방향 (cosine 사용)
+			int forwardZ = int(currPos[2] + sin(glm::radians(YRot + 180.f))); // 전방 Z 방향 (sine 사용)
+			auto it = map.find({ forwardX, forwardZ });
+			std::cout << "오브젝트 검사\n";
+			if (it != map.end() && it->second->GetCollision())
+			{
+				UpdateHitbox();
+				std::cout << "오브젝트 검사완료\n";
+				if (it->second->GetType() == "machine") {
+					is_Working = true;
+					std::cout << "오브젝트 활성화\n";
+				}
+			}
+		}
 	}
 	else {
 		if (keys == 'w')
@@ -141,12 +160,6 @@ bool Player::InRange(const std::pair<int, int>& a, int distance) {
 	// 거리 비교 (제곱근 계산 생략)
 	return (dx * dx + dz * dz) <= distance;
 }
-//bool Player::InRange(int x, int z) {
-//
-//
-//	
-//
-//}
 
 void Player::UpdateHitbox() 
 {
@@ -224,7 +237,7 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 			}
 		}
 		//오브젝트 상호작용
-		else if (true)  
+		else if (is_Working)  
 		{
 			if (animator->GetCurrAnimation() != sitAnim)
 				animator->PlayAnimation(sitAnim);
