@@ -23,9 +23,7 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
 	this->map = map;
-	groundHeight = 10;
-	upwardSpeed = 0;
-	HP = 100.0f;
+
 	idleAnim = new Animation("Player/idle.gltf", model);
 	runAnim = new Animation("Player/player.gltf", model);
 	backRunAnim = new Animation("Player/backRun.gltf", model);
@@ -33,8 +31,14 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	rightRunAnim = new Animation("Player/rightRun.gltf", model);
 	jumpAnim = new Animation("Player/jump.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
+	
+	groundHeight = 10;
+	upwardSpeed = 0;
 	working_time = {};
 	ending_time = {};
+	LightKey = 5;
+	HP = 100.0f;
+
 	isJumping = true;
 	is_Live = true;
 	can_escape = false;
@@ -63,6 +67,7 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		{
 			GLfloat* currPos = model->GetTranslate();
 			GLfloat YRot = model->GetRotate()[1];
+			std::cout << currPos[0] << ", " << currPos[2] << std::endl;
 			int forwardX = int(currPos[0] + sinf(glm::radians(YRot))); // 전방 X 방향 (cosine 사용)
 			int forwardZ = int(currPos[2] + cosf(glm::radians(YRot))); // 전방 Z 방향 (sine 사용)
 			if (YRot >= -40 && YRot <= 40.f)
@@ -120,6 +125,7 @@ bool Player::isMachine(int x, int z) {
 			{
 				if (!is_Clear[0])
 				{
+					LightKey = 0;
 					is_Clear[0] = true;
 				}
 				else
@@ -131,6 +137,7 @@ bool Player::isMachine(int x, int z) {
 			{
 				if (!is_Clear[1])
 				{
+					LightKey = 1;
 					is_Clear[1] = true;
 				}
 				else
@@ -142,6 +149,7 @@ bool Player::isMachine(int x, int z) {
 			{
 				if (!is_Clear[2])
 				{
+					LightKey = 3;
 					is_Clear[2] = true;
 				}
 				else
@@ -153,6 +161,7 @@ bool Player::isMachine(int x, int z) {
 			{
 				if (!is_Clear[3])
 				{
+					LightKey = 2;
 					is_Clear[3] = true;
 				}
 				else
@@ -280,15 +289,7 @@ void  Player::GetDamage(float Damage) {
 	HP -= Damage;
 	if (HP <= 0.f)
 	{
-		if (ending_time <= 2.0f)
-		{
-			ending_time += 0.1f;
-		}
-		else
-		{
-			is_Live = false;
-		}
-
+		is_Live = false;
 	}
 }
 void Player::Jump()
@@ -356,6 +357,7 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	//죽은 상태의 애니메이션
 	else
 	{
+		ending_time += deltaTime;
 		if (animator->GetCurrAnimation() != idleAnim)
 			animator->PlayAnimation(idleAnim);
 	}
@@ -365,6 +367,7 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	}
 	else
 	{
+		ending_time += deltaTime;
 		Ending();
 	}
 	//애니메이션 업데이트
@@ -463,6 +466,7 @@ void Player::OpenEnding() {
 	}
 	if (cnt == 4)
 	{
+		LightKey = 4;
 		can_escape = true;
 	}
 }

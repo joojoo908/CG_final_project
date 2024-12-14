@@ -238,16 +238,7 @@ void handleResize(int w, int h) {
 //---------------------------------------------------------------
 
 void update() {
-    if (player->IS_DEAD()) // 게임오버 조건
-    {
-        //mode = "End_mode";
-        //currCamera = eventCamera;
-    }
-    else if (player->IS_END()) //클리어 조건
-    {
-        mode = "End_mode";
-        currCamera = eventCamera;
-    }
+
     if (mode == "Play_mode" || back_mode == "Play_mode") {
         for (const auto& obj : obj_map) {
             obj.second->update(deltaTime, currCamera->GetPosition());
@@ -256,11 +247,45 @@ void update() {
             boss->update(deltaTime, obj_map);
         }
 
+        switch (player->GetKey())
+        {
+        case 0:
+            pointLights[1]->color = glm::vec4(0.5, 0, 0, 1);
+            player->SetKey();
+            break;
+        case 1:
+            pointLights[2]->color = glm::vec4(0, 0.5, 0, 1);
+            player->SetKey();
+            break;
+        case 2:
+            pointLights[3]->color = glm::vec4(0, 0, 0.5, 1);
+            player->SetKey();
+            break;
+        case 3:
+            pointLights[4]->color = glm::vec4(0.5, 0, 0.5, 1);
+            player->SetKey();
+            break;
+        case 4:
+            pointLights[0]->color = glm::vec4(0.5, 0.5, 0.5, 1);
+            player->SetKey();
+            break;
+        default:
+            break;
+        }
         player->update(deltaTime, obj_map);
-        
+        if (player->IS_DEAD()) // 게임오버 조건
+        {
+            mode = "End_mode";
+            currCamera = eventCamera;
+        }
+        else if (player->IS_END()) //클리어 조건
+        {
+            mode = "End_mode";
+            currCamera = eventCamera;
+        }
+
     }
     currCamera->Update();
-
 }
 
 void mainInit() {
@@ -649,6 +674,7 @@ GLvoid render()
 
         player->draw(currCamera, directionalLight, pointLights, pointLightCount);
        
+        //배틀쉽 그리기
         ship->draw(currCamera, directionalLight, pointLights, pointLightCount);
 
         if (mode == "Pause_mode") {

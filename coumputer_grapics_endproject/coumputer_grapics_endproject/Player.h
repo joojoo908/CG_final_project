@@ -26,8 +26,10 @@ public:
 
 	float GetRotY();
 	void GetDamage(float Damage);
+	int GetKey() { return LightKey; }
+	void SetKey() { LightKey = 5; }
 	bool IS_END() { return is_End; }
-	bool IS_DEAD() { return is_Live; }
+	bool IS_DEAD() { return !is_Live && !ending_time; }
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
 	Collision* GetCollsion() { return collisionbox; }
@@ -61,12 +63,15 @@ private:
 	float HP;
 	float working_time;
 	float ending_time;
+
 	bool isJumping;
 	bool is_Working;
 	bool is_Live;
 	bool is_Clear[4];
 	bool can_escape;
 	bool is_End;
+
+	int LightKey{};
 
 	bool InRange(int x, int z, int goal);
 	bool InRange(const std::pair<int, int>& a, int distance);
@@ -75,4 +80,5 @@ private:
 	void UpdateHitbox();
 	void OpenEnding();
 	void Ending();
+	
 };
