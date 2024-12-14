@@ -397,11 +397,11 @@ void mainInit() {
         for (int i = 0; i < 300; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
-            bool b0 = (rand_x > 60 - 7 && rand_x < 60 + 7 && rand_z > 60 - 7 && rand_z < 60 + 7);
-            bool b1 = (rand_x > 60 - 7 && rand_x < 60 + 7 && rand_z > -60 - 7 && rand_z < -60 + 7);
-            bool b2 = (rand_x > -60 - 7 && rand_x < -60 + 7 && rand_z > 60 - 7 && rand_z < 60 + 7);
-            bool b3 = (rand_x > -60 - 7 && rand_x < -60 + 7 && rand_z > -60 - 7 && rand_z < -60 + 7);
-                if ( !(b0||b1||b2||b3) ) {
+            bool b0 = (rand_x > 60 - 3 && rand_x < 60 + 4 && rand_z > 60 - 3 && rand_z < 60 + 4);
+            bool b1 = (rand_x > 60 - 3 && rand_x < 60 + 4 && rand_z > -60 - 3 && rand_z < -60 + 4);
+            bool b2 = (rand_x > -60 - 3 && rand_x < -60 + 4 && rand_z > 60 - 3 && rand_z < 60 + 4);
+            bool b3 = (rand_x > -60 - 3 && rand_x < -60 + 4 && rand_z > -60 - 3 && rand_z < -60 + 4);
+                if ( !b0&&!b1&&!b2&&!b3 ) {
                     collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
                     object = new Object("tree", cube, collide_box, 0, rand_x + 0.5, rand_z + 0.5, 1);
                     obj_map[std::make_pair(rand_x, rand_z)] = object;
