@@ -36,6 +36,8 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	working_time = {};
 	isJumping = true;
 	is_Live = true;
+	can_escape = false;
+	is_End = false;
 }
 
 void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
@@ -104,6 +106,7 @@ void Player::MouseContrl(float XChange, float YChange) {
 	model->SetRotate(newRot);
 	//hitbox->SetRotate(newRot);
 }
+
 
 bool Player::isMachine(int x, int z) {
 
@@ -347,7 +350,14 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		if (animator->GetCurrAnimation() != idleAnim)
 			animator->PlayAnimation(idleAnim);
 	}
-
+	if (!can_escape)
+	{
+		OpenEnding();
+	}
+	else
+	{
+		Ending();
+	}
 
 
 	//애니메이션 업데이트
@@ -434,4 +444,30 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	{
 		std::cout << "error : " << error << std::endl;
 	}
+}
+void Player::OpenEnding() {
+	int cnt{};
+	for (int i = 0; i < 4; i++)
+	{
+		if (is_Clear[i])
+		{
+			cnt++;
+		}
+	}
+	if (cnt == 4)
+	{
+		can_escape = true;
+	}
+}
+void Player::Ending() {
+	float xPos = model->GetTranslate()[0];
+	float zPos = model->GetTranslate()[2];
+	
+	if (InRange(xPos, zPos, 100))
+	{
+		is_End = true;
+	}
+}
+bool Player::InRange(int x, int z,int goal) {
+	return x * x + z * z <= goal;
 }

@@ -234,6 +234,16 @@ void handleResize(int w, int h) {
 //---------------------------------------------------------------
 
 void update() {
+    if (player->IS_DEAD()) // 게임오버 조건
+    {
+        mode = "End_mode";
+        currCamera = eventCamera;
+    }
+    else if (player->IS_END()) //클리어 조건
+    {
+        mode = "End_mode";
+        currCamera = eventCamera;
+    }
     if (mode == "Play_mode" || back_mode == "Play_mode") {
         for (const auto& obj : obj_map) {
             obj.second->update(deltaTime, currCamera->GetPosition());
@@ -246,6 +256,7 @@ void update() {
         
     }
     currCamera->Update();
+
 }
 
 void mainInit() {

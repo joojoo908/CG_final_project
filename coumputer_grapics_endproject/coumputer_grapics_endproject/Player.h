@@ -26,8 +26,8 @@ public:
 
 	float GetRotY();
 	void GetDamage(float Damage);
-	
-
+	bool IS_END() { return is_End; }
+	bool IS_DEAD() { return is_Live; }
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
 	Collision* GetCollsion() { return collisionbox; }
@@ -65,10 +65,14 @@ private:
 	bool is_Working;
 	bool is_Live;
 	bool is_Clear[4];
+	bool can_escape;
+	bool is_End;
 
-	bool InRange(int x,int z);
+	bool InRange(int x, int z, int goal);
 	bool InRange(const std::pair<int, int>& a, int distance);
 	bool isMachine(int x, int z);
 	bool Collide(Collision* collision, glm::vec3 delta);
 	void UpdateHitbox();
+	void OpenEnding();
+	void Ending();
 };
