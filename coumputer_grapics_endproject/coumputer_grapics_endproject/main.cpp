@@ -77,6 +77,7 @@ std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
 Object* title;
 Object* pause;
+Object* gameEnd;
 
 Animator* animator;
 Animator* noani;
@@ -164,8 +165,9 @@ void SpecialKeyboard(int key, int x, int y) {
     case GLUT_KEY_F2:
        
         break;
-    case GLUT_KEY_F3:
-        
+    case GLUT_KEY_F12:
+        mode = "End_mode";
+        currCamera = eventCamera;
         break;
     }
 }
@@ -214,7 +216,9 @@ void Mouse(int button, int state, int x, int y)
             }
 
         }
-        
+        else if (mode == "End_mode") {
+            glutLeaveMainLoop();
+        }
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
         
@@ -241,7 +245,7 @@ void Motion(int x, int y) {
 void handleResize(int w, int h) {
     glViewport(0, 0, w, h);
 }
-//--------------------------------
+//---------------------------------------------------------------
 
 void update() {
     if (mode == "Play_mode" || back_mode == "Play_mode") {
@@ -461,20 +465,33 @@ void mainInit() {
         bosses.push_back(boss4);
 
     }
-
-    Model* title_obj = new Model();
-    modelPath = "Title/title_image.gltf";
-    title_obj->LoadModel(modelPath);
-    title_obj->SetRotate({ 90,0,0 });
-    title_obj->SetScale({ 2.5,1,1.5 });
-    title = new Object("title", title_obj, 0, 0, 0, 3, 0);
-
-    Model* pause_obj = new Model();
-    modelPath = "Pause/pause_image.gltf";
-    pause_obj->LoadModel(modelPath);
-    pause_obj->SetRotate({ 90,180,0 });
-    //pause_obj->SetScale({ 1,1,1 });
-    pause = new Object("pause", pause_obj, 0, 0, 0, 3, 0);
+    //타이틀 화면
+    {
+        Model* title_obj = new Model();
+        modelPath = "Title/title_image.gltf";
+        title_obj->LoadModel(modelPath);
+        title_obj->SetRotate({ 90,0,0 });
+        title_obj->SetScale({ 2.5,1,1.5 });
+        title = new Object("title", title_obj, 0, 0, 0, 3, 0);
+    }
+    //정지 화면
+    {
+        Model* pause_obj = new Model();
+        modelPath = "Pause/pause_image.gltf";
+        pause_obj->LoadModel(modelPath);
+        pause_obj->SetRotate({ 90,180,0 });
+        //pause_obj->SetScale({ 1,1,1 });
+        pause = new Object("pause", pause_obj, 0, 0, 0, 3, 0);
+    }
+    //종료 화면
+    {
+        Model* title_obj = new Model();
+        modelPath = "Game_over/end_image.gltf";
+        title_obj->LoadModel(modelPath);
+        title_obj->SetRotate({ 90,180,0 });
+        title_obj->SetScale({ 2.5,1,1.5 });
+        gameEnd = new Object("gameEnd", title_obj, 0, 0, 0, 3, 0);
+    }
 
     
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
@@ -578,6 +595,11 @@ GLvoid render()
     else if (mode == "Title_mode") {
         
         title->draw(currCamera, directionalLight2, pointLights, pointLightCount);
+
+    }
+    else if (mode == "End_mode") {
+
+        gameEnd->draw(currCamera, directionalLight2, pointLights, pointLightCount);
 
     }
 
