@@ -400,19 +400,22 @@ void mainInit() {
         machine->SetTranslate({ 0,1,0 });
 
         collide_box->SetRotate({ 0,0,0 });
-        collide_box->SetScale(glm::vec3(0.8, 0.6, 0.4));
+        collide_box->SetScale(glm::vec3(0.7, 0.6, 0.4));
 
-        collide_box->SetTranslate({ 60,0.6,60 });
-        object = new Object("machine", machine, collide_box, 0, 60, 60, 0);
+        collide_box->SetTranslate({ 60.5,0.6,60.5 });
+        object = new Object("machine", machine, collide_box, 0, 60.5, 60.5, 0);
         obj_map[std::make_pair(60, 60)] = object;
-        collide_box->SetTranslate({ 60,0.6,-60 });
-        object = new Object("machine", machine, collide_box, 0, 60,- 60, 0);
+
+        collide_box->SetTranslate({ 60.5,0.6,-60.5 });
+        object = new Object("machine", machine, collide_box, 0, 60.5,- 60.5, 0);
         obj_map[std::make_pair(60, -60)] = object;
-        collide_box->SetTranslate({ -60,0.6,60 });
-        object = new Object("machine", machine, collide_box, 0, -60, 60, 0);
+
+        collide_box->SetTranslate({ -60.5,0.6,60.5 });
+        object = new Object("machine", machine, collide_box, 0, -60.5, 60.5, 0);
         obj_map[std::make_pair(-60, 60)] = object;
-        collide_box->SetTranslate({ -60,0.6,-60 });
-        object = new Object("machine", machine, collide_box, 0, -60, -60, 0);
+
+        collide_box->SetTranslate({ -60.5,0.6,-60.5 });
+        object = new Object("machine", machine, collide_box, 0, -60.5, -60.5, 0);
         obj_map[std::make_pair(-60, -60)] = object;
     }
     //¶¥

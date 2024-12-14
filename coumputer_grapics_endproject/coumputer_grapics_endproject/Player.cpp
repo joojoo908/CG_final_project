@@ -60,18 +60,11 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		{
 			GLfloat* currPos = model->GetTranslate();
 			GLfloat YRot = model->GetRotate()[1];
-			int forwardX = int(currPos[0] + cos(glm::radians(YRot + 180.f))); // 전방 X 방향 (cosine 사용)
-			int forwardZ = int(currPos[2] + sin(glm::radians(YRot + 180.f))); // 전방 Z 방향 (sine 사용)
-			auto it = map.find({ forwardX, forwardZ });
-			std::cout << "오브젝트 검사\n";
-			if (it != map.end() && it->second->GetCollision())
+			int forwardX = int(currPos[0] + sinf(glm::radians(YRot))); // 전방 X 방향 (cosine 사용)
+			int forwardZ = int(currPos[2] + cosf(glm::radians(YRot))); // 전방 Z 방향 (sine 사용)
+			if (isMachine(forwardX, forwardZ))
 			{
-				UpdateHitbox();
-				std::cout << "오브젝트 검사완료\n";
-				if (it->second->GetType() == "machine") {
-					is_Working = true;
-					std::cout << "오브젝트 활성화\n";
-				}
+				is_Working = true;
 			}
 		}
 	}
@@ -99,6 +92,23 @@ void Player::MouseContrl(float XChange, float YChange) {
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
 	model->SetRotate(newRot);
 	//hitbox->SetRotate(newRot);
+}
+
+bool Player::isMachine(int x, int z) {
+
+	auto it = map.find({ x, z });
+	std::cout << "오브젝트 검사\n";
+	if (it != map.end() && it->second->GetCollision())
+	{
+		UpdateHitbox();
+		std::cout << "오브젝트 검사완료\n";
+		if (it->second->GetType() == "machine") {
+			//is_Working = true;
+			return true;
+			std::cout << "오브젝트 활성화\n";
+		}
+	}
+	return false;
 }
 
 bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
@@ -212,10 +222,10 @@ float Player::GetRotY()
 	return model->GetRotate()[1];
 }
 void  Player::GetDamage(float Damage) {
-	HP -= Damage;
+	//HP -= Damage;
 	if (HP <= 0.f)
 	{
-		is_Live = false;
+		//is_Live = false;
 	}
 }
 void Player::Jump()

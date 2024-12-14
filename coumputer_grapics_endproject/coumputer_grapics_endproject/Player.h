@@ -22,8 +22,9 @@ public:
 	void MouseContrl(float XChange, float YChange);
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
-	float GetRotY();
 	
+
+	float GetRotY();
 	void GetDamage(float Damage);
 	
 
@@ -66,6 +67,7 @@ private:
 
 	bool InRange(int x,int z);
 	bool InRange(const std::pair<int, int>& a, int distance);
+	bool isMachine(int x, int z);
 	bool Collide(Collision* collision, glm::vec3 delta);
 	void UpdateHitbox();
 };

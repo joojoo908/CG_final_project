@@ -64,7 +64,6 @@ void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  
 	float Damage = behavior->GetDamage();
 	if (Damage > 0.f)
 	{
-		std::cout << Damage << std::endl;
 		player->GetDamage(Damage);
 		behavior->SetDamage(0.0f);
 	}
