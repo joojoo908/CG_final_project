@@ -295,8 +295,6 @@ void mainInit() {
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-99, 99);
 
-
-
     std::string modelPath = "Wall/wall.gltf";
     std::string modelPath2 = "collide_box/collide_box.gltf";
 
@@ -433,8 +431,6 @@ void mainInit() {
         atk_circle->SetScale({ 1,1,1 });
         atk_circle->SetTranslate({ 0,0.1f,0 });
     }
-
-
 
     //플레이어
     {
