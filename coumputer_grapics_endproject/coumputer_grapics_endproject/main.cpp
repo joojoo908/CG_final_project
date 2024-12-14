@@ -40,19 +40,14 @@ int screenHeight = HEIGHT;
 int Center_width = screenWidth / 2;
 int Center_height = screenHeight / 2;
 int lastX, lastY;
-bool fixed_center{};
 
 std::string mode = "Title_mode";
 std::string back_mode = "";
 
-
-// Global variables
-Window* mainWindow;
 CameraBase* currCamera;
 FreeCamera* freeCamera;
 FreeCamera* eventCamera;
 PlayerCamera* playerCamera;
-
 
 GLfloat deltaTime = 0.f;
 GLfloat lastTime = 0.f;
@@ -60,8 +55,6 @@ GLfloat lastTime = 0.f;
 std::vector<Mesh*> meshList;
 std::vector<Entity*> entityList;
 
-
-//Model* model_2B;
 Model* mainModel;
 Model* boss_model;
 Model* cube;
@@ -79,13 +72,6 @@ Object* title;
 Object* pause;
 Object* gameEnd;
 
-Animator* animator;
-Animator* noani;
-
-Animation* idleAnim;
-Animation* danceAnim;
-Animation* runAnim;
-
 DirectionalLight* directionalLight;
 DirectionalLight* directionalLight2;
 PointLight* pointLights[MAX_POINT_LIGHTS];
@@ -100,7 +86,6 @@ extern GLuint loc_normalSampler;
 extern GLuint loc_normalMat;
 extern GLuint loc_eyePos;
 extern GLuint loc_finalBonesMatrices;
-// Keyboard and mouse control
 
 void TimerFunction(int value);
 
@@ -376,7 +361,6 @@ void mainInit() {
         for (int i = 0; i < 100; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
-            //collide_box->SetTranslate({ rand_x ,0.5,rand_z });
             object = new Object("gress", cube, 0, 0, rand_x, rand_z, 1);
             obj_map[std::make_pair(rand_x, rand_z)] = object;
         }
@@ -494,16 +478,10 @@ void mainInit() {
         gameEnd = new Object("gameEnd", title_obj, 0, 0, 0, 3, 0);
     }
 
-    
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
     currCamera = eventCamera;
-
-
-    /*idleAnim = new Animation("Knight/idle.gltf", currModel);
-    danceAnim = new Animation("Knight/dance.gltf", currModel);
-    runAnim = new Animation("Knight/run.gltf", currModel);*/
 
 }
 
