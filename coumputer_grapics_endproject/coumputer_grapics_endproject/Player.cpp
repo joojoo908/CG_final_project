@@ -196,8 +196,26 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 
 	if (Move(deltaTime,map))
 	{
-		if (animator->GetCurrAnimation() != runAnim)
-			animator->PlayAnimation(runAnim);
+		if (currMoveSpeed_z) {
+			if (currMoveSpeed_z > 0) {
+				if (animator->GetCurrAnimation() != runAnim)
+					animator->PlayAnimation(runAnim);
+			}
+			else {
+				if (animator->GetCurrAnimation() != backRunAnim)
+					animator->PlayAnimation(backRunAnim);
+			}
+		}
+		else {
+			if (currMoveSpeed_x > 0) {
+				if (animator->GetCurrAnimation() != leftRunAnim)
+					animator->PlayAnimation(leftRunAnim);
+			}
+			else {
+				if (animator->GetCurrAnimation() != rightRunAnim)
+					animator->PlayAnimation(rightRunAnim);
+			}
+		}
 	}
 	else
 	{
