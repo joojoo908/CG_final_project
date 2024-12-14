@@ -78,9 +78,6 @@ Object* object;
 Object* title;
 Object* pause;
 
-
-
-
 Animator* animator;
 Animator* noani;
 
@@ -201,6 +198,23 @@ void Mouse(int button, int state, int x, int y)
             mode = "Play_mode";
             currCamera = playerCamera;
         }
+        else if (mode == "Pause_mode") {
+            //마우스 피킹
+            float px = (float)(x - Center_width) / (float)Center_width;
+            float py = (float)(Center_height - y) / (float)Center_height;
+            if (px > -0.28 && px < 0.28 && py>0.11 &&py<0.38) {
+                std::cout << "다시 시작" << std::endl;
+                lastX = Center_width;
+                lastY = Center_height;
+                mode = "Play_mode";
+            }
+            if (px > -0.28 && px<0.28 && py>-0.43 && py < -0.16) {
+                std::cout << "종료" << std::endl;
+                glutLeaveMainLoop();
+            }
+
+        }
+        
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
         
@@ -381,7 +395,7 @@ void mainInit() {
 
         collide_box->SetScale({ 0.5, 9, 0.5 });
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
             collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
@@ -391,6 +405,8 @@ void mainInit() {
             cube->SetTranslate(newTns3);
             entityList.push_back(cube);
         }
+        //플레이어 소환 위치 나무 제거
+        obj_map.erase(std::make_pair(0, 0));
     }
     //머신
     {
@@ -445,7 +461,6 @@ void mainInit() {
         bosses.push_back(boss4);
 
     }
-
 
     Model* title_obj = new Model();
     modelPath = "Title/title_image.gltf";

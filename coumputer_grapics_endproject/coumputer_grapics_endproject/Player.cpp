@@ -46,8 +46,6 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		}
 		else if (keys == 'd')
 			currMoveSpeed_x = -MOVE_SPEED;
-		
-
 	}
 	else {
 		if (keys == 'w')
@@ -64,7 +62,6 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 	//점프 막음
 	/*if (keys=='j')
 		Jump();*/
-
 }
 void Player::MouseContrl(float XChange, float YChange) {
 	// 회전
@@ -128,17 +125,6 @@ bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		newPos.y += hitbox->GetScale()[1];
 		hitbox->SetTranslate(newPos);
 	}
-
-
-	// 충돌 처리 (중력 및 땅과의 충돌 포함)
-	// groundHeight = terrain->GetHeight(newPos.x, newPos.z);
-	// if (newPos[1] <= groundHeight) {
-	//     upwardSpeed = 0;
-	//     newPos[1] = groundHeight;
-	//     isJumping = false;
-	// }
-
-	// 새로운 위치 설정
 
 	// 이동 상태 반환
 	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
