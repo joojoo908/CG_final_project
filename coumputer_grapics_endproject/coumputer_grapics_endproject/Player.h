@@ -59,6 +59,7 @@ private:
 	float upwardSpeed;
 	float groundHeight;
 	float HP;
+	float working_time;
 
 	bool isJumping;
 	bool is_Working;

@@ -152,6 +152,7 @@ void SpecialKeyboard(int key, int x, int y) {
        
         break;
     case GLUT_KEY_F12:
+
         mode = "End_mode";
         currCamera = eventCamera;
         break;
@@ -295,6 +296,8 @@ void mainInit() {
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
     std::uniform_int_distribution<> dis(-99, 99);
 
+
+
     std::string modelPath = "Wall/wall.gltf";
     std::string modelPath2 = "collide_box/collide_box.gltf";
 
@@ -404,16 +407,16 @@ void mainInit() {
         object = new Object("machine", machine, collide_box, 0, 60.5, 60.5, 0);
         obj_map[std::make_pair(60, 60)] = object;
 
-        collide_box->SetTranslate({ 60.5,0.6,-59.5 });
+        collide_box->SetTranslate({ 60.5,0.6,-60.5 });
         object = new Object("machine", machine, collide_box, 0, 60.5,- 60.5, 0);
         obj_map[std::make_pair(60, -60)] = object;
 
-        collide_box->SetTranslate({ -59.5,0.6,60.5 });
-        object = new Object("machine", machine, collide_box, 0, -59.5, 60.5, 0);
+        collide_box->SetTranslate({ -60.5,0.6,60.5 });
+        object = new Object("machine", machine, collide_box, 0, -60.5, 60.5, 0);
         obj_map[std::make_pair(-60, 60)] = object;
 
-        collide_box->SetTranslate({ -59.5,0.6,-59.5 });
-        object = new Object("machine", machine, collide_box, 0, -59.5, -59.5, 0);
+        collide_box->SetTranslate({ -60.5,0.6,-60.5 });
+        object = new Object("machine", machine, collide_box, 0, -60.5, -60.5, 0);
         obj_map[std::make_pair(-60, -60)] = object;
     }
     //땅
@@ -434,6 +437,8 @@ void mainInit() {
         atk_circle->SetScale({ 1,1,1 });
         atk_circle->SetTranslate({ 0,0.1f,0 });
     }
+
+
 
     //플레이어
     {
