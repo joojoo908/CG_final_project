@@ -497,9 +497,9 @@ void mainInit() {
     //ÇÔ¼±
     {
         Model* m = new Model();
-        modelPath = "Ship/ship.gltf";
+        modelPath = "Ship/ship2.gltf";
         m->LoadModel(modelPath);
-        m->SetScale({ 0.1,0.1,0.1 });
+        m->SetScale({ 0.04,0.04,0.04 });
         m->SetRotate({ 0,90,0 });
         m->SetTranslate({ 0,50,0 });
         ship = new Object("ship", m, 0, 0, 0, 0, 0);
