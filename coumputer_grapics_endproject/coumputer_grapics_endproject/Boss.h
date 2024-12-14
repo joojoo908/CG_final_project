@@ -19,8 +19,7 @@ class BossBehavior;
 class Boss
 {
 public:
-	Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, int>, Object*> map);
-	bool Move(float deltaTime, std::map<std::pair<int, int>, Object*> map);
+	Boss(Model* model, Model* hitbox, Model* SlamEffect, Player* player, std::map<std::pair<int, int>, Object*> map);
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
@@ -34,6 +33,7 @@ private:
 
 	Model* model;
 	Model* hitbox;
+	Model* SlamEffect;
 	Collision* collisionbox;
 	Animator* animator;
 	Player* player;
@@ -52,8 +52,6 @@ private:
 	const float GRAVITY;
 	const float JUMP_POWER;
 
-	float currMoveSpeed_x;
-	float currMoveSpeed_z;
 	float upwardSpeed;
 	float groundHeight;
 	float time_paturn{};
@@ -62,10 +60,4 @@ private:
 	bool inRange;
 
 	std::map<std::pair<int, int>, Object*> map;
-
-	bool InRange(const std::pair<int, int>& a, int distance);
-	bool InRange(int distance);
-	bool Collide(Collision* collision, glm::vec3 delta);
-	void UpdateHitbox();
-	void Turn_to_Player();
 };

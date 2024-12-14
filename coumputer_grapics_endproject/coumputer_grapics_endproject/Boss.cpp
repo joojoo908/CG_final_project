@@ -20,14 +20,15 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Boss::Boss(Model* model, Model* hitbox, Model* SlamEffect, Player* player, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = new Model(*model);
 	this->hitbox = new Model(*hitbox);
 	this->collisionbox = new Collision(this->hitbox);
 	this->animator = new Animator(nullptr);
+	this->SlamEffect = SlamEffect;
 	this->player = player;
-	this->behavior = new BossBehavior(this->model, player->GetModel(),
+	this->behavior = new BossBehavior(this->model, player->GetModel(), SlamEffect,
 	this->collisionbox,player->GetCollsion(), map);
 	this->map = map; 
 	groundHeight = 10;
@@ -44,129 +45,6 @@ Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, 
 	isJumping = true;
 	inRange = false;
 }
-
-bool Boss::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
-{
-	// 현재 회전값과 위치 가져오기
-	GLfloat* currRot = model->GetRotate();
-	GLfloat* currPos = model->GetTranslate();
-
-	float distance{};
-	// 이동 거리 및 회전 계산
-	if (InRange(400))
-	{
-		inRange = true;
-		Turn_to_Player();
-		distance = MOVE_SPEED * deltaTime;
-	}
-	else
-	{
-		time_paturn = 0;
-	}
-
-	//float dir_Rot = currRot[1] + glm::degrees(atan2f(currMoveSpeed_x, currMoveSpeed_z));
-
-	// 라디안으로 변환한 회전을 사용하여 dx와 dz 계산
-	float dx = distance * sinf(glm::radians(currRot[1]));
-	float dz = distance * cosf(glm::radians(currRot[1]));
-
-	// 새로운 위치 계산
-	glm::vec3 delta(dx, 0, dz);
-
-
-	// 충돌 처리 (중력 및 땅과의 충돌 포함)
-	// groundHeight = terrain->GetHeight(newPos.x, newPos.z);
-	// if (newPos[1] <= groundHeight) {
-	//     upwardSpeed = 0;
-	//     newPos[1] = groundHeight;
-	//     isJumping = false;
-	// }
-
-	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
-	bool iscrash = false;
-	for (const auto& obj : map)
-	{
-		if (InRange(obj.first, 10) && obj.second->GetCollision())
-		{
-			UpdateHitbox();
-			if (Collide(obj.second->GetCollision(), delta))
-			{
-				iscrash = true;
-			}
-		}
-	}
-	if (iscrash)
-	{
-		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		delta = glm::vec3(rotationMatrix * glm::vec4(delta, 1.0f));
-	}
-	glm::vec3 newPos(currPos[0] + delta.x, currPos[1] + upwardSpeed, currPos[2] + delta.z);
-	
-	model->SetTranslate(newPos);
-	newPos.y += hitbox->GetScale()[1];
-	hitbox->SetTranslate(newPos);
-	// 이동 상태 반환
-	return (currMoveSpeed_z != 0 || currMoveSpeed_x != 0);
-}
-
-bool Boss::InRange(const std::pair<int, int>& a,int distance) {
-	int x = a.first;
-	int z = a.second;
-
-	const auto& translate = model->GetTranslate();
-	float dx = translate[0] - x;
-	float dz = translate[2] - z;
-        
-	// 거리 비교 (제곱근 계산 생략)
-	return (dx * dx + dz * dz) <= distance;
-}
-bool Boss::InRange(int distance) {
-	float* Pposition = this->player->GetModel()->GetTranslate();
-	float* Bposition = model->GetTranslate();
-
-	float dx = Pposition[0] - Bposition[0];
-	float dz = Pposition[2] - Bposition[2];
-
-	return (dx * dx + dz * dz) <= distance;
-}
-void Boss::UpdateHitbox()
-{
-	GLfloat* modelRot = model->GetRotate();
-	GLfloat* modelTrans = model->GetTranslate();
-	hitbox->SetTranslate({ modelTrans[0],modelTrans[1] + hitbox->GetScale()[1],modelTrans[2] });
-	hitbox->SetRotate({ modelRot[0],modelRot[1] ,modelRot[2] });
-
-	collisionbox->Update();
-}
-
-bool Boss::Collide(Collision* box, glm::vec3 delta) {
-
-	Collision* nextbox = GetCollsion();
-	nextbox->NextPosition(delta);    
-	//X축 검사
-	bool xOverlap = box->maxX >= nextbox->minX &&
-		box->minX <= nextbox->maxX;
-	//Y축 검사
-	bool yOverlap = box->maxY >= nextbox->minY &&
-		box->minY <= nextbox->maxY;
-	//Z축 검사
-	bool zOverlap = box->maxZ >= nextbox->minZ &&
-		box->minZ <= nextbox->maxZ;
-
-	return xOverlap && yOverlap && zOverlap;
-}
-
-void Boss::Turn_to_Player() {
-	float* Pposition = this->player->GetModel()->GetTranslate();
-	float* Bposition = model->GetTranslate();
-
-	float dx = Pposition[0] - Bposition[0];
-	float dz = Pposition[2] - Bposition[2];
-
-	model->SetRotate({ 0,glm::degrees(atan2(dx,dz)) ,0});
-}
-
-
 float Boss::GetRotY()
 {
 	return model->GetRotate()[1];
@@ -251,27 +129,29 @@ void Boss::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Poin
 
 	//텍스처 중복 문제 해결
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//히트박스 그리기
-	shaderList[1]->UseShader();
+	
+	// 슬램 이펙트그리기
+	if (behavior->isSLAM())
+	{
+		shaderList[1]->UseShader();
+		GetShaderHandles_obj();
 
-	GetShaderHandles_obj();
+		glm::mat4 sMat = SlamEffect->GetModelMat();
+		glm::mat4 sPVM = projMat * viewMat * sMat;
+		glm::mat3 snormalMat = GetNormalMat(sMat);
 
-	glm::mat4 hitMat = hitbox->GetModelMat();
-	glm::mat4 hitPVM = projMat * viewMat * hitMat;
-	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
+		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(sMat));
+		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(sPVM));
+		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(snormalMat));
 
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
-	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
-	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
+		shaderList[1]->UseEyePos(camPos);
+		shaderList[1]->UseDirectionalLight(directionalLight);
+		shaderList[1]->UsePointLights(pointLights, pointLightCount);
 
-	shaderList[1]->UseEyePos(camPos);
-	shaderList[1]->UseDirectionalLight(directionalLight);
-	shaderList[1]->UsePointLights(pointLights, pointLightCount);
-
-	shaderList[1]->UseMaterial(hitbox->GetMaterial());
-
-
-	hitbox->RenderModel();
+		shaderList[1]->UseMaterial(SlamEffect->GetMaterial());
+		SlamEffect->RenderModel();
+	}
+	
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
