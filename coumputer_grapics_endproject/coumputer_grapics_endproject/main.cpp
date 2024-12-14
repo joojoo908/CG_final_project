@@ -267,28 +267,28 @@ void mainInit() {
     CreateShader();
     CreateShader_obj();
 
-    //ºû
-    directionalLight = new DirectionalLight(0.5f, 1.f,
-        glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.0f, 0.0f, 0.0f));
+    //ÀüÃ¼ ºû
+    {
+        directionalLight = new DirectionalLight(0.5f, 1.f,
+            glm::vec4(1.f, 1.f, 1.f, 1.f),
+            glm::vec3(0.0f, 0.0f, 0.0f));
 
-    directionalLight2 = new DirectionalLight(1.f, 1.f,
-        glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.0f, 0.0f, 0.0f));
+        directionalLight2 = new DirectionalLight(1.f, 1.f,
+            glm::vec4(1.f, 1.f, 1.f, 1.f),
+            glm::vec3(0.0f, 0.0f, 0.0f));
 
-    directionalLight3 = new DirectionalLight(0.3f, 0.f,
-        glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(0.0f, -1.0f, 0.0f));
+        directionalLight3 = new DirectionalLight(0.3f, 0.f,
+            glm::vec4(1.f, 1.f, 1.f, 1.f),
+            glm::vec3(0.0f, -1.0f, 0.0f));
 
-    entityList.push_back(directionalLight);
-
+    }
     //Æ÷ÀÎÆ® ºû
     {
         pointLights[0] = new PointLight(
             0.f, 1.f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(0.f, 1.f, 0.f), // ¹Ù´Ú¿¡ À§Ä¡ÇÑ Á¡±¤¿ø
-            0.01f,   // constant
+            0.5f,   // constant
             0.001f,   // linear
             0.001f   // exponent
         );
@@ -298,32 +298,31 @@ void mainInit() {
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(60.0f, 1.0f, 60.f),
-            0.01, 0.001f, 0.001f);
+            0.5, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[2] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(-60.0f, 1.0f, 60.f),
-            0.01, 0.001f, 0.001f);
+            0.5, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[3] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(60.0f, 1.0f, -60.f),
-            0.01, 0.001f, 0.001f);
+            0.5, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[4] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(-60.0f, 1.0f, -60.f),
-            0.01, 0.001f, 0.001f);
+            0.5, 0.001f, 0.001f);
         pointLightCount++;
     }
-
-   for (int i = 0; i < pointLightCount; i++)
+    for (int i = 0; i < pointLightCount; i++)
         entityList.push_back(pointLights[i]);
 
     // Skybox
