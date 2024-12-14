@@ -9,7 +9,7 @@
 #include <gl/glm\gtc\matrix_transform.hpp>
 #include <gl/glm\gtc\type_ptr.hpp>
 
-const int MAX_POINT_LIGHTS = 3;
+const int MAX_POINT_LIGHTS = 5;
 const int MAX_BONE_COUNT = 120;
 
 struct BoneInfo

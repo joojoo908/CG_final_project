@@ -335,7 +335,7 @@ void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 			idx = std::string(textureName).rfind("\\");
 			textureName = std::string(textureName).substr(idx + 1);
 
-			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+			std::string texPath = modelName + "/textures/" + textureName;
 
 			normalMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Normal : " << texPath << std::endl;

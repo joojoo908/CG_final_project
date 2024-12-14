@@ -69,12 +69,15 @@ std::vector<Object*> objs;
 std::vector<Boss*> bosses;
 std::map<std::pair<int, int>, Object*> obj_map;
 Object* object;
+Object* ship;
+Object* cubes[4];
 Object* title;
 Object* pause;
 Object* gameEnd;
 
 DirectionalLight* directionalLight;
 DirectionalLight* directionalLight2;
+DirectionalLight* directionalLight3;
 PointLight* pointLights[MAX_POINT_LIGHTS];
 unsigned int pointLightCount = 0;
 
@@ -127,14 +130,15 @@ void processKeyboard(unsigned char key, int x, int y) {
     }
     
 
-    /*if (key == '1') {
-        std::cout << pointLights[0]->GetModelMat()[3][0] << std::endl;
-        std::cout << pointLights[0]->GetModelMat()[3][1] << std::endl;
-        std::cout << pointLights[0]->GetModelMat()[3][2] << std::endl;
+    if (key == '1') {
+        pointLights[0]->color = glm::vec4(1, 1, 1, 1);
     }
     if (key == '2') {
-        pointLights[0]->position = glm::vec3(pointLights[0]->position[0]+1, 1.0f, pointLights[0]->position[2]);
-    }*/
+        pointLights[1]->color = glm::vec4(1, 0, 0, 1);
+        pointLights[2]->color = glm::vec4(0, 1, 0, 1);
+        pointLights[3]->color = glm::vec4(0, 0, 1, 1);
+        pointLights[4]->color = glm::vec4(0.5, 0, 0.5, 1);
+    }
 }
 //키보드 떼어짐 함수
 void processKeyboardUp(unsigned char key, int x, int y) {
@@ -260,19 +264,53 @@ void mainInit() {
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(0.0f, 0.0f, 0.0f));
 
+    directionalLight3 = new DirectionalLight(0.3f, 0.f,
+        glm::vec4(1.f, 1.f, 1.f, 1.f),
+        glm::vec3(0.0f, -1.0f, 0.0f));
+
     entityList.push_back(directionalLight);
-   /*pointLights[0] = new PointLight
-    (0.f, 1.f,
-        glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(1.f, 1.f, 0.0f),
-        0.5f, 0.01f, 0.001f);
-    pointLightCount++;*/
-   /*pointLights[1] = new PointLight
-    (0.0f, 0.5f,
-        glm::vec4(1.f, 1.f, 1.f, 1.f),
-        glm::vec3(-2.0f, 2.0f, -1.f),
-        1.0, 0.045f, 0.0075f);
-    pointLightCount++;*/
+
+    //포인트 빛
+    {
+        pointLights[0] = new PointLight(
+            0.f, 1.f,
+            glm::vec4(0.f, 0.f, 0.f, 1.f),
+            glm::vec3(0.f, 1.f, 0.f), // 바닥에 위치한 점광원
+            0.01f,   // constant
+            0.001f,   // linear
+            0.001f   // exponent
+        );
+        pointLightCount++;
+
+        pointLights[1] = new PointLight
+        (0.0f, 0.5f,
+            glm::vec4(0.f, 0.f, 0.f, 1.f),
+            glm::vec3(60.0f, 1.0f, 60.f),
+            0.01, 0.001f, 0.001f);
+        pointLightCount++;
+
+        pointLights[2] = new PointLight
+        (0.0f, 0.5f,
+            glm::vec4(0.f, 0.f, 0.f, 1.f),
+            glm::vec3(-60.0f, 1.0f, 60.f),
+            0.01, 0.001f, 0.001f);
+        pointLightCount++;
+
+        pointLights[3] = new PointLight
+        (0.0f, 0.5f,
+            glm::vec4(0.f, 0.f, 0.f, 1.f),
+            glm::vec3(60.0f, 1.0f, -60.f),
+            0.01, 0.001f, 0.001f);
+        pointLightCount++;
+
+        pointLights[4] = new PointLight
+        (0.0f, 0.5f,
+            glm::vec4(0.f, 0.f, 0.f, 1.f),
+            glm::vec3(-60.0f, 1.0f, -60.f),
+            0.01, 0.001f, 0.001f);
+        pointLightCount++;
+    }
+
    for (int i = 0; i < pointLightCount; i++)
         entityList.push_back(pointLights[i]);
 
@@ -425,6 +463,16 @@ void mainInit() {
         glm::vec3 newscale(100, 1, 100);
         ground->SetScale(newscale);
     }
+    //함선
+    {
+        Model* m = new Model();
+        modelPath = "Ship/ship.gltf";
+        m->LoadModel(modelPath);
+        m->SetScale({ 0.1,0.1,0.1 });
+        m->SetRotate({ 0,90,0 });
+        m->SetTranslate({ 0,50,0 });
+        ship = new Object("ship", m, 0, 0, 0, 0, 0);
+    }
     //Atk Circle
     {
         atk_circle = new Model();
@@ -506,6 +554,8 @@ void mainInit() {
         gameEnd = new Object("gameEnd", title_obj, 0, 0, 0, 3, 0);
     }
 
+
+
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
@@ -538,13 +588,6 @@ GLvoid render()
         glm::vec3 camPos = currCamera->GetPosition();
 
         skybox->DrawSkybox(viewMat, projMat);
-
-        //for (const auto& obj : obj_map) {
-        //    // obj.first는 std::pair<int, int> 타입 (키)
-        //    // obj.second는 Object 타입 (값)
-        //    //std::cout << "Key: (" << obj.first.first << ", " << obj.first.second << "), ";
-        //    obj.second->draw(currCamera, directionalLight, pointLights, pointLightCount);
-        //}
     
         //땅 그리기
         shaderList[1]->UseShader();
@@ -560,7 +603,7 @@ GLvoid render()
             glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
             shaderList[1]->UseEyePos(camPos);
-            shaderList[1]->UseDirectionalLight(directionalLight);
+            shaderList[1]->UseDirectionalLight(directionalLight3);
             shaderList[1]->UsePointLights(pointLights, pointLightCount);
 
             shaderList[1]->UseMaterial(ground->GetMaterial());
@@ -591,6 +634,7 @@ GLvoid render()
 
         player->draw(currCamera, directionalLight, pointLights, pointLightCount);
        
+        ship->draw(currCamera, directionalLight, pointLights, pointLightCount);
 
         if (mode == "Pause_mode") {
             glDisable(GL_DEPTH_TEST);
