@@ -9,7 +9,8 @@
 
 #include <map>
 BossBehavior::BossBehavior(Model* bossmodel, Model* playermodel, Model* SlamEffect, 
-    Collision* boss_c, Collision* player_c, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), DASH_SPEED(12.5), SLAM_SPEED(8.0f)
+    Collision* boss_c, Collision* player_c, std::map<std::pair<int, int>, Object*> map)
+    : WALK_SPEED(4.f), RUN_SPEED(6.f), DASH_SPEED(12.5), SLAM_SPEED(8.0f)
 {
     model_b = bossmodel;
     model_p = playermodel;
@@ -33,7 +34,7 @@ void BossBehavior::Wander(float deltaTime) {
     //--- 범위 내에 오기 전까지 순찰
     GLfloat currRotY = model_b->GetRotate()[1];
     GLfloat* currPos = model_b->GetTranslate();
-    float distance = MOVE_SPEED * deltaTime;
+    float distance = WALK_SPEED * deltaTime;
     float dx = distance * sinf(glm::radians(currRotY));
     float dz = distance * cosf(glm::radians(currRotY));
     glm::vec3 delta(dx, 0, dz);
@@ -74,7 +75,7 @@ void BossBehavior::Chase(float deltaTime) {
     Turn_to_Player();
     GLfloat currRotY = model_b->GetRotate()[1];
     GLfloat* currPos = model_b->GetTranslate();
-    float distance = 1.2f * MOVE_SPEED * deltaTime;
+    float distance = RUN_SPEED * deltaTime;
     float dx = distance * sinf(glm::radians(currRotY));
     float dz = distance * cosf(glm::radians(currRotY));
     glm::vec3 delta(dx, 0, dz);
@@ -107,6 +108,7 @@ void BossBehavior::Chase(float deltaTime) {
 void BossBehavior::closeAttack() {
     // 공격 타이밍 및 범위 검사
     if (turning_time >= 1.1 && turning_time <= 1.25) {
+        std::cout << "공격타이밍\n";
         if (InRange(36)) { // 거리 조건
             float* Bpos = model_b->GetTranslate();
             float* Ppos = model_p->GetTranslate();
@@ -212,7 +214,7 @@ void BossBehavior::Check_Paturn() {
     switch (key)
     {
     case 0:   //-- Wander();
-        if (turning_time >= 2.0f)
+        if (turning_time >= 2.5f)
         {
             float* curRot = GetBossModel()->GetRotate();
             GetBossModel()->SetRotate({ curRot[0],curRot[1] + 90,curRot[2] });
@@ -255,7 +257,7 @@ void BossBehavior::Check_Paturn() {
             isSLAM = true;
             float* Bpos = model_b->GetTranslate();
             GLfloat currRotY = model_b->GetRotate()[1];
-            float distance = 0.8 * MOVE_SPEED;
+            float distance = WALK_SPEED;
             float dx = distance * sinf(glm::radians(currRotY));
             float dz = distance * cosf(glm::radians(currRotY));
             glm::vec3 delta(dx, 0, dz);
@@ -270,7 +272,7 @@ void BossBehavior::Check_Paturn() {
             turning_time = 0;
             GLfloat currRotY = model_b->GetRotate()[1];
             GLfloat* currPos = model_b->GetTranslate();
-            float distance = 0.8 * MOVE_SPEED;
+            float distance = WALK_SPEED;
             float dx = distance * sinf(glm::radians(currRotY));
             float dz = distance * cosf(glm::radians(currRotY));
             glm::vec3 delta(dx, 0, dz);

@@ -45,7 +45,8 @@ private:
 	Collision* box_b;	//--- º¸½º ¸ðµ¨;
 	Collision* box_p;	//--- ÇÃ·¹ÀÌ¾î ¸ðµ¨
 
-	const float MOVE_SPEED;
+	const float WALK_SPEED;
+	const float RUN_SPEED;
 	const float DASH_SPEED;
 	const float SLAM_SPEED;
 	bool isSLAM;

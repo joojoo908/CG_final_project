@@ -445,17 +445,17 @@ void mainInit() {
 
         collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
 
-        boss_model->SetTranslate({ 60,0,60 });
+        boss_model->SetTranslate({ 65,0,65 });
         Boss * boss = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss);
 
-        boss_model->SetTranslate({ 60,0,-60 });
+        boss_model->SetTranslate({ 65,0,-55 });
         Boss* boss2 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss2);
-        boss_model->SetTranslate({ -60,0,60 });
+        boss_model->SetTranslate({ -55,0,65 });
         Boss* boss3 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss3);
-        boss_model->SetTranslate({ -60,0,-60 });
+        boss_model->SetTranslate({ -55,0,-55 });
         Boss* boss4 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss4);
 

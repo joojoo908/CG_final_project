@@ -34,6 +34,7 @@ Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), 
 	sitAnim = new Animation("Player/sit.gltf", model);
 
 	isJumping = true;
+	is_Live = true;
 }
 
 void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
@@ -181,7 +182,10 @@ float Player::GetRotY()
 }
 void  Player::GetDamage(float Damage) {
 	HP -= Damage;
-	std::cout << "플레이어 체력 " << HP << ", 데미지 : " << Damage << std::endl;
+	if (HP <= 0.f)
+	{
+		is_Live = false;
+	}
 }
 void Player::Jump()
 {
@@ -194,33 +198,44 @@ void Player::Jump()
 
 void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
 	//디버깅용
-	if (HP < 100.f)
+	if (HP >0.f)
 	{
-		std::cout << "플레이어 체력 " << HP << std::endl;
-	}
-	if (Move(deltaTime,map))
-	{
-		if (currMoveSpeed_z) {
-			if (currMoveSpeed_z > 0) {
-				if (animator->GetCurrAnimation() != runAnim)
-					animator->PlayAnimation(runAnim);
+		if (Move(deltaTime, map))
+		{
+			if (currMoveSpeed_z) {
+				if (currMoveSpeed_z > 0) {
+					if (animator->GetCurrAnimation() != runAnim)
+						animator->PlayAnimation(runAnim);
+				}
+				else {
+					if (animator->GetCurrAnimation() != backRunAnim)
+						animator->PlayAnimation(backRunAnim);
+				}
 			}
 			else {
-				if (animator->GetCurrAnimation() != backRunAnim)
-					animator->PlayAnimation(backRunAnim);
+				if (currMoveSpeed_x > 0) {
+					if (animator->GetCurrAnimation() != leftRunAnim)
+						animator->PlayAnimation(leftRunAnim);
+				}
+				else {
+					if (animator->GetCurrAnimation() != rightRunAnim)
+						animator->PlayAnimation(rightRunAnim);
+				}
 			}
 		}
-		else {
-			if (currMoveSpeed_x > 0) {
-				if (animator->GetCurrAnimation() != leftRunAnim)
-					animator->PlayAnimation(leftRunAnim);
-			}
-			else {
-				if (animator->GetCurrAnimation() != rightRunAnim)
-					animator->PlayAnimation(rightRunAnim);
-			}
+		//오브젝트 상호작용
+		else if (true)  
+		{
+			if (animator->GetCurrAnimation() != sitAnim)
+				animator->PlayAnimation(sitAnim);
+		}
+		else
+		{
+			if (animator->GetCurrAnimation() != idleAnim)
+				animator->PlayAnimation(idleAnim);
 		}
 	}
+	//죽은 상태의 애니메이션
 	else
 	{
 		if (animator->GetCurrAnimation() != idleAnim)

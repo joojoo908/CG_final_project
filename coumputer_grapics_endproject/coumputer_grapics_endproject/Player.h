@@ -23,7 +23,9 @@ public:
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
+	
 	void GetDamage(float Damage);
+	
 
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
@@ -57,6 +59,8 @@ private:
 	float HP;
 
 	bool isJumping;
+	bool is_Live;
+
 	bool InRange(int x,int z);
 	bool InRange(const std::pair<int, int>& a, int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
