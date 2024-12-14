@@ -108,7 +108,6 @@ void BossBehavior::Chase(float deltaTime) {
 void BossBehavior::closeAttack() {
     // 공격 타이밍 및 범위 검사
     if (turning_time >= 1.1 && turning_time <= 1.25) {
-        std::cout << "공격타이밍\n";
         if (InRange(36)) { // 거리 조건
             float* Bpos = model_b->GetTranslate();
             float* Ppos = model_p->GetTranslate();
