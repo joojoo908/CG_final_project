@@ -56,8 +56,8 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"Atk_circle",
-			"uri":"Atk_circle.png"
+			"name":"circle",
+			"uri":"circle.png"
 		}
 	],
 	"accessors":[
