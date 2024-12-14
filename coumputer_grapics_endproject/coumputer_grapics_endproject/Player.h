@@ -49,6 +49,7 @@ private:
 	Animation* leftRunAnim;
 	Animation* rightRunAnim;
 	Animation* jumpAnim;
+	Animation* rollAnim;
 	Animation* deathAnim;
 	Animation* sitAnim;
 	Animation* danceAnim;

@@ -30,6 +30,7 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	leftRunAnim = new Animation("Player/leftRun.gltf", model);
 	rightRunAnim = new Animation("Player/rightRun.gltf", model);
 	jumpAnim = new Animation("Player/jump.gltf", model);
+	rollAnim = new Animation("Player/roll.gltf", model);
 	deathAnim = new Animation("Player/death.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
 	danceAnim = new Animation("Player/dance.gltf", model);
