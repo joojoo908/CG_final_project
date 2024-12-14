@@ -124,7 +124,7 @@ void BossBehavior::closeAttack() {
             if (angle_gap >= -60.0f && angle_gap <= 60.0f) {
                 if (!Dmg_Close_atk)
                 {
-                    Damage = 10.f;
+                    Damage = 15.f;
                     Dmg_Close_atk = true;
                 }
             }
@@ -183,23 +183,7 @@ void BossBehavior::Slam(float deltaTime) {
         glm::vec3 delta(dx, 0, dz);
         glm::vec3 newPos(currPos[0] + delta.x, currPos[1], currPos[2] + delta.z);
         model_b->SetTranslate(newPos);
-        bool is_crash{};
-        for (int i = -1; i < 2; i++)
-        {
-            for (int j = -1; j < 2; j++)
-            {
-                auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
-                if (it != map.end() && it->second->GetCollision())
-                {
-                    UpdateHitbox();
-                    if (Collide(it->second->GetCollision(), delta))
-                    {
-                        delete it->second;
-                        map.erase(it);
-                    }
-                }
-            }
-        }
+        
     }
         //영역에 대한 화면 표시 및 충돌검사 필요
 };

@@ -28,8 +28,8 @@ public:
 	void GetDamage(float Damage);
 	int GetKey() { return LightKey; }
 	void SetKey() { LightKey = 5; }
-	bool IS_END() { return is_End; }
-	bool IS_DEAD() { return !is_Live && !ending_time; }
+	bool IS_END() { return  is_Live && is_End; }
+	bool IS_DEAD() { return !is_Live && is_End; }
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
 	Collision* GetCollsion() { return collisionbox; }

@@ -129,17 +129,6 @@ void processKeyboard(unsigned char key, int x, int y) {
         }
         
     }
-    
-
-    if (key == '1') {
-        pointLights[0]->color = glm::vec4(1, 1, 1, 1);
-    }
-    if (key == '2') {
-        pointLights[1]->color = glm::vec4(1, 0, 0, 1);
-        pointLights[2]->color = glm::vec4(0, 1, 0, 1);
-        pointLights[3]->color = glm::vec4(0, 0, 1, 1);
-        pointLights[4]->color = glm::vec4(0.5, 0, 0.5, 1);
-    }
 }
 //Å°º¸µå ¶¼¾îÁü ÇÔ¼ö
 void processKeyboardUp(unsigned char key, int x, int y) {
