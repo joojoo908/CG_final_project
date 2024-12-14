@@ -54,6 +54,9 @@ public:
 private:
 	void LoadNode(aiNode* node, const aiScene* scene);
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
+	void LoadRoughnessMaps(aiMaterial* material, const size_t& i);
+	void LoadMetallicMaps(aiMaterial* material, const size_t& i);
+	void LoadEmissiveMaps(aiMaterial* material, const size_t& i);
 	void LoadMaterials(const aiScene* scene);
 
 	void LoadDiffuseMaps(aiMaterial* material, const size_t& i);
@@ -66,6 +69,11 @@ private:
 	std::vector<Mesh*> meshList;
 	std::vector<Texture*> diffuseMaps;
 	std::vector<Texture*> normalMaps;
+	std::vector<Texture*> roughnessMaps;
+	std::vector<Texture*> emissiveMaps;
+	std::vector<Texture*> metallicMaps;
+
+
 	std::vector<unsigned int> meshToTex;
 
 	std::string modelName;

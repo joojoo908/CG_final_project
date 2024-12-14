@@ -118,6 +118,13 @@ void Model::RenderModel()
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
 			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
+		if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
+			roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
+		if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
+			metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
+		if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
+			emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
+
 
 		mesh->RenderMesh();
 	}
@@ -136,6 +143,12 @@ void Model::RenderModel()
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
 			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
+		if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
+			roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
+		if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
+			metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
+		if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
+			emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
 
 		mesh->RenderMesh();
 	}
@@ -245,16 +258,25 @@ void Model::LoadMaterials(const aiScene* scene)
 {
 	diffuseMaps.resize(scene->mNumMaterials);
 	normalMaps.resize(scene->mNumMaterials);
+	roughnessMaps.resize(scene->mNumMaterials);
+	emissiveMaps.resize(scene->mNumMaterials);
+	metallicMaps.resize(scene->mNumMaterials);
+
 	for (size_t i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
 
 		diffuseMaps[i] = nullptr;
 		normalMaps[i] = nullptr;
+		roughnessMaps[i] = nullptr;
+		emissiveMaps[i] = nullptr;
+		metallicMaps[i] = nullptr;
 
-		
 		LoadDiffuseMaps(material, i);
 		LoadNormalMaps(material, i);
+		LoadRoughnessMaps(material, i);
+		LoadMetallicMaps(material, i);
+		LoadEmissiveMaps(material, i);
 	}
 
 	material = new Material(0.3f, 64.f);
@@ -324,6 +346,87 @@ void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete normalMaps[i];
 				normalMaps[i] = nullptr;
+			}
+		}
+	}
+}
+
+void Model::LoadEmissiveMaps(aiMaterial* material, const size_t& i)
+{
+	if (material->GetTextureCount(aiTextureType_EMISSIVE))
+	{
+		aiString texturePath;
+		if (material->GetTexture(aiTextureType_EMISSIVE, 0, &texturePath) == aiReturn_SUCCESS)
+		{
+			int idx = std::string(texturePath.data).rfind("/");
+			std::string textureName = std::string(texturePath.data).substr(idx + 1);
+			idx = std::string(textureName).rfind("\\");
+			textureName = std::string(textureName).substr(idx + 1);
+
+			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+
+			emissiveMaps[i] = new Texture(texPath.c_str());
+			std::cout << "Loading Emissive : " << texPath << std::endl;
+
+			if (!emissiveMaps[i]->LoadTexture(4))
+			{
+				std::cout << "Failed to load Emissive texture: " << texPath << std::endl;
+				delete emissiveMaps[i];
+				emissiveMaps[i] = nullptr;
+			}
+		}
+	}
+}
+
+void Model::LoadMetallicMaps(aiMaterial* material, const size_t& i)
+{
+	if (material->GetTextureCount(aiTextureType_METALNESS))
+	{
+		aiString texturePath;
+		if (material->GetTexture(aiTextureType_METALNESS, 0, &texturePath) == aiReturn_SUCCESS)
+		{
+			int idx = std::string(texturePath.data).rfind("/");
+			std::string textureName = std::string(texturePath.data).substr(idx + 1);
+			idx = std::string(textureName).rfind("\\");
+			textureName = std::string(textureName).substr(idx + 1);
+
+			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+
+			metallicMaps[i] = new Texture(texPath.c_str());
+			std::cout << "Loading Metallic : " << texPath << std::endl;
+
+			if (!metallicMaps[i]->LoadTexture(4))
+			{
+				std::cout << "Failed to load Metallic texture: " << texPath << std::endl;
+				delete metallicMaps[i];
+				metallicMaps[i] = nullptr;
+			}
+		}
+	}
+}
+
+void Model::LoadRoughnessMaps(aiMaterial* material, const size_t& i)
+{
+	if (material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS))
+	{
+		aiString texturePath;
+		if (material->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &texturePath) == aiReturn_SUCCESS)
+		{
+			int idx = std::string(texturePath.data).rfind("/");
+			std::string textureName = std::string(texturePath.data).substr(idx + 1);
+			idx = std::string(textureName).rfind("\\");
+			textureName = std::string(textureName).substr(idx + 1);
+
+			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+
+			roughnessMaps[i] = new Texture(texPath.c_str());
+			std::cout << "Loading Roughness : " << texPath << std::endl;
+
+			if (!roughnessMaps[i]->LoadTexture(4))
+			{
+				std::cout << "Failed to load Roughness texture: " << texPath << std::endl;
+				delete roughnessMaps[i];
+				roughnessMaps[i] = nullptr;
 			}
 		}
 	}
@@ -409,6 +512,8 @@ void Model::UpdateTransform(glm::mat4 newModelMat)
 	SetRotate(rotation);
 	SetScale(scale);
 }
+
+
 
 Model::~Model()
 {

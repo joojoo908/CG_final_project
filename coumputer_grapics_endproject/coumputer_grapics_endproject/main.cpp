@@ -292,7 +292,7 @@ void mainInit() {
     mainModel = new Model();
     collide_box = new Model();
 
-    std::string modelPath = "Player/player.gltf";
+    std::string modelPath = "Player/player2.gltf";
     std::string modelPath2 = "collide_box/collide_box.gltf";
 
     //플레이어

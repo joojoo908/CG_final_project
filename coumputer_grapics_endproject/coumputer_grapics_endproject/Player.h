@@ -51,6 +51,7 @@ private:
 	float currMoveSpeed_z;
 	float upwardSpeed;
 	float groundHeight;
+	float HP;
 
 	bool isJumping;
 	bool InRange(int x,int z);
