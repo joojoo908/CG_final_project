@@ -18,7 +18,7 @@ public:
 	void Chase(float deltaTime);
 	void closeAttack();
 	void Dash(float deltaTime);
-	void Slam();
+	void Slam(float deltaTime);
 	void Do(float deltaTime);
 
 	void Turn_to_Player();
@@ -41,6 +41,8 @@ private:
 
 
 	const float MOVE_SPEED;
+	const float DASH_SPEED;
+	const float SLAM_SPEED;
 
 	std::map<std::pair<int, int>, Object*> map;
 	int key{};		//--- �ൿ Ű

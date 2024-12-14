@@ -10,7 +10,7 @@
 #include <map>
 BossBehavior::BossBehavior(Model* bossmodel, Model* playermodel,
     Collision* boss_c, Collision* player_c,
-    std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f)
+    std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), DASH_SPEED(12.5), SLAM_SPEED(8.0f)
 {
     model_b = bossmodel;
     model_p = playermodel;
@@ -129,7 +129,6 @@ void BossBehavior::closeAttack() {
         }
     }
 }
-
 void BossBehavior::Dash(float deltaTime) {
     std::cout << "Dash\n";
     //---근접공격으로 변경
@@ -142,7 +141,7 @@ void BossBehavior::Dash(float deltaTime) {
     Turn_to_Player();
     GLfloat currRotY = model_b->GetRotate()[1];
     GLfloat* currPos = model_b->GetTranslate();
-    float distance = 2.5 * MOVE_SPEED * deltaTime;
+    float distance = DASH_SPEED * deltaTime;
     float dx = distance * sinf(glm::radians(currRotY));
     float dz = distance * cosf(glm::radians(currRotY));
     glm::vec3 delta(dx, 0, dz);
@@ -174,10 +173,20 @@ void BossBehavior::Dash(float deltaTime) {
     newPos = { currPos[0] + delta.x, currPos[1], currPos[2] + delta.z };
     model_b->SetTranslate(newPos);
 }
-void BossBehavior::Slam() {
-    std::cout << "Slam\n";
-    //영역에 대한 화면 표시 및 충돌검사 필요
-}
+void BossBehavior::Slam(float deltaTime) {
+    if (turning_time >= 0.2 && turning_time <= 1.7)
+    {
+        GLfloat currRotY = model_b->GetRotate()[1];
+        GLfloat* currPos = model_b->GetTranslate();
+        float distance = SLAM_SPEED * deltaTime;
+        float dx = distance * sinf(glm::radians(currRotY));
+        float dz = distance * cosf(glm::radians(currRotY));
+        glm::vec3 delta(dx, 0, dz);
+        glm::vec3 newPos(currPos[0] + delta.x, currPos[1], currPos[2] + delta.z);
+        model_b->SetTranslate(newPos);
+    }
+        //영역에 대한 화면 표시 및 충돌검사 필요
+};
 
 void BossBehavior::Do(float deltaTime) {
     switch (key)
@@ -195,7 +204,7 @@ void BossBehavior::Do(float deltaTime) {
         Dash(deltaTime);
         break;
     case 4:
-        Slam();
+        Slam(deltaTime);
         break;
     default:
         break;
@@ -243,10 +252,18 @@ void BossBehavior::Check_Paturn() {
         }
         break;
     case 4:      //-- Slam();
-        if (turning_time >= 2.0f)
+        if (turning_time >= 2.5f)
         {
             key = 1;
             turning_time = 0;
+            GLfloat currRotY = model_b->GetRotate()[1];
+            GLfloat* currPos = model_b->GetTranslate();
+            float distance = 0.8 * MOVE_SPEED;
+            float dx = distance * sinf(glm::radians(currRotY));
+            float dz = distance * cosf(glm::radians(currRotY));
+            glm::vec3 delta(dx, 0, dz);
+            glm::vec3 newPos(currPos[0] + delta.x, currPos[1], currPos[2] + delta.z);
+            model_b->SetTranslate(newPos);
         }
         break;
     default:

@@ -28,7 +28,7 @@ Boss::Boss(Model* model, Model* hitbox, Player* player, std::map<std::pair<int, 
 	this->animator = new Animator(nullptr);
 	this->player = player;
 	this->behavior = new BossBehavior(this->model, player->GetModel(),
-		this->collisionbox,player->GetCollsion(), map);
+	this->collisionbox,player->GetCollsion(), map);
 	this->map = map; 
 	groundHeight = 10;
 	upwardSpeed = 0;
