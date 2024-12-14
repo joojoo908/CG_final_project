@@ -314,7 +314,7 @@ void mainInit() {
             0.f, 1.f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(0.f, 1.f, 0.f), // ¹Ù´Ú¿¡ À§Ä¡ÇÑ Á¡±¤¿ø
-            0.5f,   // constant
+            0.2f,   // constant
             0.001f,   // linear
             0.001f   // exponent
         );
@@ -324,28 +324,28 @@ void mainInit() {
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(60.0f, 1.0f, 60.f),
-            0.5, 0.001f, 0.001f);
+            0.2, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[2] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(-60.0f, 1.0f, 60.f),
-            0.5, 0.001f, 0.001f);
+            0.2, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[3] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(60.0f, 1.0f, -60.f),
-            0.5, 0.001f, 0.001f);
+            0.2, 0.001f, 0.001f);
         pointLightCount++;
 
         pointLights[4] = new PointLight
         (0.0f, 0.5f,
             glm::vec4(0.f, 0.f, 0.f, 1.f),
             glm::vec3(-60.0f, 1.0f, -60.f),
-            0.5, 0.001f, 0.001f);
+            0.2, 0.001f, 0.001f);
         pointLightCount++;
     }
     for (int i = 0; i < pointLightCount; i++)
