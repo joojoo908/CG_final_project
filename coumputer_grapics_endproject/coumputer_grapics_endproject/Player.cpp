@@ -489,7 +489,7 @@ void Player::Ending() {
 	float xPos = model->GetTranslate()[0];
 	float zPos = model->GetTranslate()[2];
 	
-	if (InRange(xPos, zPos, 100))
+	if (InRange(xPos, zPos, 10))
 	{
 		is_End = true;
 	}

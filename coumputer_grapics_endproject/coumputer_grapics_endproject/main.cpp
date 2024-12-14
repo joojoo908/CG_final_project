@@ -267,7 +267,7 @@ void update() {
             player->SetKey();
             break;
         case 4:
-            pointLights[0]->color = glm::vec4(0.5, 0.5, 0.5, 1);
+            pointLights[0]->color = glm::vec4(1.f, 1.f, 1.f, 1);
             player->SetKey();
             break;
         default:
@@ -448,10 +448,10 @@ void mainInit() {
         for (int i = 0; i < 300; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
-            bool b0 = (rand_x > 60 - 3 && rand_x < 60 + 4 && rand_z > 60 - 3 && rand_z < 60 + 4);
-            bool b1 = (rand_x > 60 - 3 && rand_x < 60 + 4 && rand_z > -60 - 3 && rand_z < -60 + 4);
-            bool b2 = (rand_x > -60 - 3 && rand_x < -60 + 4 && rand_z > 60 - 3 && rand_z < 60 + 4);
-            bool b3 = (rand_x > -60 - 3 && rand_x < -60 + 4 && rand_z > -60 - 3 && rand_z < -60 + 4);
+            bool b0 = (rand_x > 60 - 5 && rand_x < 60 + 5 && rand_z > 60 - 5 && rand_z < 60 + 5);
+            bool b1 = (rand_x > 60 - 5 && rand_x < 60 + 5 && rand_z > -60 - 5 && rand_z < -60 + 5);
+            bool b2 = (rand_x > -60 - 5 && rand_x < -60 + 5 && rand_z > 60 - 5 && rand_z < 60 + 5);
+            bool b3 = (rand_x > -60 - 5 && rand_x < -60 + 5 && rand_z > -60 - 5 && rand_z < -60 + 5);
                 if ( !b0&&!b1&&!b2&&!b3 ) {
                     collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
                     object = new Object("tree", cube, collide_box, 0, rand_x + 0.5, rand_z + 0.5, 1);
