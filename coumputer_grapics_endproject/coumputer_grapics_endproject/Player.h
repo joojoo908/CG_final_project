@@ -49,7 +49,11 @@ private:
 	Animation* leftRunAnim;
 	Animation* rightRunAnim;
 	Animation* jumpAnim;
+	Animation* deathAnim;
 	Animation* sitAnim;
+	Animation* danceAnim;
+
+
 	std::map<std::pair<int, int>, Object*> map;
 	const float MOVE_SPEED;
 	const float TURN_SPEED;
@@ -63,6 +67,7 @@ private:
 	float HP;
 	float working_time;
 	float ending_time;
+	float dance_time;
 
 	bool isJumping;
 	bool is_Working;

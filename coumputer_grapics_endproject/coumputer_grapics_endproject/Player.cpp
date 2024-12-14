@@ -30,7 +30,9 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	leftRunAnim = new Animation("Player/leftRun.gltf", model);
 	rightRunAnim = new Animation("Player/rightRun.gltf", model);
 	jumpAnim = new Animation("Player/jump.gltf", model);
+	deathAnim = new Animation("Player/death.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
+	danceAnim = new Animation("Player/dance.gltf", model);
 	
 	groundHeight = 10;
 	upwardSpeed = 0;
@@ -43,6 +45,7 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	is_Live = true;
 	can_escape = false;
 	is_End = false;
+	dance_time = 0;
 }
 
 void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
@@ -316,11 +319,13 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		//오브젝트 상호작용
 		if (is_Working)
 		{
+			dance_time = 0;
 			if (animator->GetCurrAnimation() != sitAnim)
 				animator->PlayAnimation(sitAnim);
 		}
 		else if (Move(deltaTime, map))
 		{
+			dance_time = 0;
 			if (currMoveSpeed_z) {
 				if (currMoveSpeed_z > 0) {
 					if (animator->GetCurrAnimation() != runAnim)
@@ -349,8 +354,17 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 					animator->PlayAnimation(jumpAnim);
 			}
 			else {
-				if (animator->GetCurrAnimation() != idleAnim)
-					animator->PlayAnimation(idleAnim);
+				
+				if (dance_time>10) {
+					if (animator->GetCurrAnimation() != danceAnim)
+						animator->PlayAnimation(danceAnim);
+				}
+				else {
+					if (animator->GetCurrAnimation() != idleAnim)
+						animator->PlayAnimation(idleAnim);
+				}
+
+				dance_time += deltaTime;
 			}
 		}
 	}
