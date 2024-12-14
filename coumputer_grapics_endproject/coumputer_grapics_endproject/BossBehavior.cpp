@@ -8,16 +8,18 @@
 #include "CollisionManger.h"
 
 #include <map>
-BossBehavior::BossBehavior(Model* bossmodel, Model* playermodel,
-    Collision* boss_c, Collision* player_c,
-    std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), DASH_SPEED(12.5), SLAM_SPEED(8.0f)
+BossBehavior::BossBehavior(Model* bossmodel, Model* playermodel, Model* SlamEffect, 
+    Collision* boss_c, Collision* player_c, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(5.f), DASH_SPEED(12.5), SLAM_SPEED(8.0f)
 {
     model_b = bossmodel;
     model_p = playermodel;
     box_b = boss_c;
     box_p = player_c;
     this->map = map;
+    this->SlamEffect = SlamEffect;
 
+
+    SLAM = false;
 }
 
 void BossBehavior::Wander(float deltaTime) {
@@ -252,6 +254,9 @@ void BossBehavior::Check_Paturn() {
         }
         break;
     case 4:      //-- Slam();
+        if (turning_time >= 1.8f && turning_time <= 1.85f) {
+            SLAM = true;
+        }
         if (turning_time >= 2.5f)
         {
             key = 1;

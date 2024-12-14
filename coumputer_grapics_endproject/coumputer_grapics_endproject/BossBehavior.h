@@ -12,7 +12,7 @@ class Object;
 class BossBehavior
 {
 public:
-	BossBehavior(Model* bossmodel, Model* playermodel, Collision* boss_c, Collision* player_c, std::map<std::pair<int, int>, Object*> map);
+	BossBehavior(Model* bossmodel, Model* playermodel, Model* SlamEffect, Collision* boss_c, Collision* player_c, std::map<std::pair<int, int>, Object*> map);
 		
 	void Wander(float deltaTime);
 	void Chase(float deltaTime);
@@ -25,6 +25,7 @@ public:
 	void Check_Paturn();
 	void SetKey(int goal);
 	void Update(float deltaTime);
+	bool isSLAM() { return SLAM; }
 
 	void reset_time();
 	void UpdateHitbox();
@@ -36,13 +37,15 @@ public:
 private:
 	Model* model_b; //--- 보스 모델
 	Model* model_p; //--- 플레이어 모델
+	Model* SlamEffect;
+
 	Collision* box_b;	//--- 보스 모델;
 	Collision* box_p;	//--- 플레이어 모델
-
 
 	const float MOVE_SPEED;
 	const float DASH_SPEED;
 	const float SLAM_SPEED;
+	bool SLAM;
 
 	std::map<std::pair<int, int>, Object*> map;
 	int key{};		//--- 행동 키

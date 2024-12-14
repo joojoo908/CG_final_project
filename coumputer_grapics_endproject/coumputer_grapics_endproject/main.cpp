@@ -61,6 +61,7 @@ Model* cube;
 Model* machine;
 Model* collide_box;
 Model* ground;
+Model* atk_circle;
 Model* currModel;
 
 Player* player;
@@ -425,6 +426,15 @@ void mainInit() {
         glm::vec3 newscale(100, 1, 100);
         ground->SetScale(newscale);
     }
+    //Atk Circle
+    {
+        atk_circle = new Model();
+        modelPath = "Atk_circle/atk_circle.gltf";
+        atk_circle->LoadModel(modelPath);
+        atk_circle->SetRotate({ 0,0,0 });
+        atk_circle->SetScale({ 1,1,1 });
+        atk_circle->SetTranslate({ 0,0.5f,0 });
+    }
     //º¸½º
     {
         boss_model = new Model();
@@ -436,17 +446,17 @@ void mainInit() {
         collide_box->SetScale(glm::vec3(0.8, 1.65, 0.8));
 
         boss_model->SetTranslate({ 60,0,60 });
-        Boss * boss = new Boss(boss_model, collide_box, player, obj_map);
+        Boss * boss = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss);
 
         boss_model->SetTranslate({ 60,0,-60 });
-        Boss* boss2 = new Boss(boss_model, collide_box, player, obj_map);
+        Boss* boss2 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss2);
         boss_model->SetTranslate({ -60,0,60 });
-        Boss* boss3 = new Boss(boss_model, collide_box, player, obj_map);
+        Boss* boss3 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss3);
         boss_model->SetTranslate({ -60,0,-60 });
-        Boss* boss4 = new Boss(boss_model, collide_box, player, obj_map);
+        Boss* boss4 = new Boss(boss_model, collide_box, atk_circle, player, obj_map);
         bosses.push_back(boss4);
 
     }
