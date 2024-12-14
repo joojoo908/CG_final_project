@@ -45,6 +45,7 @@ private:
 	Animation* backRunAnim;
 	Animation* leftRunAnim;
 	Animation* rightRunAnim;
+	Animation* jumpAnim;
 	Animation* sitAnim;
 	std::map<std::pair<int, int>, Object*> map;
 	const float MOVE_SPEED;
