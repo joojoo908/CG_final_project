@@ -214,7 +214,6 @@ void Mouse(int button, int state, int x, int y)
                 std::cout << "종료" << std::endl;
                 glutLeaveMainLoop();
             }
-
         }
         else if (mode == "End_mode") {
             glutLeaveMainLoop();
@@ -275,9 +274,7 @@ void mainInit() {
         glm::vec4(1.f, 1.f, 1.f, 1.f),
         glm::vec3(0.0f, 0.0f, 0.0f));
 
-
     entityList.push_back(directionalLight);
-
    /*pointLights[0] = new PointLight
     (0.f, 1.f,
         glm::vec4(1.f, 1.f, 1.f, 1.f),
@@ -309,10 +306,8 @@ void mainInit() {
     
     mainModel = new Model();
     collide_box = new Model();
-
     std::string modelPath = "Player/player2.gltf";
     std::string modelPath2 = "collide_box/collide_box.gltf";
-
     //플레이어
     {
         mainModel->LoadModel(modelPath);
@@ -331,7 +326,7 @@ void mainInit() {
     }
     std::random_device rd;  // 하드웨어 난수 생성기
     std::mt19937 gen(rd());  // Mersenne Twister 엔진
-    std::uniform_int_distribution<> dis(-100, 100);
+    std::uniform_int_distribution<> dis(-99, 99);
     //벽
     {
         Model* wall = new Model();
@@ -399,15 +394,21 @@ void mainInit() {
 
         collide_box->SetScale({ 0.5, 9, 0.5 });
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 300; i++) {
             int rand_x = dis(gen);
             int rand_z = dis(gen);
-            collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
-            object = new Object("tree", cube, collide_box, 0, rand_x + 0.5, rand_z + 0.5, 1);
-            obj_map[std::make_pair(rand_x, rand_z)] = object;
-            glm::vec3 newTns3(rand_x, 9, rand_z);
-            cube->SetTranslate(newTns3);
-            entityList.push_back(cube);
+            bool b0 = (rand_x > 60 - 7 && rand_x < 60 + 7 && rand_z > 60 - 7 && rand_z < 60 + 7);
+            bool b1 = (rand_x > 60 - 7 && rand_x < 60 + 7 && rand_z > -60 - 7 && rand_z < -60 + 7);
+            bool b2 = (rand_x > -60 - 7 && rand_x < -60 + 7 && rand_z > 60 - 7 && rand_z < 60 + 7);
+            bool b3 = (rand_x > -60 - 7 && rand_x < -60 + 7 && rand_z > -60 - 7 && rand_z < -60 + 7);
+                if ( !(b0||b1||b2||b3) ) {
+                    collide_box->SetTranslate({ rand_x + 0.5 ,9,rand_z + 0.5 });
+                    object = new Object("tree", cube, collide_box, 0, rand_x + 0.5, rand_z + 0.5, 1);
+                    obj_map[std::make_pair(rand_x, rand_z)] = object;
+                    glm::vec3 newTns3(rand_x, 9, rand_z);
+                    cube->SetTranslate(newTns3);
+                    entityList.push_back(cube);
+                }
         }
         //플레이어 소환 위치 나무 제거
         obj_map.erase(std::make_pair(0, 0));
