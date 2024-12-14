@@ -16,7 +16,7 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(8.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
+Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
