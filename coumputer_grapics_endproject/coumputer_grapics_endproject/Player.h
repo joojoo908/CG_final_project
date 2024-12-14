@@ -87,5 +87,6 @@ private:
 	void UpdateHitbox();
 	void OpenEnding();
 	void Ending();
+	void Rolling();
 	
 };

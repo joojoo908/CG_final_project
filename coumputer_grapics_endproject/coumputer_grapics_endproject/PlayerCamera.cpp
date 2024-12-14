@@ -10,7 +10,7 @@ PlayerCamera::PlayerCamera(Player* player) : CameraBase(glm::vec3(0.f, 0.f, 0.f)
 	this->player = player;
 	canMove = false;
 
-	distance = 5.f;
+	distance = 3.f;
 	angle = 0.f;
 	pitch = -15.f;
 	TURN_SPEED = 0.5f;
@@ -36,12 +36,19 @@ void PlayerCamera::KeyControl(unsigned char keys, GLfloat deltaTime)
 void PlayerCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 {
 	pitch += yChange * TURN_SPEED;;
-	if (pitch > 10.0f)
-		pitch = 10.0f;
+	if (pitch > 50.f)
+		pitch = 50.f;
 
 	if (pitch < -70.0f)
 		pitch = -70.0f;
-	
+	if (pitch >= 15)
+	{
+		distance = 0.05 * (65.f - pitch) + 0.2f;
+	}
+	else
+	{
+		distance = 3;
+	}
 }
 
 void PlayerCamera::ScrollControl(GLfloat scrollY)
