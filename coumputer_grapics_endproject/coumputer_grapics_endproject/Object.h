@@ -23,6 +23,7 @@ public:
 	float GetRotY();
 	void update_pannel(CameraBase* currCamera);
 
+	std::string GetType() { return type; }
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }
 	Collision* GetCollision() { return collisionbox; }

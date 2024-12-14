@@ -16,7 +16,7 @@ class Object;
 class Player
 {
 public:
-	Player(Model* model, Model* hitbox);
+	Player(Model* model, Model* hitbox, std::map<std::pair<int, int>, Object*> map);
 	void HandleInput(unsigned char keys, bool updown, float deltaTime);
 	bool Move(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void MouseContrl(float XChange, float YChange);
@@ -46,7 +46,7 @@ private:
 	Animation* leftRunAnim;
 	Animation* rightRunAnim;
 	Animation* sitAnim;
-
+	std::map<std::pair<int, int>, Object*> map;
 	const float MOVE_SPEED;
 	const float TURN_SPEED;
 	const float GRAVITY;
@@ -59,7 +59,9 @@ private:
 	float HP;
 
 	bool isJumping;
+	bool is_Working;
 	bool is_Live;
+	bool is_Clear[4];
 
 	bool InRange(int x,int z);
 	bool InRange(const std::pair<int, int>& a, int distance);
