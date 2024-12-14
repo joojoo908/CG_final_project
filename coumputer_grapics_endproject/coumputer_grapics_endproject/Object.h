@@ -22,6 +22,7 @@ public:
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
 	void update_pannel(CameraBase* currCamera);
+	void update_hp(CameraBase* currCamera, float hp);
 
 	std::string GetType() { return type; }
 	Model* GetModel() { return model; }

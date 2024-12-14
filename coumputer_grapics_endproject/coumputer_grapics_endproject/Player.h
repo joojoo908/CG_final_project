@@ -27,6 +27,7 @@ public:
 	float GetRotY();
 	void GetDamage(float Damage);
 	int GetKey() { return LightKey; }
+	float GetHp() { return HP; };
 	void SetKey() { LightKey = 5; }
 	bool IS_END() { return is_End; }
 	bool IS_DEAD() { return !is_Live && !ending_time; }

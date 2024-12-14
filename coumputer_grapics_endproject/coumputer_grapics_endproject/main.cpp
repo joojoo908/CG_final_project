@@ -72,6 +72,7 @@ Object* object;
 Object* ship;
 Object* cubes[4];
 Object* title;
+Object* hp_bar;
 Object* pause;
 Object* gameEnd;
 Object* gameClear;
@@ -284,9 +285,11 @@ void update() {
             mode = "Clear_mode";
             currCamera = eventCamera;
         }
-
+        
     }
     currCamera->Update();
+    hp_bar->update_hp(currCamera,player->GetHp());
+
 }
 
 void mainInit() {
@@ -542,6 +545,16 @@ void mainInit() {
         collide_box->SetScale(glm::vec3(0.4, 1.1, 0.4));
         player = new Player(mainModel, collide_box, obj_map);
     }
+    //체력바
+    {
+        Model* m = new Model();
+        modelPath = "Hp/hpgltf.gltf";
+        m->LoadModel(modelPath);
+        m->SetScale({ 0.1,0.1,0.1 });
+        m->SetRotate({ 0,90,0 });
+        m->SetTranslate({ 0,50,0 });
+        hp_bar = new Object("hp", m, 0, 0, 0, 0, 0);
+    }
     //보스
     {
         boss_model = new Model();
@@ -690,6 +703,11 @@ GLvoid render()
         if (mode == "Pause_mode") {
             glDisable(GL_DEPTH_TEST);
             pause->draw(currCamera, directionalLight2, pointLights, pointLightCount);
+            glEnable(GL_DEPTH_TEST);
+        }
+        else {
+            glDisable(GL_DEPTH_TEST);
+            hp_bar->draw(currCamera, directionalLight2, pointLights, pointLightCount);
             glEnable(GL_DEPTH_TEST);
         }
 

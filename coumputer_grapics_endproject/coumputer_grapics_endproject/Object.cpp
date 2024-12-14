@@ -82,6 +82,29 @@ void Object::update_pannel(CameraBase* currCamera) {
 
 }
 
+void Object::update_hp(CameraBase* currCamera, float hp) {
+
+	glm::vec3 set = currCamera->GetFront();
+	glm::vec3 down = -currCamera->GetUp();
+	
+	
+	set *= 3.0f;   // 전방으로 3배 이동
+	down *= 1.2f;
+	
+	model->SetTranslate(currCamera->GetPosition() + set + down);
+	model->SetScale({ hp/50 ,0.05,0.05 });
+
+	GLfloat* currPos = model->GetTranslate();
+	glm::vec3 modelPos = glm::vec3(currPos[0], currPos[1], currPos[2]);
+	glm::vec3 v = currCamera->GetPosition();
+	GLfloat angle = glm::atan(v.z - currPos[2], currPos[0] - v.x);
+
+	glm::vec3 direction = glm::normalize(v - modelPos);
+	GLfloat pitchAngle = glm::asin(direction.y);
+	model->SetRotate({ 90 - glm::degrees(pitchAngle)  ,  glm::degrees(angle) - 90 , model->GetRotate()[2] });
+
+}
+
 void Object::draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount) {
 	glm::mat4 viewMat = currCamera->GetViewMatrix();
 	glm::mat4 projMat = currCamera->GetProjectionMatrix(1280, 720);
