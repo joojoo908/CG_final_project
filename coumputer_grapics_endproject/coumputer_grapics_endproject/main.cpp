@@ -404,16 +404,16 @@ void mainInit() {
         object = new Object("machine", machine, collide_box, 0, 60.5, 60.5, 0);
         obj_map[std::make_pair(60, 60)] = object;
 
-        collide_box->SetTranslate({ 60.5,0.6,-60.5 });
+        collide_box->SetTranslate({ 60.5,0.6,-59.5 });
         object = new Object("machine", machine, collide_box, 0, 60.5,- 60.5, 0);
         obj_map[std::make_pair(60, -60)] = object;
 
-        collide_box->SetTranslate({ -60.5,0.6,60.5 });
-        object = new Object("machine", machine, collide_box, 0, -60.5, 60.5, 0);
+        collide_box->SetTranslate({ -59.5,0.6,60.5 });
+        object = new Object("machine", machine, collide_box, 0, -59.5, 60.5, 0);
         obj_map[std::make_pair(-60, 60)] = object;
 
-        collide_box->SetTranslate({ -60.5,0.6,-60.5 });
-        object = new Object("machine", machine, collide_box, 0, -60.5, -60.5, 0);
+        collide_box->SetTranslate({ -59.5,0.6,-59.5 });
+        object = new Object("machine", machine, collide_box, 0, -59.5, -59.5, 0);
         obj_map[std::make_pair(-60, -60)] = object;
     }
     //¶¥
