@@ -363,7 +363,7 @@ void Model::LoadEmissiveMaps(aiMaterial* material, const size_t& i)
 			idx = std::string(textureName).rfind("\\");
 			textureName = std::string(textureName).substr(idx + 1);
 
-			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+			std::string texPath =  modelName + "/textures/" + textureName;
 
 			emissiveMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Emissive : " << texPath << std::endl;
@@ -390,7 +390,7 @@ void Model::LoadMetallicMaps(aiMaterial* material, const size_t& i)
 			idx = std::string(textureName).rfind("\\");
 			textureName = std::string(textureName).substr(idx + 1);
 
-			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+			std::string texPath =  modelName + "/textures/" + textureName;
 
 			metallicMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Metallic : " << texPath << std::endl;
@@ -417,7 +417,7 @@ void Model::LoadRoughnessMaps(aiMaterial* material, const size_t& i)
 			idx = std::string(textureName).rfind("\\");
 			textureName = std::string(textureName).substr(idx + 1);
 
-			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+			std::string texPath =  modelName + "/textures/" + textureName;
 
 			roughnessMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Roughness : " << texPath << std::endl;

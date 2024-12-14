@@ -3,12 +3,6 @@
 		"generator":"Khronos glTF Blender I/O v4.3.47",
 		"version":"2.0"
 	},
-	"extensionsUsed":[
-		"KHR_texture_transform"
-	],
-	"extensionsRequired":[
-		"KHR_texture_transform"
-	],
 	"scene":0,
 	"scenes":[
 		{
@@ -21,40 +15,16 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Plane",
-			"scale":[
-				100,
-				1,
-				1
-			]
+			"name":"Plane"
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
 			"name":"Material.001",
-			"normalTexture":{
-				"extensions":{
-					"KHR_texture_transform":{
-						"scale":[
-							100,
-							1
-						]
-					}
-				},
-				"index":0
-			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"extensions":{
-						"KHR_texture_transform":{
-							"scale":[
-								100,
-								1
-							]
-						}
-					},
-					"index":1
+					"index":0
 				},
 				"metallicFactor":0,
 				"roughnessFactor":0.5
@@ -81,22 +51,13 @@
 		{
 			"sampler":0,
 			"source":0
-		},
-		{
-			"sampler":0,
-			"source":1
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"castle_brick_02_white_nor_gl_4k",
-			"uri":"castle_brick_02_white_nor_gl_4k.png"
-		},
-		{
-			"mimeType":"image/jpeg",
-			"name":"castle_brick_02_white_diff_4k",
-			"uri":"castle_brick_02_white_diff_4k.jpg"
+			"name":"wall-removebg-preview",
+			"uri":"wall-removebg-preview.png"
 		}
 	],
 	"accessors":[
