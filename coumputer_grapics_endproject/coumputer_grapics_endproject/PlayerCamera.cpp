@@ -14,8 +14,7 @@ PlayerCamera::PlayerCamera(Player* player) : CameraBase(glm::vec3(0.f, 0.f, 0.f)
 	angle = 0.f;
 	pitch = -15.f;
 	TURN_SPEED = 0.5f;
-	farClippingPlane = 100.0f;
-
+	farClippingPlane = 60.0f;
 	Update();
 }
 

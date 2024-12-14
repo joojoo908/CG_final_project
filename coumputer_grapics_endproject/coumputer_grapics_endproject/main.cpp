@@ -433,7 +433,7 @@ void mainInit() {
         atk_circle->LoadModel(modelPath);
         atk_circle->SetRotate({ 0,0,0 });
         atk_circle->SetScale({ 1,1,1 });
-        atk_circle->SetTranslate({ 0,0.5f,0 });
+        atk_circle->SetTranslate({ 0,0.1f,0 });
     }
     //º¸½º
     {

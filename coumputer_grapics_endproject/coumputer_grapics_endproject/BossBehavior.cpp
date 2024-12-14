@@ -18,8 +18,8 @@ BossBehavior::BossBehavior(Model* bossmodel, Model* playermodel, Model* SlamEffe
     this->map = map;
     this->SlamEffect = SlamEffect;
 
-
-    SLAM = false;
+    Dmg_SLAM = false;
+    isSLAM = false;
 }
 
 void BossBehavior::Wander(float deltaTime) {
@@ -64,7 +64,7 @@ void BossBehavior::Wander(float deltaTime) {
 }
 void BossBehavior::Chase(float deltaTime) {
     //---근접공격으로 변경
-    if (InRange(25))
+    if (InRange(16))
     {
         Turn_to_Player();
         key = 2;
@@ -106,7 +106,7 @@ void BossBehavior::Chase(float deltaTime) {
 }
 void BossBehavior::closeAttack() {
     // 공격 타이밍 및 범위 검사
-    if (turning_time >= 1.4 && turning_time <= 1.6) {
+    if (turning_time >= 1.1 && turning_time <= 1.25) {
         if (InRange(36)) { // 거리 조건
             float* Bpos = model_b->GetTranslate();
             float* Ppos = model_p->GetTranslate();
@@ -121,6 +121,11 @@ void BossBehavior::closeAttack() {
             float angle_gap = fmod(view_angle - atk_angle + 360.0f, 360.0f);
             if (angle_gap > 180.0f) angle_gap -= 360.0f; // -180 ~ 180도로 정규화
             if (angle_gap >= -60.0f && angle_gap <= 60.0f) {
+                if (!Dmg_Close_atk)
+                {
+                    Damage = 10.f;
+                    Dmg_Close_atk = true;
+                }
             }
         }
     }
@@ -231,10 +236,11 @@ void BossBehavior::Check_Paturn() {
         }
         break;
     case 2:      //-- closeAttack();
-        if (turning_time >= 3.0f)
+        if (turning_time >= 2.0f)
         {
             key = 1;
             turning_time = 0;
+            Dmg_Close_atk = false;
         }
         break;
     case 3:      //-- Dash();
@@ -246,7 +252,7 @@ void BossBehavior::Check_Paturn() {
         break;
     case 4:      //-- Slam();
         if (turning_time >= 1.60f && turning_time <= 1.7f) {
-            SLAM = true;
+            isSLAM = true;
             float* Bpos = model_b->GetTranslate();
             GLfloat currRotY = model_b->GetRotate()[1];
             float distance = 0.8 * MOVE_SPEED;
@@ -303,14 +309,17 @@ void BossBehavior::updateSlam() {
     else
     {
         SlamEffect->SetScale({1,1,1});
-        SLAM = false;
+        isSLAM = false;
+        Dmg_SLAM = false;
     }
 
 }
 void BossBehavior::Update(float deltaTime) {
-    if (SLAM)
+    
+    if (isSLAM)
     {
         updateSlam();
+        GetSlam();
     }
     UpdateHitbox();
     if (!InRange(324) && key != 0)
@@ -323,9 +332,24 @@ void BossBehavior::Update(float deltaTime) {
     Check_Paturn();
     Do(deltaTime);
 }
-void BossBehavior::reset_time() {
-
+void BossBehavior::GetSlam() {
+    if (!Dmg_SLAM && InRange_Slam())
+    {
+        Dmg_SLAM = true;
+        Damage = 15.0f;
+    }
 }
+bool BossBehavior::InRange_Slam() {
+    float* Spos = SlamEffect->GetTranslate();
+    float* Ssize = SlamEffect->GetScale();
+    float* Ppos = model_p->GetTranslate();
+    float dx = Spos[0] - Ppos[0];
+    float dz = Spos[2] - Ppos[2];
+    
+    return (dx * dx + dz * dz) >= Ssize[0] * Ssize[0] - 4 &&
+        (dx * dx + dz * dz) <= Ssize[0] * Ssize[0] + 4;
+}
+
 bool BossBehavior::Collide(Collision* box, glm::vec3 delta) {
     Collision* nextbox = GetCollsion();;
     nextbox->NextPosition(delta);

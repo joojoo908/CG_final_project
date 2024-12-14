@@ -61,6 +61,13 @@ void Boss::Jump()
 
 void Boss::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)  {
 	behavior->Update(deltaTime);
+	float Damage = behavior->GetDamage();
+	if (Damage > 0.f)
+	{
+		std::cout << Damage << std::endl;
+		player->GetDamage(Damage);
+		behavior->SetDamage(0.0f);
+	}
 	int key = behavior->GetKey();
 	switch (key)
 	{
@@ -131,7 +138,7 @@ void Boss::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Poin
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	// 슬램 이펙트그리기
-	if (behavior->isSLAM())
+	if (behavior->is_SLAM())
 	{
 		shaderList[1]->UseShader();
 		GetShaderHandles_obj();

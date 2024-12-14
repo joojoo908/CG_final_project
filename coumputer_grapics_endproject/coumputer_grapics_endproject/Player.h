@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include "gl/glm/glm.hpp"
 #include <map>
 
@@ -23,7 +23,7 @@ public:
 	void update(float deltaTime, std::map<std::pair<int, int>, Object*> map);
 	void draw(CameraBase* currCamera, DirectionalLight* directionalLight, PointLight* pointLights[], unsigned int pointLightCount);
 	float GetRotY();
-	
+	void GetDamage(float Damage);
 
 	Model* GetModel() { return model; }
 	Animator* GetAnimator() { return animator; }

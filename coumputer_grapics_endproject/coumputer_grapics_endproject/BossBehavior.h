@@ -26,9 +26,11 @@ public:
 	void Update(float deltaTime);
 
 	void updateSlam();
-	bool isSLAM() { return SLAM; }
+	void GetSlam();
+	bool is_SLAM() { return isSLAM; }
 
-	void reset_time();
+	float GetDamage() { return Damage; }
+	void SetDamage(float Damage) { this->Damage = Damage;}
 	void UpdateHitbox();
 	
 	int GetKey() { return key; }
@@ -46,12 +48,18 @@ private:
 	const float MOVE_SPEED;
 	const float DASH_SPEED;
 	const float SLAM_SPEED;
-	bool SLAM;
+	bool isSLAM;
+	bool Dmg_SLAM;
+	bool Dmg_Close_atk;
+
+	float Damage{};
+
 
 	std::map<std::pair<int, int>, Object*> map;
 	int key{};		//--- 행동 키
 	float turning_time{}; //--- 키 변경 타임
 	int skill_order{};
+	bool InRange_Slam();
 	bool InRange(int distance);
 	bool Collide(Collision* collision, glm::vec3 delta);
 };

@@ -74,9 +74,6 @@ void Player::MouseContrl(float XChange, float YChange) {
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
 	model->SetRotate(newRot);
 	//hitbox->SetRotate(newRot);
-
-
-
 }
 
 bool Player::Move(float deltaTime, std::map<std::pair<int, int>, Object*> map)
@@ -182,7 +179,10 @@ float Player::GetRotY()
 {
 	return model->GetRotate()[1];
 }
-
+void  Player::GetDamage(float Damage) {
+	HP -= Damage;
+	std::cout << "플레이어 체력 " << HP << ", 데미지 : " << Damage << std::endl;
+}
 void Player::Jump()
 {
 	if (isJumping)
@@ -193,7 +193,11 @@ void Player::Jump()
 }
 
 void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
-
+	//디버깅용
+	if (HP < 100.f)
+	{
+		std::cout << "플레이어 체력 " << HP << std::endl;
+	}
 	if (Move(deltaTime,map))
 	{
 		if (currMoveSpeed_z) {
@@ -222,6 +226,9 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		if (animator->GetCurrAnimation() != idleAnim)
 			animator->PlayAnimation(idleAnim);
 	}
+
+
+
 	//애니메이션 업데이트
 	animator->UpdateAnimation(deltaTime);
 
