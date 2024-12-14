@@ -47,8 +47,6 @@ void BossBehavior::Wander(float deltaTime) {
             auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
             if (it != map.end() && it->second->GetCollision())
             {
-                std::cout << "삐빅 객체가 있습니다!!!!!!\n";
-
                 if (Collide(it->second->GetCollision(), delta))
                 {
                     is_crash = true;
@@ -58,7 +56,6 @@ void BossBehavior::Wander(float deltaTime) {
     }
     if (is_crash)
     {
-        std::cout << "충돌하였습니다\n";
         glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         delta = glm::vec3(rotationMatrix * glm::vec4(delta, 1.0f));
     }
@@ -91,7 +88,6 @@ void BossBehavior::Chase(float deltaTime) {
             auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
             if (it != map.end() && it->second->GetCollision())
             {
-                std::cout << "삐빅 객체가 있습니다!!!!!!\n";
                 UpdateHitbox();
                 if (Collide(it->second->GetCollision(), delta))
                 {
@@ -102,7 +98,6 @@ void BossBehavior::Chase(float deltaTime) {
     }
     if (is_crash)
     {
-        std::cout << "충돌하였습니다\n";
         glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         delta = glm::vec3(rotationMatrix * glm::vec4(delta, 1.0f));
     }
@@ -126,13 +121,11 @@ void BossBehavior::closeAttack() {
             float angle_gap = fmod(view_angle - atk_angle + 360.0f, 360.0f);
             if (angle_gap > 180.0f) angle_gap -= 360.0f; // -180 ~ 180도로 정규화
             if (angle_gap >= -60.0f && angle_gap <= 60.0f) {
-                std::cout << "피격\n";
             }
         }
     }
 }
 void BossBehavior::Dash(float deltaTime) {
-    std::cout << "Dash\n";
     //---근접공격으로 변경
     if (InRange(9))
     {
@@ -157,7 +150,6 @@ void BossBehavior::Dash(float deltaTime) {
             auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
             if (it != map.end() && it->second->GetCollision())
             {
-                std::cout << "삐빅 객체가 있습니다!!!!!!\n";
                 UpdateHitbox();
                 if (Collide(it->second->GetCollision(), delta))
                 {
@@ -168,7 +160,6 @@ void BossBehavior::Dash(float deltaTime) {
     }
     if (is_crash)
     {
-        std::cout << "충돌하였습니다\n";
         glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         delta = glm::vec3(rotationMatrix * glm::vec4(delta, 1.0f));
     }
@@ -254,8 +245,18 @@ void BossBehavior::Check_Paturn() {
         }
         break;
     case 4:      //-- Slam();
-        if (turning_time >= 1.8f && turning_time <= 1.85f) {
+        if (turning_time >= 1.60f && turning_time <= 1.7f) {
             SLAM = true;
+            float* Bpos = model_b->GetTranslate();
+            GLfloat currRotY = model_b->GetRotate()[1];
+            float distance = 0.8 * MOVE_SPEED;
+            float dx = distance * sinf(glm::radians(currRotY));
+            float dz = distance * cosf(glm::radians(currRotY));
+            glm::vec3 delta(dx, 0, dz);
+            glm::vec3 newPos(Bpos[0] + delta.x, Bpos[1], Bpos[2] + delta.z);
+
+            SlamEffect->SetScale({ 0.01f,1,0.01f });
+            SlamEffect->SetTranslate({ newPos[0], 0.001f, newPos[2] });
         }
         if (turning_time >= 2.5f)
         {
@@ -292,10 +293,25 @@ void BossBehavior::Turn_to_Player() {
 
     model_b->SetRotate({ 0,glm::degrees(atan2(dx,dz)) ,0 });
 }
-void BossBehavior::SetKey(int goal) {
-    key = goal;
+void BossBehavior::updateSlam() {
+    float* SScale = SlamEffect->GetScale();
+    if (SScale[0] < 25.0f)
+    {
+        float size{ 0.5f };
+        SlamEffect->SetScale({ SScale[0] + size,SScale[1],SScale[2] + size });
+    }
+    else
+    {
+        SlamEffect->SetScale({1,1,1});
+        SLAM = false;
+    }
+
 }
 void BossBehavior::Update(float deltaTime) {
+    if (SLAM)
+    {
+        updateSlam();
+    }
     UpdateHitbox();
     if (!InRange(324) && key != 0)
     {

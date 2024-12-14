@@ -23,8 +23,9 @@ public:
 
 	void Turn_to_Player();
 	void Check_Paturn();
-	void SetKey(int goal);
 	void Update(float deltaTime);
+
+	void updateSlam();
 	bool isSLAM() { return SLAM; }
 
 	void reset_time();
