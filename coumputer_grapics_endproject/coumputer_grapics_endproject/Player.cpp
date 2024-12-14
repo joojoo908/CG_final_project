@@ -33,9 +33,12 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	rightRunAnim = new Animation("Player/rightRun.gltf", model);
 	jumpAnim = new Animation("Player/jump.gltf", model);
 	sitAnim = new Animation("Player/sit.gltf", model);
-
+	working_time = {};
+	ending_time = {};
 	isJumping = true;
 	is_Live = true;
+	can_escape = false;
+	is_End = false;
 }
 
 void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
@@ -62,9 +65,12 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 			GLfloat YRot = model->GetRotate()[1];
 			int forwardX = int(currPos[0] + sinf(glm::radians(YRot))); // 전방 X 방향 (cosine 사용)
 			int forwardZ = int(currPos[2] + cosf(glm::radians(YRot))); // 전방 Z 방향 (sine 사용)
-			if (isMachine(forwardX, forwardZ))
+			if (YRot >= -40 && YRot <= 40.f)
 			{
-				is_Working = true;
+				if (isMachine(forwardX, forwardZ))
+				{
+					is_Working = true;
+				}
 			}
 		}
 	}
@@ -89,23 +95,72 @@ void Player::MouseContrl(float XChange, float YChange) {
 	GLfloat* currRot = model->GetRotate();
 	float rotation = -TURN_SPEED * XChange;
 	float newRotY = currRot[1] + rotation; // new rotY
+	if (newRotY > 180)
+	{
+		newRotY -= 360.f;
+	}
+	else if (newRotY < -180){
+		newRotY += 360.f;
+	}
+
 	glm::vec3 newRot(currRot[0], newRotY, currRot[2]);
 	model->SetRotate(newRot);
 	//hitbox->SetRotate(newRot);
 }
 
+
 bool Player::isMachine(int x, int z) {
 
 	auto it = map.find({ x, z });
-	std::cout << "오브젝트 검사\n";
 	if (it != map.end() && it->second->GetCollision())
 	{
 		UpdateHitbox();
-		std::cout << "오브젝트 검사완료\n";
 		if (it->second->GetType() == "machine") {
-			//is_Working = true;
+			if (it->first.first > 0 && it->first.second > 0)
+			{
+				if (!is_Clear[0])
+				{
+					is_Clear[0] = true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else if (it->first.first < 0 && it->first.second > 0)
+			{
+				if (!is_Clear[1])
+				{
+					is_Clear[1] = true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else if (it->first.first < 0 && it->first.second < 0)
+			{
+				if (!is_Clear[2])
+				{
+					is_Clear[2] = true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else if (it->first.first > 0 && it->first.second < 0)
+			{
+				if (!is_Clear[3])
+				{
+					is_Clear[3] = true;
+				}
+				else
+				{
+					return false;
+				}
+			}
 			return true;
-			std::cout << "오브젝트 활성화\n";
 		}
 	}
 	return false;
@@ -222,10 +277,18 @@ float Player::GetRotY()
 	return model->GetRotate()[1];
 }
 void  Player::GetDamage(float Damage) {
-	//HP -= Damage;
+	HP -= Damage;
 	if (HP <= 0.f)
 	{
-		//is_Live = false;
+		if (ending_time <= 2.0f)
+		{
+			ending_time += 0.1f;
+		}
+		else
+		{
+			is_Live = false;
+		}
+
 	}
 }
 void Player::Jump()
@@ -238,10 +301,24 @@ void Player::Jump()
 }
 
 void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map) {
-	//디버깅용
-	if (HP >0.f)
+	if (is_Working)
 	{
-		if (Move(deltaTime, map))
+		working_time += deltaTime;
+		if (working_time >= 1.5f)
+		{
+			working_time = 0;
+			is_Working = false;
+		}
+	}
+	if (is_Live)
+	{
+		//오브젝트 상호작용
+		if (is_Working)
+		{
+			if (animator->GetCurrAnimation() != sitAnim)
+				animator->PlayAnimation(sitAnim);
+		}
+		else if (Move(deltaTime, map))
 		{
 			if (currMoveSpeed_z) {
 				if (currMoveSpeed_z > 0) {
@@ -264,12 +341,6 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 				}
 			}
 		}
-		//오브젝트 상호작용
-		else if (is_Working)  
-		{
-			if (animator->GetCurrAnimation() != sitAnim)
-				animator->PlayAnimation(sitAnim);
-		}
 		else
 		{
 			if (isJumping) {
@@ -288,9 +359,14 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		if (animator->GetCurrAnimation() != idleAnim)
 			animator->PlayAnimation(idleAnim);
 	}
-
-
-
+	if (!can_escape)
+	{
+		OpenEnding();
+	}
+	else
+	{
+		Ending();
+	}
 	//애니메이션 업데이트
 	animator->UpdateAnimation(deltaTime);
 
@@ -375,4 +451,30 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 	{
 		std::cout << "error : " << error << std::endl;
 	}
+}
+void Player::OpenEnding() {
+	int cnt{};
+	for (int i = 0; i < 4; i++)
+	{
+		if (is_Clear[i])
+		{
+			cnt++;
+		}
+	}
+	if (cnt == 4)
+	{
+		can_escape = true;
+	}
+}
+void Player::Ending() {
+	float xPos = model->GetTranslate()[0];
+	float zPos = model->GetTranslate()[2];
+	
+	if (InRange(xPos, zPos, 100))
+	{
+		is_End = true;
+	}
+}
+bool Player::InRange(int x, int z,int goal) {
+	return x * x + z * z <= goal;
 }
