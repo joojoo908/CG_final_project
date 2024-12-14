@@ -124,7 +124,7 @@ void BossBehavior::closeAttack() {
             if (angle_gap >= -60.0f && angle_gap <= 60.0f) {
                 if (!Dmg_Close_atk)
                 {
-                    Damage = 10.f;
+                    Damage = 15.f;
                     Dmg_Close_atk = true;
                 }
             }
@@ -173,7 +173,7 @@ void BossBehavior::Dash(float deltaTime) {
     model_b->SetTranslate(newPos);
 }
 void BossBehavior::Slam(float deltaTime) {
-    if (turning_time >= 0.2 && turning_time <= 1.7)
+    if (turning_time >= 0.25 && turning_time <= 1.7)
     {
         GLfloat currRotY = model_b->GetRotate()[1];
         GLfloat* currPos = model_b->GetTranslate();
@@ -183,6 +183,7 @@ void BossBehavior::Slam(float deltaTime) {
         glm::vec3 delta(dx, 0, dz);
         glm::vec3 newPos(currPos[0] + delta.x, currPos[1], currPos[2] + delta.z);
         model_b->SetTranslate(newPos);
+        
     }
         //영역에 대한 화면 표시 및 충돌검사 필요
 };

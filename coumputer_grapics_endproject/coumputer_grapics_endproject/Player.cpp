@@ -373,8 +373,12 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 	else
 	{
 		ending_time += deltaTime;
-		if (animator->GetCurrAnimation() != idleAnim)
-			animator->PlayAnimation(idleAnim);
+		if (ending_time >= 2.f)
+		{
+			is_End = true;
+		}
+		if (animator->GetCurrAnimation() != deathAnim)
+			animator->PlayAnimation(deathAnim);
 	}
 	if (!can_escape)
 	{
@@ -489,7 +493,7 @@ void Player::Ending() {
 	float xPos = model->GetTranslate()[0];
 	float zPos = model->GetTranslate()[2];
 	
-	if (InRange(xPos, zPos, 100))
+	if (InRange(xPos, zPos, 10))
 	{
 		is_End = true;
 	}
