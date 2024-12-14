@@ -74,6 +74,7 @@ Object* cubes[4];
 Object* title;
 Object* pause;
 Object* gameEnd;
+Object* gameClear;
 
 DirectionalLight* directionalLight;
 DirectionalLight* directionalLight2;
@@ -280,7 +281,7 @@ void update() {
         }
         else if (player->IS_END()) //클리어 조건
         {
-            mode = "End_mode";
+            mode = "Clear_mode";
             currCamera = eventCamera;
         }
 
@@ -593,6 +594,15 @@ void mainInit() {
         title_obj->SetScale({ 2.5,1,1.5 });
         gameEnd = new Object("gameEnd", title_obj, 0, 0, 0, 3, 0);
     }
+    //종료 화면
+    {
+        Model* title_obj = new Model();
+        modelPath = "Game_clear/clear_image.gltf";
+        title_obj->LoadModel(modelPath);
+        title_obj->SetRotate({ 90,180,0 });
+        title_obj->SetScale({ 2.5,1,1.5 });
+        gameClear = new Object("gameClear", title_obj, 0, 0, 0, 3, 0);
+    }
 
 
 
@@ -690,9 +700,10 @@ GLvoid render()
 
     }
     else if (mode == "End_mode") {
-
         gameEnd->draw(currCamera, directionalLight2, pointLights, pointLightCount);
-
+    }
+    else if (mode == "Clear_mode") {
+        gameClear->draw(currCamera, directionalLight2, pointLights, pointLightCount);
     }
 
     glutSwapBuffers();  // Swap buffers to render
