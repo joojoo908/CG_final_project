@@ -29,6 +29,7 @@ Player::Player(Model* model,Model* hitbox) : MOVE_SPEED(8.f), TURN_SPEED(0.5f), 
 	idleAnim = new Animation("Player/player.gltf", model);
 	danceAnim = new Animation("Knight/dance.gltf", model);
 	runAnim = new Animation("Player/player.gltf", model);
+	sitAnim = new Animation("Player/sit.gltf", model);
 
 	isJumping = true;
 }
@@ -147,13 +148,11 @@ bool Player::InRange(const std::pair<int, int>& a, int distance) {
 //
 //}
 
-
-
 void Player::UpdateHitbox() 
 {
 	GLfloat* modelRot = model->GetRotate();
 	GLfloat* modelTrans = model->GetTranslate();
-	std::cout << "x: " << modelTrans[0] << ", y: " << modelTrans[1] << ", z: " << modelTrans[2] << "\n";
+	//std::cout << "x: " << modelTrans[0] << ", y: " << modelTrans[1] << ", z: " << modelTrans[2] << "\n";
 	
 	hitbox->SetTranslate({ modelTrans[0],modelTrans[1]+hitbox->GetScale()[1],modelTrans[2]});
 	hitbox->SetRotate({ modelRot[0],modelRot[1] ,modelRot[2] });
