@@ -75,7 +75,7 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 			Jump();
 		}
 		if (keys == 'r') {
-			if (!isJumping)
+			if (!isJumping && !is_Roll && !is_Working)
 			{
 				is_Roll = true;
 			}
