@@ -200,7 +200,7 @@ void Mouse(int button, int state, int x, int y)
                 glutLeaveMainLoop();
             }
         }
-        else if (mode == "End_mode") {
+        else if (mode == "End_mode" || mode =="Clear_mode") {
             glutLeaveMainLoop();
         }
     }
