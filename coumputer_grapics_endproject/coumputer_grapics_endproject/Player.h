@@ -30,6 +30,7 @@ public:
 	float GetHp() { return HP; };
 	void SetKey() { LightKey = 5; }
 	bool IsRoll() { return  is_Roll; }
+	bool iswork() { return  is_Working; }
 	bool IS_END() { return  is_Live && is_End; }
 	bool IS_DEAD() { return !is_Live && is_End; }
 	Model* GetModel() { return model; }

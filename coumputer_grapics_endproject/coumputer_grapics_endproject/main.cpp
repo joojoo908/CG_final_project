@@ -30,16 +30,11 @@
 #include "Object.h"
 #include "Boss.h"
 
-#define WIDTH 1280
-#define HEIGHT 720
 
-//int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-//int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-int screenWidth = WIDTH;
-int screenHeight = HEIGHT;
+int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 int Center_width = screenWidth / 2;
 int Center_height = screenHeight / 2;
-int lastX, lastY;
 
 std::string mode = "Title_mode";
 std::string back_mode = "";
@@ -106,8 +101,6 @@ void processKeyboard(unsigned char key, int x, int y) {
 
     if (key == 'p') {
         if (mode == "Pause_mode") {
-            lastX = Center_width;
-            lastY = Center_height;
             mode = "Play_mode";
         }
         else {
@@ -155,27 +148,21 @@ void SpecialKeyboard(int key, int x, int y) {
 }
 
 void processMouse(int x, int y) {
-    GLfloat XChange = x - lastX;
-    GLfloat YChange = lastY - y;
+    GLfloat XChange = x - Center_width;
+    GLfloat YChange = Center_height - y;
     if (mode != "Play_mode" && mode != "Master_mode") {
         XChange = 0;
         YChange = 0;
     }
-
-    lastX = x;
-    lastY = y;
     currCamera->MouseControl(XChange, YChange);
 
     if (mode == "Play_mode") {
-        if (!player->IsRoll())
+        if (!player->IsRoll() && !player->iswork())
         {
             player->MouseContrl(XChange, YChange);
         }
-        lastX = Center_width;
-        lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
     }
-
 }
 
 void Mouse(int button, int state, int x, int y)
@@ -191,8 +178,6 @@ void Mouse(int button, int state, int x, int y)
             float py = (float)(Center_height - y) / (float)Center_height;
             if (px > -0.28 && px < 0.28 && py>0.11 &&py<0.38) {
                 std::cout << "다시 시작" << std::endl;
-                lastX = Center_width;
-                lastY = Center_height;
                 mode = "Play_mode";
             }
             if (px > -0.28 && px<0.28 && py>-0.43 && py < -0.16) {
@@ -516,9 +501,6 @@ void mainInit() {
         atk_circle->SetScale({ 1,1,1 });
         atk_circle->SetTranslate({ 0,0.1f,0 });
     }
-
-
-
     //플레이어
     {
         mainModel = new Model();
@@ -608,9 +590,6 @@ void mainInit() {
         title_obj->SetScale({ 2.5,1,1.5 });
         gameClear = new Object("gameClear", title_obj, 0, 0, 0, 3, 0);
     }
-
-
-
     freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     eventCamera = new FreeCamera(glm::vec3(0.f, 0.f, 0.f), 100.f, 0.3f);
     playerCamera = new PlayerCamera(player);
@@ -730,7 +709,7 @@ int main(int argc, char** argv)
 
 
     // 전체 화면으로 전환
-    //glutFullScreen();
+    glutFullScreen();
 
     // Initialize GLEW
     glewInit();
