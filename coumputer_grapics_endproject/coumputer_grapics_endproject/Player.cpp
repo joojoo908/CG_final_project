@@ -39,14 +39,18 @@ Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*
 	upwardSpeed = 0;
 	working_time = {};
 	ending_time = {};
+	dance_time = {};
+	rolling_time = {};
+	block_rolltime = {};
 	LightKey = 5;
 	HP = 100.0f;
 
-	isJumping = true;
+	isJumping = false;
 	is_Live = true;
+	is_Roll = false;
 	can_escape = false;
 	is_End = false;
-	dance_time = 0;
+
 }
 
 void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
@@ -66,7 +70,12 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 		if (keys == 32) {
 			Jump();
 		}
-
+		if (keys == 'r') {
+			if (!isJumping)
+			{
+				is_Roll = true;
+			}
+		}
 		if (keys == 'f')
 		{
 			GLfloat* currPos = model->GetTranslate();
@@ -324,6 +333,12 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 			if (animator->GetCurrAnimation() != sitAnim)
 				animator->PlayAnimation(sitAnim);
 		}
+		else if (is_Roll)
+		{
+			Rolling(deltaTime);
+			if (animator->GetCurrAnimation() != rollAnim)
+				animator->PlayAnimation(rollAnim);
+		}
 		else if (Move(deltaTime, map))
 		{
 			dance_time = 0;
@@ -347,25 +362,30 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 						animator->PlayAnimation(rightRunAnim);
 				}
 			}
-		}
-		else
-		{
-			if (isJumping) {
+			if (isJumping)
+			{
 				if (animator->GetCurrAnimation() != jumpAnim)
 					animator->PlayAnimation(jumpAnim);
 			}
-			else {
-				
-				if (dance_time>10) {
+		}
+		else
+		{
+			if (isJumping)
+			{
+				if (animator->GetCurrAnimation() != jumpAnim)
+					animator->PlayAnimation(jumpAnim);
+			}
+			else
+			{
+				if (dance_time > 10) {
 					if (animator->GetCurrAnimation() != danceAnim)
 						animator->PlayAnimation(danceAnim);
 				}
 				else {
+					dance_time += deltaTime;
 					if (animator->GetCurrAnimation() != idleAnim)
 						animator->PlayAnimation(idleAnim);
 				}
-
-				dance_time += deltaTime;
 			}
 		}
 	}
@@ -443,31 +463,6 @@ void Player::draw(CameraBase* currCamera, DirectionalLight* directionalLight, Po
 		model->SetRotate(newRot);
 	}
 
-	
-	
-	//히트박스 그리기
-	shaderList[1]->UseShader();
-
-	GetShaderHandles_obj();
-
-	glm::mat4 hitMat = hitbox->GetModelMat();
-	glm::mat4 hitPVM = projMat * viewMat * hitMat;
-	glm::mat3 hitnormalMat = GetNormalMat(hitMat);
-
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(hitMat));
-	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(hitPVM));
-	glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(hitnormalMat));
-
-	shaderList[1]->UseEyePos(camPos);
-	shaderList[1]->UseDirectionalLight(directionalLight);
-	shaderList[1]->UsePointLights(pointLights, pointLightCount);
-
-	shaderList[1]->UseMaterial(hitbox->GetMaterial());
-
-
-	hitbox->RenderModel();
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 	{
@@ -500,4 +495,55 @@ void Player::Ending() {
 }
 bool Player::InRange(int x, int z,int goal) {
 	return x * x + z * z <= goal;
+}
+void Player::Rolling(float deltaTime) {
+	// 현재 회전값과 위치 가져오기
+	GLfloat* currRot = model->GetRotate();
+	GLfloat* currPos = model->GetTranslate();
+	// 이동 거리 및 회전 계산
+	float distance = MOVE_SPEED * glm::min((rolling_time + deltaTime),1.f);
+
+	// 라디안으로 변환한 회전을 사용하여 dx와 dz 계산
+	float dx = distance * sinf(glm::radians(currRot[1]));
+	float dz = distance * cosf(glm::radians(currRot[1]));
+
+	// 새로운 위치 계산
+	glm::vec3 delta(dx, 0, dz);
+	glm::vec3 newPos(currPos[0] + dx, currPos[1], currPos[2] + dz);
+
+	//맵 오브젝트들과 충돌검사 (콜리전박스 있는애들만)
+	auto it1 = map.find({ int(currPos[0]), int(currPos[2]) });
+	auto it = map.find({ int(newPos[0]), int(newPos[2]) });
+	for (int i = -1; i < 2; i++)
+	{
+		for (int j = -1; j < 2; j++)
+		{
+			auto it = map.find({ int(newPos[0]) + i, int(newPos[2]) + j });
+			if (it != map.end() && it->second->GetCollision())
+			{
+				UpdateHitbox();
+				if (Collide(it->second->GetCollision(), delta))
+				{
+					rolling_time = 0;
+					model->SetTranslate(newPos);
+					newPos.y += hitbox->GetScale()[1];
+					hitbox->SetTranslate(newPos);
+					is_Roll = false;
+					return;
+				}
+			}
+		}
+	}
+	if (rolling_time <= 1.3f)
+	{
+		rolling_time += deltaTime;
+	}
+	else if(rolling_time >= 1.3f)
+	{
+		rolling_time = 0;
+		model->SetTranslate(newPos);
+		newPos.y += hitbox->GetScale()[1];
+		hitbox->SetTranslate(newPos);
+		is_Roll = false;
+	}
 }

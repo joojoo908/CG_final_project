@@ -337,8 +337,11 @@ void BossBehavior::Update(float deltaTime) {
 void BossBehavior::GetSlam() {
     if (!Dmg_SLAM && InRange_Slam())
     {
-        Dmg_SLAM = true;
-        Damage = 15.0f;
+        if (model_p->GetTranslate()[1] == 0.f)
+        {
+            Dmg_SLAM = true;
+            Damage = 15.0f;
+        }
     }
 }
 bool BossBehavior::InRange_Slam() {
@@ -348,8 +351,8 @@ bool BossBehavior::InRange_Slam() {
     float dx = Spos[0] - Ppos[0];
     float dz = Spos[2] - Ppos[2];
     
-    return (dx * dx + dz * dz) >= Ssize[0] * Ssize[0] - 2 &&
-        (dx * dx + dz * dz) <= Ssize[0] * Ssize[0] + 2;
+    return (dx * dx + dz * dz) >= Ssize[0] * Ssize[0] - 4 &&
+        (dx * dx + dz * dz) <= Ssize[0] * Ssize[0] + 4;
 }
 
 bool BossBehavior::Collide(Collision* box, glm::vec3 delta) {

@@ -29,6 +29,7 @@ public:
 	int GetKey() { return LightKey; }
 	float GetHp() { return HP; };
 	void SetKey() { LightKey = 5; }
+	bool IsRoll() { return  is_Roll; }
 	bool IS_END() { return  is_Live && is_End; }
 	bool IS_DEAD() { return !is_Live && is_End; }
 	Model* GetModel() { return model; }
@@ -68,11 +69,14 @@ private:
 	float groundHeight;
 	float HP;
 	float working_time;
+	float rolling_time;
+	float block_rolltime;
 	float ending_time;
 	float dance_time;
 
 	bool isJumping;
 	bool is_Working;
+	bool is_Roll;
 	bool is_Live;
 	bool is_Clear[4];
 	bool can_escape;
@@ -87,6 +91,6 @@ private:
 	void UpdateHitbox();
 	void OpenEnding();
 	void Ending();
-	void Rolling();
+	void Rolling(float deltaTime);
 	
 };

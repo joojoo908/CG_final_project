@@ -167,7 +167,10 @@ void processMouse(int x, int y) {
     currCamera->MouseControl(XChange, YChange);
 
     if (mode == "Play_mode") {
-        player->MouseContrl(XChange, YChange);
+        if (!player->IsRoll())
+        {
+            player->MouseContrl(XChange, YChange);
+        }
         lastX = Center_width;
         lastY = Center_height;
         glutWarpPointer(Center_width, Center_height);
