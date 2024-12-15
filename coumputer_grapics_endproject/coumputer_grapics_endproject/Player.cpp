@@ -62,11 +62,15 @@ void Player::HandleInput(unsigned char keys, bool updown, float deltaTime)
 			currMoveSpeed_z = -MOVE_SPEED;
 		
 		if (keys == 'a') {
-			currMoveSpeed_x = MOVE_SPEED;
+			if (!is_Roll) {
+				currMoveSpeed_x = MOVE_SPEED;
+			}
 		}
-		else if (keys == 'd')
-			currMoveSpeed_x = -MOVE_SPEED;
-
+		else if (keys == 'd') {
+			if (!is_Roll) {
+				currMoveSpeed_x = -MOVE_SPEED;
+			}
+		}
 		if (keys == 32) {
 			Jump();
 		}

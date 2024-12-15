@@ -118,12 +118,12 @@ void Model::RenderModel()
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
 			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
-		if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
-			roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
-		if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
-			metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
-		if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
-			emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
+		//if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
+		//	roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
+		//if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
+		//	metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
+		//if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
+		//	emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
 
 
 		mesh->RenderMesh();
@@ -143,12 +143,12 @@ void Model::RenderModel()
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
 			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
-		if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
-			roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
-		if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
-			metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
-		if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
-			emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
+		//if (materialIndex < roughnessMaps.size() && roughnessMaps[materialIndex])
+		//	roughnessMaps[materialIndex]->UseTexture(GL_TEXTURE2);
+		//if (materialIndex < metallicMaps.size() && metallicMaps[materialIndex])
+		//	metallicMaps[materialIndex]->UseTexture(GL_TEXTURE3);
+		//if (materialIndex < emissiveMaps.size() && emissiveMaps[materialIndex])
+		//	emissiveMaps[materialIndex]->UseTexture(GL_TEXTURE4);
 
 		mesh->RenderMesh();
 	}
@@ -258,9 +258,9 @@ void Model::LoadMaterials(const aiScene* scene)
 {
 	diffuseMaps.resize(scene->mNumMaterials);
 	normalMaps.resize(scene->mNumMaterials);
-	roughnessMaps.resize(scene->mNumMaterials);
-	emissiveMaps.resize(scene->mNumMaterials);
-	metallicMaps.resize(scene->mNumMaterials);
+	//roughnessMaps.resize(scene->mNumMaterials);
+	//emissiveMaps.resize(scene->mNumMaterials);
+	//metallicMaps.resize(scene->mNumMaterials);
 
 	for (size_t i = 0; i < scene->mNumMaterials; i++)
 	{
@@ -268,15 +268,15 @@ void Model::LoadMaterials(const aiScene* scene)
 
 		diffuseMaps[i] = nullptr;
 		normalMaps[i] = nullptr;
-		roughnessMaps[i] = nullptr;
-		emissiveMaps[i] = nullptr;
-		metallicMaps[i] = nullptr;
+		//roughnessMaps[i] = nullptr;
+		//emissiveMaps[i] = nullptr;
+		//metallicMaps[i] = nullptr;
 
 		LoadDiffuseMaps(material, i);
 		LoadNormalMaps(material, i);
-		LoadRoughnessMaps(material, i);
-		LoadMetallicMaps(material, i);
-		LoadEmissiveMaps(material, i);
+		//LoadRoughnessMaps(material, i);
+		//LoadMetallicMaps(material, i);
+		//LoadEmissiveMaps(material, i);
 	}
 
 	material = new Material(0.3f, 64.f);

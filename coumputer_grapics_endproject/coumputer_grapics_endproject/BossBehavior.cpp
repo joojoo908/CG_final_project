@@ -124,7 +124,7 @@ void BossBehavior::closeAttack() {
             if (angle_gap >= -60.0f && angle_gap <= 60.0f) {
                 if (!Dmg_Close_atk)
                 {
-                    Damage = 15.f;
+                    Damage = 10.f;
                     Dmg_Close_atk = true;
                 }
             }
@@ -340,7 +340,7 @@ void BossBehavior::GetSlam() {
         if (model_p->GetTranslate()[1] == 0.f)
         {
             Dmg_SLAM = true;
-            Damage = 15.0f;
+            Damage = 20.0f;
         }
     }
 }
