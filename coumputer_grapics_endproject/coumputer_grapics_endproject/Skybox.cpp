@@ -9,7 +9,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 {
 	// shader setup
 	skyShader = new Shader();
-	skyShader->CreateFromFiles("Skybox.vert", "Skybox.frag");
+	skyShader->CreateFromFiles("Shader/Skybox.vert", "Shader/Skybox.frag");
 
 	loc_PVM = skyShader->GetPVMLoc();
 	loc_sampler = skyShader->GetColorSamplerLoc();

@@ -4,7 +4,7 @@
 
 // Vertex Shader
 static const char* vShaderPath = "Shader/vertex.glsl";
-static const char* vShaderPath_obj = "objshader.vert";
+static const char* vShaderPath_obj = "Shader/objshader.vert";
 // Fragment Shader
 static const char* fShaderPath = "Shader/fragment.glsl";
 

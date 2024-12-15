@@ -16,7 +16,8 @@
 #include "PointLight.h"
 //#include "Terrain.h"
 
-Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*> map) : MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.8f), JUMP_POWER(0.4f)
+Player::Player(Model* model,Model* hitbox, std::map<std::pair<int, int>, Object*> map) : 
+	MOVE_SPEED(7.f), TURN_SPEED(0.5f), GRAVITY(0.3f), JUMP_POWER(0.1f)
 {
 	this->model = model;
 	this->hitbox = new Model(*hitbox);
@@ -346,7 +347,12 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 		else if (Move(deltaTime, map))
 		{
 			dance_time = 0;
-			if (currMoveSpeed_z) {
+			if (isJumping)
+			{
+				if (animator->GetCurrAnimation() != jumpAnim)
+					animator->PlayAnimation(jumpAnim);
+			}
+			else if (currMoveSpeed_z) {
 				if (currMoveSpeed_z > 0) {
 					if (animator->GetCurrAnimation() != runAnim)
 						animator->PlayAnimation(runAnim);
@@ -365,11 +371,6 @@ void Player::update(float deltaTime, std::map<std::pair<int, int>, Object*> map)
 					if (animator->GetCurrAnimation() != rightRunAnim)
 						animator->PlayAnimation(rightRunAnim);
 				}
-			}
-			if (isJumping)
-			{
-				if (animator->GetCurrAnimation() != jumpAnim)
-					animator->PlayAnimation(jumpAnim);
 			}
 		}
 		else

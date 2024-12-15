@@ -141,8 +141,6 @@ void SpecialKeyboard(int key, int x, int y) {
         break;
     case GLUT_KEY_F12:
 
-        mode = "End_mode";
-        currCamera = eventCamera;
         break;
     }
 }
