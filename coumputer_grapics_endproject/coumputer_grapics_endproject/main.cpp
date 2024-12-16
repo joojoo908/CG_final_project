@@ -154,13 +154,15 @@ void processMouse(int x, int y) {
     }
     currCamera->MouseControl(XChange, YChange);
 
-    if (mode == "Play_mode") {
+    if (mode == "Play_mode" || mode == "Master_mode") {
         if (!player->IsRoll() && !player->iswork())
         {
             player->MouseContrl(XChange, YChange);
         }
         glutWarpPointer(Center_width, Center_height);
     }
+
+
 }
 
 void Mouse(int button, int state, int x, int y)
@@ -441,6 +443,9 @@ void mainInit() {
         }
         //플레이어 소환 위치 나무 제거
         obj_map.erase(std::make_pair(0, 0));
+        obj_map.erase(std::make_pair(0, -1));
+        obj_map.erase(std::make_pair(-1, 0));
+        obj_map.erase(std::make_pair(-1, -1));
     }
     //머신
     {
